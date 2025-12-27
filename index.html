@@ -1,0 +1,2455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Version Control Metadata -->
+    <meta name="version" content="4.4"> 
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <title id="page-title">Momentum Physics Classes</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- FIREBASE SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --primary: #4e54c8; 
+            --secondary: #8f94fb;
+            --accent: #E67E22; 
+            --text: #333;
+            --shadow-light: 5px 5px 10px #d1d9e6, -5px -5px 10px #ffffff;
+            --shadow-inset: inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff;
+            --success-grad: linear-gradient(145deg, #2ecc71, #27ae60);
+            
+            /* WhatsApp Theme Colors */
+            --wa-header: #075E54;
+            --wa-bg: #101d25; 
+            --wa-sent: #005c4b;
+            --wa-received: #202c33;
+            --wa-text: #e9edef;
+            --wa-tick-gray: #999;
+            --wa-tick-green: #25D366;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-color); color: var(--text); padding-bottom: 70px; overflow-x: hidden; }
+        
+        /* --- 3D UTILITIES --- */
+        .box-3d { background: var(--bg-color); box-shadow: var(--shadow-light); border-radius: 15px; border: none; }
+        .btn-3d {
+            border: none; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: white; font-weight: 600; transition: 0.2s; cursor: pointer; outline: none; padding: 10px 15px;
+        }
+        .btn-3d:active { transform: translateY(2px); box-shadow: none; }
+        .btn-danger { background: linear-gradient(135deg, #cb2d3e, #ef473a); }
+        .btn-success { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .btn-warning { background: linear-gradient(135deg, #f1c40f, #f39c12); color:white;}
+        .btn-zoom { background: #2D8CFF; color: white; }
+
+        .input-3d {
+            background: var(--bg-color); border: none; border-radius: 8px; box-shadow: var(--shadow-inset);
+            padding: 12px; width: 100%; outline: none; color: var(--text); margin-bottom: 10px;
+        }
+
+        /* --- 3D ALERT BOX --- */
+        #custom-alert-box {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            z-index: 10000; padding: 15px 25px; border-radius: 50px;
+            color: white; font-weight: bold; font-size: 14px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3), inset 0 2px 2px rgba(255,255,255,0.3);
+            display: flex; align-items: center; gap: 10px; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            min-width: 300px; justify-content: center;
+        }
+        .alert-success { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .alert-error { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .alert-info { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .alert-visible { top: 30px !important; }
+
+        /* --- UPDATE MODAL --- */
+        #update-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 20000; display: none;
+            flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center;
+        }
+
+        /* --- AUTH SCREEN --- */
+        #auth-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
+            overflow-y: auto; padding: 20px;
+        }
+        .auth-box { 
+            width: 100%; max-width: 380px; background: white; color: #333;
+            padding: 25px; border-radius: 20px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin-top: 20px;
+        }
+        
+        /* --- HEADER --- */
+        .app-header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60px; 
+            background: white; color: var(--primary);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
+            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .header-icon { font-size: 20px; cursor: pointer; padding: 5px; }
+        .notif-badge { position:relative; }
+        .notif-dot { position:absolute; top:0; right:0; width:10px; height:10px; background:red; border-radius:50%; display:none; border: 1px solid white;}
+
+        /* --- SIDEBAR --- */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
+        .sidebar {
+            position: fixed; top: 0; left: -280px; width: 280px; height: 100%; 
+            background: var(--bg-color); z-index: 1600; 
+            transition: left 0.3s ease; box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-header {
+            padding: 20px; background: var(--primary); color: white;
+            border-bottom-right-radius: 20px; position: relative;
+            display: flex; align-items: center; gap: 15px; flex-shrink: 0;
+        }
+        .sb-profile-img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; object-fit: cover; }
+        .sidebar-scroll-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .sidebar-menu { padding: 15px; }
+        .sb-item {
+            padding: 12px; margin-bottom: 8px; border-radius: 8px;
+            background: white; box-shadow: 2px 2px 5px #d1d9e6;
+            display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--primary); font-weight: 500; font-size: 14px;
+        }
+        .sb-item:active { transform: scale(0.98); }
+        
+        /* Sidebar Footer */
+        .sb-footer { padding: 15px; text-align: center; border-top: 1px solid #ddd; background: #fdfdfd; margin-top: auto; }
+        .sb-f-logo-bg { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #eee; }
+        .sb-f-logo-img { width: 25px; height: 25px; object-fit: contain; }
+        .sb-f-desc { font-size: 9px; color: #666; margin-bottom: 8px; font-weight: 500; line-height: 1.2; }
+        .sb-f-social-title { font-weight: 700; color: #333; font-size: 11px; margin-bottom: 5px; }
+        .sb-socials { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
+        .sb-social-icon { width: 28px; height: 28px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-decoration: none; font-size: 12px; }
+        .fb { background: linear-gradient(135deg, #3b5998, #4c70ba); }
+        .wa { background: linear-gradient(135deg, #25D366, #2ecc71); }
+        .tg { background: linear-gradient(135deg, #0088cc, #3498db); }
+        .in { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); }
+        .tw { background: linear-gradient(135deg, #1DA1F2, #4facfe); }
+        .yt { background: linear-gradient(135deg, #FF0000, #ff4d4d); }
+        .sb-dynamic-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
+        .sb-dyn-link { font-size: 10px; color: #555; text-decoration: none; cursor: pointer; background: #f0f2f5; padding: 4px 10px; border-radius: 15px; font-weight: 600; border: 1px solid #e0e0e0; transition: 0.2s; }
+        .sb-dyn-link:hover { background: var(--primary); color: white; }
+        .sb-copyright { font-size: 8px; color: #e74c3c; font-weight: 600; margin-top: 8px; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; 
+            background: white; border-top-left-radius: 15px; border-top-right-radius: 15px;
+            display: flex; justify-content: space-around; align-items: center; 
+            z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #888; cursor: pointer; transition:0.2s; }
+        .nav-item i { font-size: 18px; margin-bottom: 3px; }
+        .nav-item.active { color: var(--primary); transform: scale(1.1); font-weight: bold;}
+
+        /* --- SLIDER --- */
+        .slider-container {
+            width: 100%; height: 180px; border-radius: 15px; overflow: hidden;
+            margin-bottom: 20px; box-shadow: var(--shadow-light); position: relative;
+        }
+        .slide { width: 100%; height: 100%; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.5s; object-fit: cover; }
+        .slide.active { opacity: 1; }
+
+        /* --- VIEWS --- */
+        .view-container { padding: 15px; padding-top: 80px; display: none; padding-bottom: 80px;}
+        .view-container.active { display: block; animation: fadeEffect 0.3s; }
+        @keyframes fadeEffect { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
+
+        .grid-box { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .content-item { 
+            background: white; padding: 20px; border-radius: 15px; 
+            text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; 
+        }
+
+        /* --- PROFESSIONAL TEST CARD --- */
+        .test-card-pro {
+            background: white; border-radius: 12px; margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden;
+            border-left: 5px solid var(--primary); position: relative; transition: transform 0.2s;
+        }
+        .test-card-pro:active { transform: scale(0.98); }
+        .tc-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; }
+        .tc-title { font-weight: 700; font-size: 16px; color: #333; }
+        .tc-badge { font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: bold; text-transform: uppercase; }
+        .badge-live { background: #ffebee; color: #c62828; }
+        .badge-upcoming { background: #e3f2fd; color: #1565c0; }
+        .badge-done { background: #e8f5e9; color: #2e7d32; }
+        .tc-body { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .tc-info { font-size: 12px; color: #666; display: flex; flex-direction: column; gap: 5px; }
+        .tc-info i { width: 15px; text-align: center; color: var(--primary); }
+        .tc-btn { padding: 8px 20px; border-radius: 25px; border: none; font-weight: 600; font-size: 12px; cursor: pointer; background: var(--primary); color: white; box-shadow: 0 3px 10px rgba(78, 84, 200, 0.3); }
+
+        /* --- WHATSAPP STYLE CHAT (FIXED SCROLL) --- */
+        .wa-container {
+            display: flex; flex-direction: column; height: 100%; 
+            background: var(--wa-bg); position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
+        }
+        .wa-header {
+            background: #1f2c34; color: white; padding: 10px 15px;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+        .wa-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #ccc; }
+        .wa-info { flex: 1; display: flex; flex-direction: column; }
+        .wa-name { font-weight: 600; font-size: 16px; color: white; }
+        .wa-status { font-size: 11px; opacity: 0.8; color: #ccc; }
+        .wa-icons { display: flex; gap: 20px; font-size: 18px; color: white; }
+        .wa-body {
+            flex: 1; overflow-y: auto; padding: 15px; 
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-color: #0b141a; background-blend-mode: overlay; background-repeat: repeat; opacity: 1;
+        }
+        .wa-bubble {
+            max-width: 75%; padding: 8px 12px; border-radius: 8px; margin-bottom: 5px;
+            font-size: 14px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            word-wrap: break-word; color: #e9edef;
+        }
+        .wa-sent { background: var(--wa-sent); align-self: flex-end; margin-left: auto; border-top-right-radius: 0; }
+        .wa-received { background: var(--wa-received); align-self: flex-start; border-top-left-radius: 0; }
+        .wa-meta { display: flex; justify-content: flex-end; align-items: center; gap: 3px; margin-top: 2px; }
+        .wa-time { font-size: 9px; color: #8696a0; }
+        .wa-tick { font-size: 10px; color: var(--wa-tick-gray); }
+        .wa-tick.read { color: var(--wa-tick-green); }
+        
+        .wa-footer {
+            background: #1f2c34; padding: 8px 10px; display: flex; align-items: center; gap: 8px;
+            flex-shrink: 0;
+        }
+        .wa-input {
+            flex: 1; width: 0; border: none; padding: 12px 15px; border-radius: 25px; outline: none; font-size: 15px;
+            background: #2a3942; color: white;
+        }
+        .wa-btn-round {
+            width: 45px; height: 45px; background: #00a884; color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 18px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        /* --- ADMIN LIST VIEW --- */
+        .wa-list-container { background: #111b21; height: 100%; overflow-y: auto; }
+        .wa-list-item {
+            display: flex; align-items: center; padding: 12px 15px;
+            border-bottom: 1px solid #222d36; cursor: pointer;
+        }
+        .wa-list-item:hover { background: #202c33; }
+        .wa-list-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .wa-list-content { flex: 1; }
+        .wa-list-name { color: #e9edef; font-weight: 600; font-size: 16px; }
+        .wa-list-msg { color: #8696a0; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+        .wa-list-meta { text-align: right; }
+        .wa-list-time { color: #8696a0; font-size: 11px; margin-bottom: 5px; }
+
+        /* --- ADVANCED TEST UI --- */
+        .test-3d-bg {
+            background: #f0f2f5; height: 100vh; width: 100%; position: fixed; top: 0; left: 0; z-index: 2000;
+            display: flex; flex-direction: column;
+        }
+        .test-header-sticky {
+            background: white; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center; z-index: 10;
+        }
+        .test-timer-badge {
+            background: #e74c3c; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;
+            display: flex; align-items: center; gap: 5px; box-shadow: 0 3px 8px rgba(231, 76, 60, 0.3);
+        }
+        .test-scroll-area { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; }
+        .question-card-pro {
+            background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #eee;
+        }
+        .q-text-pro { font-size: 16px; font-weight: 600; color: #333; line-height: 1.6; margin-bottom: 20px; }
+        .opt-btn-pro {
+            display: block; width: 100%; padding: 15px; margin-bottom: 10px; border: 2px solid #f0f2f5;
+            border-radius: 10px; background: white; color: #555; font-weight: 500; text-align: left;
+            cursor: pointer; transition: 0.2s;
+        }
+        .opt-btn-pro:hover { background: #f9f9f9; border-color: #ddd; }
+        .opt-btn-pro.selected-opt { border-color: var(--primary); background: #eef2ff; color: var(--primary); font-weight: bold; }
+        .test-footer-fixed {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* --- REVIEW PAGE DESIGN --- */
+        .review-card {
+            background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid #ccc;
+        }
+        .review-card.correct { border-left-color: #2ecc71; }
+        .review-card.wrong { border-left-color: #e74c3c; }
+        .review-q { font-weight: 600; margin-bottom: 10px; color: #333; }
+        .review-ans { font-size: 13px; padding: 8px; border-radius: 6px; margin-top: 5px; }
+        .ans-user { background: #f8f9fa; border: 1px solid #eee; }
+        .ans-correct { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; font-weight: 600; }
+        .ans-wrong { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+
+        /* --- PROFESSIONAL MARKSHEET --- */
+        .marksheet-header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60px;
+            background: white; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 2000;
+        }
+        .marksheet-body {
+            padding-top: 70px; padding-bottom: 20px; overflow-y: auto; height: 100vh;
+        }
+        
+        .report-paper { 
+            width: 100%; max-width: 210mm; min-height: 297mm; background: #fff; position: relative;
+            padding: 20px; margin: 0 auto; border: 1px solid #ccc; box-sizing: border-box; box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .report-border { border: 5px double #333; padding: 10px; box-sizing: border-box; width: 100%; height: 100%; min-height: 280mm; }
+        .report-inner-border { border: 2px solid #666; padding: 20px; box-sizing: border-box; position: relative; width: 100%; height: 100%; }
+        .watermark {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 8vw; opacity: 0.05; font-weight: bold; pointer-events: none; text-transform: uppercase; white-space: nowrap;
+        }
+        .sheet-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
+        .sheet-header h1 { font-family: 'Playfair Display', serif; font-size: 24px; color: #333; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
+        .sheet-header p { margin: 5px 0 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        /* List Items */
+        .result-list-item { 
+            background: white; margin-bottom: 10px; border-radius: 10px; 
+            padding: 10px; display: flex; align-items: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .res-thumb { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 2px solid var(--primary); }
+        .rank-badge {
+            width: 30px; height: 30px; border-radius: 50%; color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; margin-right: 10px; flex-shrink: 0; font-size: 12px;
+        }
+
+        /* Dynamic Page View */
+        .dynamic-content { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); min-height: 400px; font-size: 14px; line-height: 1.6; color: #333; }
+        .dynamic-content h1, .dynamic-content h2 { margin-bottom: 10px; color: var(--primary); }
+
+        /* --- ADMIN TABS --- */
+        .admin-scroll-menu { overflow-x: auto; white-space: nowrap; padding-bottom: 10px; margin-bottom: 15px; -webkit-overflow-scrolling: touch; }
+        .admin-tab-btn { display: inline-block; margin-right: 10px; padding: 10px 20px; border-radius: 20px; }
+
+        /* KEYBOARD & NOTIF */
+        .math-keyboard { display: none; background: #34495e; padding: 10px; overflow-x: auto; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 6000; border-top: 2px solid var(--accent); }
+        .key-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px; }
+        .math-key { padding: 10px 15px; background: white; border-radius: 5px; cursor: pointer; font-weight: bold; min-width: 40px; text-align: center; color: black; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+        .admin-kb-toggle { background: var(--primary); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        #notif-modal {
+            position: fixed; top: 60px; right: 10px; width: 300px; background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 10px; z-index: 5000;
+            display: none; max-height: 400px; overflow-y: auto;
+        }
+        .notif-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .notif-item:hover { background: #f9f9f9; }
+
+        /* EDITOR TOOLBAR */
+        .editor-toolbar { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; background: #f1f2f6; padding: 5px; border-radius: 8px; }
+        .editor-btn { background: white; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        #editor-content { width: 100%; min-height: 250px; background: white; border-radius: 8px; padding: 15px; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05); outline: none; margin-bottom: 15px; }
+
+        /* --- RESPONSIVE MARKSHEET FIX --- */
+        @media screen and (max-width: 768px) {
+            .report-paper { width: 100%; max-width: 100%; min-height: auto; height: auto; padding: 10px; zoom: 0.65; }
+            .report-border { min-height: auto; }
+            .report-inner-border { min-height: auto; }
+        }
+
+        /* --- PRINT A4 (IMPROVED FOR PDF) --- */
+        @media print {
+            body * { visibility: hidden; }
+            @page { size: A4; margin: 5mm; }
+            .report-paper {
+                width: 100%; max-width: 210mm; height: auto; min-height: 260mm; /* Reduced from 297mm */
+                margin: 0; border: none; box-shadow: none; padding: 5mm;
+                transform: scale(1) !important;
+                page-break-inside: avoid;
+            }
+            .report-inner-border { min-height: 250mm; padding: 10mm; }
+            #view-marksheet, #view-marksheet * { visibility: visible; }
+            .marksheet-header { display: none !important; }
+            .marksheet-body { padding: 0 !important; height: auto !important; overflow: visible !important; }
+            #view-marksheet { 
+                position: absolute; left: 0; top: 0; width: 100%; height: 100%; margin: 0; padding: 0; 
+                background: white; display: block !important; z-index: 9999; 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;
+            }
+            .sheet-header h1 { font-size: 36px; }
+            .watermark { font-size: 80px; opacity: 0.1; }
+            .btn-3d { display: none !important; }
+            .sidebar, .app-header, .bottom-nav { display: none !important; }
+        }
+
+        /* --- LIVE CLASS ROOM --- */
+        .video-container {
+            width: 100%; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: black;
+        }
+        .video-container iframe {
+            position: absolute; top:0; left:0; width: 100%; height: 100%; border:none;
+        }
+        .live-chat-box {
+            flex: 1; display: flex; flex-direction: column; background: #fff; border-top: 1px solid #ccc;
+        }
+        .live-msgs {
+            flex: 1; overflow-y: auto; padding: 10px; background: #f9f9f9;
+        }
+        .live-chat-input-area {
+            padding: 10px; display: flex; gap: 10px; border-top: 1px solid #eee;
+        }
+        .live-chat-bubble {
+            background: white; padding: 5px 10px; border-radius: 10px; margin-bottom: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); font-size: 13px;
+        }
+
+    </style>
+</head>
+<body onclick="handleClickOutside(event)">
+
+<!-- 3D ALERT BOX -->
+<div id="custom-alert-box">
+    <i id="alert-icon" class="fa"></i>
+    <span id="alert-msg">Notification</span>
+</div>
+
+<!-- UPDATE MODAL -->
+<div id="update-modal">
+    <i class="fa fa-sync fa-3x" style="color:var(--secondary); animation:spin 2s infinite linear;"></i>
+    <h2 style="margin:20px 0;">New Update Available!</h2>
+    <p style="margin-bottom:20px; max-width:300px;">A new version of Momentum Physics Classes is available. Please update to continue.</p>
+    <button class="btn-3d btn-success" onclick="updateAppNow()">Update Now</button>
+</div>
+<style>@keyframes spin { 100% {transform: rotate(360deg);} }</style>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="app-sidebar">
+    <div class="sidebar-header">
+        <img src="https://via.placeholder.com/150" id="sb-photo" class="sb-profile-img">
+        <div>
+            <h3 id="sb-name" style="font-size:16px; margin:0;">Guest</h3>
+            <p id="sb-class" style="font-size:11px; opacity:0.8; margin:0;">Student</p>
+        </div>
+        <i class="fa fa-pencil-alt" id="sb-edit-icon" style="margin-left:auto; color: white; cursor: pointer; display: none;" onclick="switchAdminTab('profile'); toggleSidebar();"></i>
+    </div>
+    
+    <!-- Scrollable Content Wrapper -->
+    <div class="sidebar-scroll-content">
+        <div class="sidebar-menu" id="student-sidebar-menu">
+            <div class="sb-item" onclick="handleNav('view-profile')"><i class="fa fa-user"></i> My Profile</div>
+            <div class="sb-item" onclick="handleNav('view-tests')"><i class="fa fa-clipboard-list"></i> My Tests</div>
+            <div class="sb-item" onclick="handleNav('view-rank-board')"><i class="fa fa-chart-line"></i> Rank Board</div>
+            <div class="sb-item" onclick="handleNav('view-results-history')"><i class="fa fa-file-download"></i> Marksheet Download</div>
+            <div class="sb-item" onclick="handleNav('view-change-password')"><i class="fa fa-key"></i> Change Password</div>
+            <div class="sb-item" onclick="handleNav('view-share')"><i class="fa fa-share-alt"></i> Share App</div>
+            <hr style="margin: 10px 0; border: 1px solid #eee;">
+            <div class="sb-item" style="color:red;" onclick="logoutUser()"><i class="fa fa-sign-out-alt"></i> Logout</div>
+        </div>
+
+        <div class="sidebar-menu" id="admin-sidebar-menu" style="display:none;">
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('add-test')"><i class="fa fa-plus-circle"></i> Create Test</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('add-questions')"><i class="fa fa-question-circle"></i> Add Questions</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('view-questions')"><i class="fa fa-list"></i> View Questions</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('students')"><i class="fa fa-users"></i> Students</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('results')"><i class="fa fa-poll"></i> Results</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-tests')"><i class="fa fa-cog"></i> Manage Tests</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('live-chat')"><i class="fa fa-comments"></i> Admin Chat</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-slider')"><i class="fa fa-images"></i> Manage Slider</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-content')"><i class="fa fa-book"></i> Manage Content</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('settings')"><i class="fa fa-wrench"></i> Settings & Name</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('app-version')"><i class="fa fa-code-branch"></i> App Version</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('profile')"><i class="fa fa-user-shield"></i> Admin Profile</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('page-builder')"><i class="fa fa-file-alt"></i> Page Builder</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('notifications')"><i class="fa fa-bell"></i> Manage Notif.</div>
+            <hr style="margin: 10px 0; border: 1px solid #eee;">
+            <div class="sb-item" style="color:red;" onclick="logoutUser()"><i class="fa fa-sign-out-alt"></i> Logout</div>
+        </div>
+
+        <!-- Sidebar Footer (Inside Scroll) -->
+        <div class="sb-footer">
+            <div class="sb-f-logo-bg"><img src="https://via.placeholder.com/50" id="sb-f-logo-img" class="sb-f-logo-img" alt="Logo"></div>
+            <p class="sb-f-desc" id="sb-f-desc-text">Your trusted platform for the best deals.</p>
+            <div class="sb-f-social-title">Follow Us On Social Media</div>
+            <div class="sb-socials">
+                <a id="sb-fb" href="#" target="_blank" class="sb-social-icon fb"><i class="fab fa-facebook-f"></i></a>
+                <a id="sb-wa" href="#" target="_blank" class="sb-social-icon wa"><i class="fab fa-whatsapp"></i></a>
+                <a id="sb-tg" href="#" target="_blank" class="sb-social-icon tg"><i class="fab fa-telegram-plane"></i></a>
+                <a id="sb-in" href="#" target="_blank" class="sb-social-icon in"><i class="fab fa-instagram"></i></a>
+                <a id="sb-tw" href="#" target="_blank" class="sb-social-icon tw"><i class="fab fa-twitter"></i></a>
+                <a id="sb-yt" href="#" target="_blank" class="sb-social-icon yt"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div id="sb-dynamic-pages-links" class="sb-dynamic-links"></div>
+            <div class="sb-copyright" id="sb-copyright-text">© 2025 All rights reserved</div>
+        </div>
+    </div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+    <div style="text-align:center; margin-bottom:10px;">
+        <i class="fa fa-graduation-cap fa-3x" style="color:white; text-shadow: 0 2px 10px rgba(0,0,0,0.3);"></i>
+        <h2 id="login-app-title">Momentum Physics Classes</h2>
+        <p style="font-size:10px; color:white;" id="login-app-ver">Ver 4.4</p>
+    </div>
+    <div class="auth-box" id="main-auth-box">
+        <h3>Login / Signup</h3>
+        <button class="btn-3d btn-danger" style="width:100%; padding:12px; margin-bottom:10px; background:#DB4437; color:white;" onclick="loginGoogle()">
+            <i class="fab fa-google"></i> Google Login
+        </button>
+        <button class="btn-3d" style="width:100%; padding:12px; margin-bottom:15px; background:#3498db; color:white;" onclick="showPhoneAuth()">
+            <i class="fa fa-phone"></i> Mobile OTP
+        </button>
+        <p style="font-size:12px; color:#888;">- OR -</p>
+        <input type="email" id="email" class="input-3d" placeholder="Email Address">
+        <input type="password" id="pass" class="input-3d" placeholder="Password">
+        <button class="btn-3d" style="width:100%; padding:10px;" onclick="emailLogin()">Login</button>
+        <button class="btn-3d btn-success" style="width:100%; padding:10px; margin-top:5px;" onclick="emailSignup()">Signup</button>
+        <p onclick="showForgotPassword()" style="margin-top:10px; font-size:12px; cursor:pointer; color: var(--primary); text-decoration: underline;">Forgot Password?</p>
+        <p onclick="showAdminLogin()" style="margin-top:5px; font-size:12px; cursor:pointer; color: var(--primary); text-decoration: underline;">Are you Admin?</p>
+    </div>
+    <div class="auth-box" id="phone-auth-box" style="display:none;">
+        <h3>Mobile Verify</h3>
+        <div id="phone-step-1">
+            <input type="tel" id="phone-number" class="input-3d" placeholder="+91 XXXXX XXXXX" value="+91">
+            <div id="recaptcha-container" style="margin:10px 0;"></div>
+            <button class="btn-3d" style="width:100%; padding:10px; background:#3498db; color:white;" onclick="sendOTP()">Send OTP</button>
+        </div>
+        <div id="phone-step-2" style="display:none;">
+            <p>OTP Sent!</p>
+            <input type="number" id="otp-input" class="input-3d" placeholder="Enter OTP">
+            <button class="btn-3d btn-success" style="width:100%; padding:10px; margin-top:10px;" onclick="verifyOTP()">Verify</button>
+        </div>
+        <button class="btn-3d btn-danger" style="width:100%; padding:5px; margin-top:10px; font-size:12px;" onclick="showMainAuth()">Back</button>
+    </div>
+    <div class="auth-box" id="admin-login-box" style="display:none; border:2px solid var(--accent); background: #fdfdfd;">
+        <i class="fa fa-user-shield fa-2x" style="color:var(--accent); margin-bottom:10px;"></i>
+        <h3 style="color:var(--primary);">Admin Portal</h3>
+        <input type="text" id="admin-id-input" class="input-3d" placeholder="Secret ID">
+        <input type="password" id="admin-pass-input" class="input-3d" placeholder="Secret Password">
+        <button class="btn-3d" style="width:100%; padding:12px; font-weight:bold;" onclick="adminLogin()">SECURE LOGIN</button>
+        <button class="btn-3d btn-danger" style="width:100%; padding:8px; margin-top:10px;" onclick="showMainAuth()">Cancel</button>
+    </div>
+    <div class="auth-box" id="forgot-password-box" style="display:none; border:2px solid var(--accent); background: #fdfdfd;">
+        <i class="fa fa-key fa-2x" style="color:var(--accent); margin-bottom:10px;"></i>
+        <h3 style="color:var(--primary);">Reset Password</h3>
+        <p style="font-size:12px; color:#555;">Enter your email to receive reset link.</p>
+        <input type="email" id="forgot-email" class="input-3d" placeholder="Email Address">
+        <button class="btn-3d" style="width:100%; padding:12px; font-weight:bold;" onclick="forgotPassword()">Send Link</button>
+        <button class="btn-3d btn-danger" style="width:100%; padding:8px; margin-top:10px;" onclick="showMainAuth()">Cancel</button>
+    </div>
+</div>
+
+<!-- HEADER -->
+<div class="app-header" id="app-header" style="display:none;">
+    <div style="display:flex; align-items:center;">
+        <i class="fa fa-bars header-icon" onclick="toggleSidebar()"></i>
+        <div id="header-title" style="font-weight:700; margin-left:15px; font-size:18px;">Momentum Physics Classes</div>
+    </div>
+    <div class="notif-badge">
+        <i class="fa fa-bell header-icon" onclick="toggleNotifModal()"></i>
+        <div class="notif-dot" id="notif-dot"></div>
+        <div id="notif-modal">
+            <div style="padding:10px; background:#f0f2f5; font-weight:bold; border-bottom:1px solid #ccc;">Notifications</div>
+            <button onclick="requestNotifyPermission()" style="width:100%; padding:8px; background:var(--success-grad); color:white; border:none; cursor:pointer; font-size:11px;">🔔 Enable Push Notifications</button>
+            <div id="notif-list-container">
+                <div style="padding:20px; text-align:center; color:#888;">No new notifications</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DYNAMIC HEADER FOR PAGES -->
+<div id="dynamic-header" class="app-header" style="display:none;">
+    <i class="fa fa-arrow-left header-icon" onclick="goBack()"></i>
+    <span id="dynamic-header-title" style="margin-left:15px; font-weight:bold; font-size:18px;">Page Title</span>
+    <div style="width:20px;"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottom-nav" style="display:none;">
+    <div class="nav-item active" id="btn-home" onclick="nav('view-home')"><i class="fa fa-home"></i>Home</div>
+    <div class="nav-item" id="btn-tests" onclick="nav('view-tests')"><i class="fa fa-tasks"></i>Test</div>
+    <div class="nav-item" id="btn-chat" onclick="nav('view-help')"><i class="fa fa-comments"></i>Chat</div> 
+    <div class="nav-item" id="btn-profile" onclick="nav('view-profile')"><i class="fa fa-user"></i>Profile</div>
+</div>
+
+<!-- ================= VIEWS ================= -->
+
+<!-- PROFILE SETUP -->
+<div id="view-profile-setup" class="view-container">
+    <div class="box-3d" style="padding:20px;">
+        <h3 style="color:var(--primary);">Complete Profile</h3>
+        <input type="text" id="p-name" class="input-3d" placeholder="Student Name">
+        <input type="text" id="p-father" class="input-3d" placeholder="Father's Name">
+        <input type="text" id="p-mother" class="input-3d" placeholder="Mother's Name">
+        <select id="p-class" class="input-3d">
+            <option value="">Select Class</option><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option>
+        </select>
+        <input type="text" id="p-subject" class="input-3d" placeholder="Subject/Stream (e.g. Science)">
+        <input type="number" id="p-roll" class="input-3d" placeholder="Roll Number">
+        <input type="tel" id="p-mobile" class="input-3d" placeholder="Mobile Number">
+        <button class="btn-3d btn-success" style="width:100%; padding:12px;" onclick="saveProfile()">Save Details</button>
+    </div>
+</div>
+
+<!-- HOME VIEW -->
+<div id="view-home" class="view-container">
+    <div class="slider-container" id="home-slider">
+        <!-- Dynamic Slides -->
+    </div>
+    <div class="grid-box">
+        <div class="content-item" onclick="joinLiveClass()"><i class="fa fa-video fa-2x" style="color:red; margin-bottom:10px;"></i><h4>Live Class</h4></div>
+        <div class="content-item" onclick="nav('view-recorded-videos')"><i class="fa fa-play-circle fa-2x" style="color:#4e54c8; margin-bottom:10px;"></i><h4>Recorded Video</h4></div>
+        <div class="content-item" onclick="nav('view-pdf')"><i class="fa fa-file-pdf fa-2x" style="color:#e74c3c; margin-bottom:10px;"></i><h4>PDF Notes</h4></div>
+        <div class="content-item" onclick="nav('view-tests')"><i class="fa fa-clipboard-check fa-2x" style="color:orange; margin-bottom:10px;"></i><h4>Online Test</h4></div>
+        <div class="content-item" onclick="nav('view-rank-board')"><i class="fa fa-chart-line fa-2x" style="color:blue; margin-bottom:10px;"></i><h4>Rank Board</h4></div>
+    </div>
+</div>
+
+<!-- TESTS LIST (PROFESSIONAL DESIGN) -->
+<div id="view-tests" class="view-container">
+    <h3 style="margin-bottom:15px;">Available Tests</h3>
+    <div id="test-list-container">Loading...</div>
+</div>
+
+<!-- RANK BOARD -->
+<div id="view-rank-board" class="view-container">
+    <h3 style="margin-bottom:15px;">Rank Board 🏆</h3>
+    <select id="rb-test-select" class="input-3d" onchange="loadRankBoard()" style="margin-bottom:15px;"><option>Select Test</option></select>
+    <div id="rank-board-container"></div>
+</div>
+
+<!-- RESULTS HISTORY (MARKSHEET DOWNLOAD) -->
+<div id="view-results-history" class="view-container">
+    <h3 style="margin-bottom:15px;">Marksheet Download</h3>
+    <div id="my-results-container">Loading...</div>
+</div>
+
+<!-- REVIEW ANSWERS PAGE -->
+<div id="view-review-answers" class="view-container">
+    <button class="btn-3d" onclick="nav('view-results-history')">Back</button>
+    <h3 style="margin:15px 0;">Test Review</h3>
+    <div id="review-container"></div>
+</div>
+
+<!-- DYNAMIC PAGE VIEWER -->
+<div id="view-dynamic-page" class="view-container">
+    <div id="dynamic-page-content" class="dynamic-content"></div>
+</div>
+
+<!-- SHARE VIEW -->
+<div id="view-share" class="view-container">
+    <div class="box-3d" style="padding:20px; text-align:center;">
+        <div style="padding: 10px; background: white; display: inline-block; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 15px;">
+            <img src="https://via.placeholder.com/200x200?text=Share+App" id="share-app-img" style="max-width: 160px; height: auto; display: block; border-radius: 5px;">
+        </div>
+        <h3 style="color:var(--primary);">Share App</h3>
+        <p style="font-size:12px; color:#666; margin-bottom:20px;">Share with friends and family!</p>
+        <button class="btn-3d btn-success" onclick="shareAndCopy('app')" style="width:100%; margin-bottom:10px;"><i class="fa fa-mobile-alt"></i> Share App Link</button>
+        <button class="btn-3d" onclick="shareAndCopy('website')" style="width:100%;"><i class="fa fa-globe"></i> Share Website Link</button>
+    </div>
+</div>
+
+<!-- PROFESSIONAL MARKSHEET PAGE WITH FIXED HEADER -->
+<div id="view-marksheet" class="view-container" style="padding:0;">
+    <div class="marksheet-header">
+        <button class="btn-3d btn-danger" onclick="marksheetBack()" style="flex:1; margin-right:5px;"><i class="fa fa-arrow-left"></i> Back</button>
+        <button class="btn-3d btn-success" onclick="printMarksheet()" style="flex:1; margin-left:5px;"><i class="fa fa-download"></i> Print / PDF</button>
+    </div>
+    <div class="marksheet-body">
+        <div class="report-paper">
+            <div class="report-border"><div class="report-inner-border">
+                <div class="watermark" id="ms-watermark-name">FUTURE EDU</div>
+                <div class="sheet-header">
+                    <i class="fa fa-graduation-cap fa-3x" style="color:var(--primary); margin-bottom:10px;"></i>
+                    <h1 id="ms-app-name">FUTURE EDU</h1>
+                    <p>Official Achievement Record</p>
+                </div>
+                <div style="display:flex; justify-content: space-between; align-items:flex-end; border-bottom:2px solid #333; padding-bottom:15px; margin-bottom:20px; flex-wrap: wrap;">
+                    <div style="line-height:1.8; font-size:14px; color:#333; flex: 1;">
+                        <p><b>Name:</b> <span id="ms-name" style="text-transform:uppercase;">--</span></p>
+                        <p><b>Class:</b> <span id="ms-class">--</span> | <b>Roll:</b> <span id="ms-roll">--</span></p>
+                        <p><b>Subject:</b> <span id="ms-subject">--</span></p>
+                        <p><b>Date:</b> <span id="ms-date">--</span></p>
+                    </div>
+                    <img src="" id="ms-photo" style="width:90px; height:110px; object-fit:cover; border:2px solid #333; padding:2px;">
+                </div>
+                <h3 style="text-align:center; margin:20px 0; background:var(--primary); color:white; padding:8px; border-radius:5px; text-transform:uppercase; font-size:16px;">Test: <span id="ms-test-title">--</span></h3>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:30px; font-family:'Courier New', monospace;">
+                    <tr style="background:#eee;"><th style="padding:12px; border:1px solid #999;">Category</th><th style="padding:12px; border:1px solid #999;">Value</th></tr>
+                    <tr style="text-align:center;"><td style="padding:10px; border:1px solid #999;">Total Questions</td><td style="padding:10px; border:1px solid #999;" id="ms-total-q">0</td></tr>
+                    <tr style="text-align:center; color:green;"><td style="padding:10px; border:1px solid #999;">Correct Answers</td><td style="padding:10px; border:1px solid #999; font-weight:bold;" id="ms-correct">0</td></tr>
+                    <tr style="text-align:center; color:red;"><td style="padding:10px; border:1px solid #999;">Wrong / Skipped</td><td style="padding:10px; border:1px solid #999;" id="ms-wrong">0</td></tr>
+                    <tr style="text-align:center; background:#f9f9f9;"><td style="padding:12px; border:1px solid #999; font-weight:bold;">FINAL SCORE</td><td style="padding:12px; border:1px solid #999; font-size:22px; font-weight:bold; color:var(--primary);" id="ms-score">0</td></tr>
+                </table>
+                <div style="text-align:center; margin-bottom:40px;"><span style="font-size:18px; border:2px solid var(--accent); padding:10px 20px; border-radius:50px; font-weight:bold; color:var(--accent);">GRADE: <span id="ms-grade">--</span></span></div>
+                <div style="margin-top:60px; display:flex; justify-content:flex-end;">
+                    <div style="text-align:center; width: 150px;">
+                        <img id="ms-sig-img" src="" style="height:50px; margin-bottom:5px; display:block; margin:0 auto;" alt="Signature">
+                        <div style="border-top:1px solid #000; padding-top:5px; font-weight:bold;">Principal Signature</div>
+                    </div>
+                </div>
+            </div></div>
+        </div>
+    </div>
+</div>
+
+<!-- WHATSAPP STYLE CHAT (STUDENT VIEW) -->
+<div id="view-help" class="view-container" style="padding:0; background:black;">
+    <div class="wa-container">
+        <div class="wa-header">
+            <i class="fa fa-arrow-left" onclick="goBack()" style="cursor:pointer;"></i>
+            <img src="https://via.placeholder.com/40" class="wa-avatar" id="wa-admin-avatar">
+            <div class="wa-info">
+                <div class="wa-name" id="wa-admin-name">Admin Support</div>
+                <div class="wa-status" id="wa-status-text">Offline</div>
+            </div>
+            <!-- REMOVED CALL ICONS -->
+        </div>
+        <div class="wa-body" id="student-chat-msgs">
+            <!-- Messages go here -->
+        </div>
+        <div class="wa-footer">
+            <i class="far fa-smile" style="font-size:24px; color:#8696a0;"></i>
+            <input type="text" id="chat-input-stu" class="wa-input" placeholder="Message" oninput="handleTyping('student')">
+            <div class="wa-btn-round" onclick="sendStudentMessage()">
+                <i class="fa fa-paper-plane"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE VIEW -->
+<div id="view-profile" class="view-container">
+    <div class="box-3d" style="padding:20px; text-align:center; position:relative;">
+        <img src="" id="profile-view-img" style="width:110px; height:110px; border-radius:50%; object-fit:cover; margin-bottom:15px; border:4px solid white; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+        <h2 id="profile-view-name" style="color:var(--primary);">--</h2>
+        <p id="profile-view-email" style="font-size:13px; color:var(--accent); margin-bottom:5px;">--</p>
+        <p id="profile-view-class" style="color:#777; font-weight:bold;">--</p>
+        <div style="margin-top:20px; text-align:left; background:#f9f9f9; padding:15px; border-radius:10px;">
+            <p style="margin-bottom:8px;"><b>Father:</b> <span id="profile-view-father">--</span></p>
+            <p style="margin-bottom:8px;"><b>Mother:</b> <span id="profile-view-mother">--</span></p>
+            <p style="margin-bottom:8px;"><b>Mobile:</b> <span id="profile-view-mobile">--</span></p>
+            <p style="margin-bottom:8px;"><b>Roll No:</b> <span id="profile-view-roll">--</span></p>
+            <p style="margin-bottom:8px;"><b>Subject:</b> <span id="profile-view-subject">--</span></p>
+        </div>
+        <div style="margin-top:20px; display:flex; gap:10px;">
+            <button class="btn-3d" style="flex:1; padding:10px; font-size:12px;" onclick="nav('view-edit-profile')"><i class="fa fa-edit"></i> Edit</button>
+            <button class="btn-3d btn-danger" style="flex:1; padding:10px; font-size:12px;" onclick="nav('view-change-password')"><i class="fa fa-key"></i> Pass</button>
+        </div>
+    </div>
+</div>
+
+<div id="view-edit-profile" class="view-container">
+    <div class="box-3d" style="padding:20px;">
+        <h3>Edit Details</h3>
+        <input type="text" id="edit-name" class="input-3d" placeholder="Name"><input type="text" id="edit-father" class="input-3d" placeholder="Father">
+        <input type="text" id="edit-mother" class="input-3d" placeholder="Mother"><input type="text" id="edit-subject" class="input-3d" placeholder="Subject">
+        <input type="tel" id="edit-mobile" class="input-3d" placeholder="Mobile">
+        <button class="btn-3d btn-success" style="width:100%; padding:12px;" onclick="saveEditedProfile()">Update Profile</button>
+        <button class="btn-3d btn-danger" style="width:100%; padding:10px; margin-top:10px;" onclick="nav('view-profile')">Cancel</button>
+    </div>
+</div>
+
+<div id="view-change-password" class="view-container">
+    <div class="box-3d" style="padding:20px;">
+        <h3>Change Password</h3>
+        <input type="password" id="new-password" class="input-3d" placeholder="New Password"><input type="password" id="confirm-password" class="input-3d" placeholder="Confirm">
+        <button class="btn-3d btn-danger" style="width:100%; padding:12px;" onclick="changeUserPassword()">Update Password</button>
+        <button class="btn-3d" style="width:100%; padding:10px; margin-top:10px;" onclick="nav('view-profile')">Cancel</button>
+    </div>
+</div>
+
+<!-- ADVANCED TEST RUNNER -->
+<div id="view-test-runner" class="test-3d-bg" style="display:none;">
+    <div class="test-header-sticky">
+        <span style="font-weight:bold; color:#333;">Live Exam</span>
+        <div class="test-timer-badge"><i class="fa fa-clock"></i> <span id="exam-timer">00:00</span></div>
+    </div>
+    <div class="progress-3d-container" style="margin:0; border-radius:0;"><div class="progress-3d-fill" id="progress-bar"></div></div>
+    
+    <div class="test-scroll-area">
+        <div class="question-card-pro">
+            <div style="margin-bottom:10px; color:#888; font-size:12px;">Question <span id="q-num">1</span> of <span id="q-total">--</span></div>
+            <div id="q-text" class="q-text-pro">Loading Question...</div>
+            <div id="options-area"></div>
+        </div>
+    </div>
+
+    <div class="test-footer-fixed">
+        <button class="btn-3d btn-danger" onclick="endExam()">Submit Test</button>
+    </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="view-admin" class="view-container">
+    <div class="admin-scroll-menu">
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-test')">1. Create Test</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-questions')">2. Add Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('view-questions')">3. View Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('students')">4. Students</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('results')">5. Results</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-tests')">6. Manage Tests</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('live-chat')">7. Live Chat</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-slider')">8. Manage Slider</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-content')">9. Content (PDF/Live)</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('settings')">10. Settings</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('profile')">11. Profile</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('notifications')">12. Notifications</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('page-builder')">13. Page Builder</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('app-version')">14. App Version</button>
+    </div>
+
+    <!-- TABS -->
+    <div id="adm-add-test" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;"><h4>Create New Test</h4><input type="text" id="at-title" class="input-3d" placeholder="Test Name"><input type="text" id="at-subject" class="input-3d" placeholder="Subject (e.g. Science)"><label style="font-size:12px; color:var(--primary); font-weight:bold;">Select Question List (Topic)</label><select id="at-list-select" class="input-3d"><option value="">Loading Topics...</option></select><select id="at-class" class="input-3d"><option value="">Class</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select><label style="font-size:12px; color:var(--primary); font-weight:bold;">Schedule & Timing</label><div class="grid-box"><div>Start: <input type="datetime-local" id="at-start" class="input-3d" style="padding:5px;"></div><div>End: <input type="datetime-local" id="at-end" class="input-3d" style="padding:5px;"></div></div><div class="grid-box"><input type="number" id="at-time" class="input-3d" placeholder="Time/Question (Sec)"><input type="number" id="at-gap" class="input-3d" placeholder="Gap Time (Sec)"></div><label style="font-size:12px; color:var(--accent); font-weight:bold;">Scoring & Grading</label><input type="number" id="at-marks" class="input-3d" placeholder="Marks Per Question (e.g. 1, 2)"><div class="grid-box"><input type="number" id="grade-fail" class="input-3d" placeholder="Min Pass Score"><input type="number" id="grade-sec" class="input-3d" placeholder="Good Rank Score"></div><input type="number" id="grade-first" class="input-3d" placeholder="Excellent Rank Score"><button class="btn-3d btn-success" style="width:100%;" onclick="createTest()">Publish Test</button></div>
+    </div>
+    <div id="adm-add-questions" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Add Questions</h4><input type="text" id="aq-list-name" class="input-3d" placeholder="Topic Name (e.g. Physics Ch1)"><div style="position:relative;"><textarea id="aq-text" class="input-3d" rows="3" placeholder="Question Text" onfocus="setLastFocus(this)"></textarea><button class="admin-kb-toggle" onclick="toggleMathKeyboard(true)" style="position:absolute; right:10px; bottom:20px;"><i class="fa fa-keyboard"></i></button></div><div class="grid-box"><input type="text" id="aq-op1" class="input-3d" placeholder="A" onfocus="setLastFocus(this)"><input type="text" id="aq-op2" class="input-3d" placeholder="B" onfocus="setLastFocus(this)"><input type="text" id="aq-op3" class="input-3d" placeholder="C" onfocus="setLastFocus(this)"><input type="text" id="aq-op4" class="input-3d" placeholder="D" onfocus="setLastFocus(this)"></div><select id="aq-correct" class="input-3d"><option value="1">A</option><option value="2">B</option><option value="3">C</option><option value="4">D</option></select><button class="btn-3d btn-success" style="width:100%;" onclick="saveQuestion()">Save to List</button></div></div>
+    <div id="adm-view-questions" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>View Added Questions</h4><select id="vq-test-select" class="input-3d" onchange="loadQuestionsList()"><option>Select Topic List</option></select><div id="questions-list-area" style="max-height:400px; overflow-y:auto;"></div></div></div>
+    <div id="adm-students" class="admin-tab" style="display:none;"><h4>Student Management</h4><div id="admin-student-list"></div></div>
+    <div id="adm-results" class="admin-tab" style="display:none;"><h4>View Student Results</h4><select id="res-test-select" class="input-3d" onchange="loadResults()"><option>Select Test</option></select><div id="results-area"></div></div>
+    <div id="adm-manage-tests" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Manage Tests</h4><div id="manage-tests-area" style="margin-top:10px;"></div></div></div>
+    
+    <!-- ADMIN CHAT (WHATSAPP LIST STYLE) FIXED SCROLL -->
+    <div id="adm-live-chat" class="admin-tab" style="display:none; padding:0; position:fixed; top:60px; bottom:0; left:0; width:100%; background:#111b21; z-index:50;">
+        <div id="admin-chat-list-view" style="height:100%; display:flex; flex-direction:column;">
+            <div style="padding:15px; background:#1f2c34; color:white; font-weight:bold; flex-shrink:0;">Chats</div>
+            <div id="chat-users-list" class="wa-list-container" style="flex:1;"></div>
+        </div>
+        <div id="admin-chat-conversation-view" class="wa-container" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:5000;">
+            <div class="wa-header">
+                <i class="fa fa-arrow-left" onclick="closeAdminChat()" style="cursor:pointer;"></i>
+                <img src="" class="wa-avatar" id="wa-student-avatar">
+                <div class="wa-info">
+                    <div class="wa-name" id="wa-student-name">Student</div>
+                    <div class="wa-status" id="wa-student-status">Offline</div>
+                </div>
+                <!-- REMOVED CALL ICONS -->
+            </div>
+            <div class="wa-body" id="admin-chat-msgs"></div>
+            <div class="wa-footer">
+                <i class="far fa-smile" style="font-size:24px; color:#8696a0;"></i>
+                <input type="text" id="chat-input-adm" class="wa-input" placeholder="Message" oninput="handleTyping('admin')">
+                <div class="wa-btn-round" onclick="sendAdminMessage()">
+                    <i class="fa fa-paper-plane"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN MANAGE CONTENT (PDF, LIVE, VIDEO) -->
+    <div id="adm-manage-content" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;">
+            <h4>Manage Study Material</h4>
+            <div style="background:#fff3cd; color:#856404; padding:10px; border-radius:5px; margin-bottom:10px; font-size:12px;">
+                <i class="fa fa-info-circle"></i> <b>How to start Live Class:</b>
+                <br>1. Click "Start Live Class" below (opens YouTube).
+                <br>2. Go Live on YouTube.
+                <br>3. Copy the video link.
+                <br>4. Paste it here & check "Is Live Now?".
+                <br>5. When class ends, UNCHECK "Is Live Now?".
+            </div>
+            <button class="btn-3d btn-warning" onclick="window.open('https://studio.youtube.com/', '_blank')" style="width:100%; margin-bottom:10px;"><i class="fa fa-video"></i> Start Live Class (YouTube)</button>
+            
+            <label style="font-size:12px; font-weight:bold; color:var(--primary);">Select Type</label>
+            <select id="content-type" class="input-3d">
+                <option value="live">Live / Recorded Video</option>
+                <option value="zoom">Zoom Meeting</option>
+                <option value="pdf">PDF Document Link</option>
+            </select>
+            <input type="text" id="content-title" class="input-3d" placeholder="Title (e.g. Physics Chapter 1)">
+            <input type="text" id="content-link" class="input-3d" placeholder="Paste Link Here (YouTube/Drive/Zoom)">
+            <input type="text" id="content-desc" class="input-3d" placeholder="Short Description / Date">
+            
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                <input type="checkbox" id="is-live-check" style="width:20px; height:20px;">
+                <label for="is-live-check" style="font-weight:bold; color:red;">Is Live Now?</label>
+            </div>
+
+            <button class="btn-3d btn-success" style="width:100%; margin-bottom:15px;" onclick="addContent()">Add Content</button>
+            <hr>
+            <div id="admin-content-list" style="max-height:300px; overflow-y:auto; margin-top:10px;"></div>
+        </div>
+    </div>
+
+    <div id="adm-manage-slider" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Manage Home Sliders</h4><label style="font-size:11px;">Mobile View URL</label><input type="text" id="slider-img-mob" class="input-3d" placeholder="Mobile Image"><label style="font-size:11px;">Tablet/Desktop Mode URL</label><input type="text" id="slider-img-tab" class="input-3d" placeholder="Tablet Image"><label style="font-size:11px;">PC/Laptop View URL</label><input type="text" id="slider-img-pc" class="input-3d" placeholder="PC Image"><button class="btn-3d btn-success" style="width:100%; margin-bottom:15px;" onclick="addSlider()">Add Slide</button><div id="slider-list-adm"></div></div></div>
+    
+    <!-- APP VERSION TAB -->
+    <div id="adm-app-version" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;">
+            <h4>Manage App Version</h4>
+            <p style="font-size:12px; color:gray;">Updating this will force all users to update the app.</p>
+            <input type="text" id="app-ver-num" class="input-3d" placeholder="Current Version (e.g. 4.5)">
+            <input type="text" id="app-ver-link" class="input-3d" placeholder="Update Link (Optional)">
+            <button class="btn-3d btn-success" style="width:100%; margin-top:10px;" onclick="saveAppVersion()">Update Version & Force Reload</button>
+        </div>
+    </div>
+
+    <div id="adm-settings" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;">
+            <h4>App Settings</h4>
+            <p>Update App Name:</p><input type="text" id="set-app-name" class="input-3d" placeholder="App Name (e.g. Momentum Physics Classes)">
+            <p>Logo URL:</p><input type="text" id="set-logo" class="input-3d" placeholder="Image URL">
+            <p>Copyright Text:</p><input type="text" id="set-copyright" class="input-3d" placeholder="© 2025 ...">
+            <br><h4>Social Links</h4>
+            <input type="text" id="set-fb" class="input-3d" placeholder="Facebook URL"><input type="text" id="set-wa" class="input-3d" placeholder="WhatsApp Phone"><input type="text" id="set-tg" class="input-3d" placeholder="Telegram URL"><input type="text" id="set-in" class="input-3d" placeholder="Instagram URL"><input type="text" id="set-tw" class="input-3d" placeholder="Twitter URL"><input type="text" id="set-yt" class="input-3d" placeholder="YouTube URL">
+            <br>
+            <h4>FCM Settings</h4>
+            <p>FCM Server Key (Notifications):</p><input type="text" id="set-fcm-key" class="input-3d" placeholder="Paste FCM Server Key Here">
+            <button class="btn-3d btn-success" style="width:100%; margin-top:10px;" onclick="saveAppSettings()">Save Settings</button>
+        </div>
+    </div>
+    
+    <div id="adm-profile" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Admin & Sidebar Profile</h4><p style="font-size:12px; color:gray;">Update details shown in sidebar & marksheet.</p><input type="text" id="adm-p-name" class="input-3d" placeholder="Admin Name (Sidebar)"><input type="text" id="adm-p-photo" class="input-3d" placeholder="Sidebar Profile Photo URL"><input type="text" id="adm-p-sig" class="input-3d" placeholder="Principal Signature Image URL (PNG)"><input type="tel" id="adm-p-phone" class="input-3d" placeholder="Support Phone"><button class="btn-3d btn-success" style="width:100%;" onclick="saveAdminProfile()">Update Profile Details</button></div></div>
+    <div id="adm-notifications" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>All Notifications & Messages</h4><p style="font-size:12px;">Delete alerts here.</p><div id="adm-notif-list" style="height:400px; overflow-y:auto; margin-top:10px;"></div></div></div>
+    <div id="adm-page-builder" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Page Builder (Footer Links)</h4><input type="text" id="pb-title" class="input-3d" placeholder="Page Title (e.g. Privacy Policy)"><input type="text" id="pb-icon" class="input-3d" placeholder="Icon (e.g. fa fa-info)"><div class="editor-toolbar"><button class="editor-btn" onclick="execCmd('bold')">B</button><button class="editor-btn" onclick="execCmd('underline')">U</button></div><div id="editor-content" contenteditable="true" style="border:1px solid #ccc; min-height:150px; padding:10px; margin-bottom:10px;">Type content...</div><button class="btn-3d btn-success" onclick="savePage()">Save Page</button><div id="pb-list" style="margin-top:15px;"></div></div></div>
+</div>
+
+<!-- STUDENT LIVE CLASS LIST -->
+<div id="view-live-list" class="view-container">
+    <div class="box-3d" style="padding:20px; text-align:center;">
+        <h3 style="margin-bottom:15px; color:red;"><i class="fa fa-broadcast-tower"></i> Live Now</h3>
+        <div id="student-live-only-list">Loading...</div>
+    </div>
+</div>
+
+<!-- STUDENT RECORDED VIDEOS LIST -->
+<div id="view-recorded-videos" class="view-container">
+    <div class="box-3d" style="padding:20px; text-align:center;">
+        <h3 style="margin-bottom:15px; color:#4e54c8;"><i class="fa fa-play-circle"></i> Recorded Library</h3>
+        <div id="student-video-list">Loading...</div>
+    </div>
+</div>
+
+<!-- STUDENT PDF VIEW -->
+<div id="view-pdf" class="view-container">
+    <div class="box-3d" style="padding:20px;">
+        <h3 style="margin-bottom:15px; text-align:center; color:var(--primary);"><i class="fa fa-file-pdf"></i> Study Materials</h3>
+        <div id="student-pdf-list">Loading...</div>
+    </div>
+</div>
+
+<!-- LIVE CLASS ROOM (FULLSCREEN) -->
+<div id="view-live-class-room" class="view-container" style="padding:0; background:black; display:none; height:100vh; flex-direction:column;">
+    <div style="background: #111; color:white; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+        <i class="fa fa-arrow-left" onclick="leaveLiveClass()" style="cursor:pointer; font-size:20px;"></i>
+        <span style="color:red; font-weight:bold;">LIVE CLASS</span>
+        <div></div>
+    </div>
+    <div id="live-player-container" class="video-container"></div>
+    <div class="live-chat-box">
+        <div style="padding:10px; border-bottom:1px solid #eee; font-weight:bold;">Live Chat</div>
+        <div id="live-chat-msgs" class="live-msgs"></div>
+        <div class="live-chat-input-area">
+            <input type="text" id="live-msg-input" class="input-3d" style="margin:0;" placeholder="Say something...">
+            <button class="btn-3d" onclick="sendLiveComment()"><i class="fa fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- EXTENDED MATH KEYBOARD -->
+<div id="math-keyboard" class="math-keyboard" onclick="event.stopPropagation()">
+    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+        <input type="text" id="custom-sym" placeholder="Type custom symbol" style="width:60%; padding:2px; border-radius:4px; border:none;">
+        <button onclick="addCustomSym()" style="background:#27ae60; color:white; border:none; padding:2px 8px; border-radius:4px;">Add</button>
+        <button onclick="toggleMathKeyboard(false)" style="background:#e74c3c; color:white; border:none; padding:2px 8px; border-radius:4px;">Close X</button>
+    </div>
+    <!-- Brackets -->
+    <div class="key-row">
+        <div class="math-key" onclick="insSym('(')">(</div><div class="math-key" onclick="insSym(')')">)</div>
+        <div class="math-key" onclick="insSym('{')">{</div><div class="math-key" onclick="insSym('}')">}</div>
+        <div class="math-key" onclick="insSym('[')">[</div><div class="math-key" onclick="insSym(']')">]</div>
+        <div class="math-key" onclick="insSym('<')">&lt;</div><div class="math-key" onclick="insSym('>')">&gt;</div>
+    </div>
+    <!-- Operations -->
+    <div class="key-row">
+        <div class="math-key" onclick="insSym('+')">+</div><div class="math-key" onclick="insSym('-')">-</div>
+        <div class="math-key" onclick="insSym('×')">×</div><div class="math-key" onclick="insSym('÷')">÷</div>
+        <div class="math-key" onclick="insSym('=')">=</div><div class="math-key" onclick="insSym('≠')">≠</div>
+        <div class="math-key" onclick="insSym('≈')">≈</div><div class="math-key" onclick="insSym('±')">±</div>
+    </div>
+    <!-- Geometry & Sets -->
+    <div class="key-row">
+        <div class="math-key" onclick="insSym('∠')">∠</div><div class="math-key" onclick="insSym('⊥')">⊥</div>
+        <div class="math-key" onclick="insSym('∥')">∥</div><div class="math-key" onclick="insSym('Δ')">Δ</div>
+        <div class="math-key" onclick="insSym('π')">π</div><div class="math-key" onclick="insSym('θ')">θ</div>
+        <div class="math-key" onclick="insSym('Ω')">Ω</div><div class="math-key" onclick="insSym('∞')">∞</div>
+        <div class="math-key" onclick="insSym('°')">°</div>
+    </div>
+    <!-- Calculus & Advanced -->
+    <div class="key-row">
+        <div class="math-key" onclick="insSym('∫')">∫</div><div class="math-key" onclick="insSym('∑')">∑</div>
+        <div class="math-key" onclick="insSym('√')">√</div><div class="math-key" onclick="insSym('∈')">∈</div>
+        <div class="math-key" onclick="insSym('∪')">∪</div><div class="math-key" onclick="insSym('∩')">∩</div>
+        <div class="math-key" onclick="insSym('⊂')">⊂</div><div class="math-key" onclick="insSym('⇒')">⇒</div>
+        <div class="math-key" onclick="insSym('²')">²</div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBiPTfrN8HDtjQdShgN4Rf-VNEqAGxru7s",
+        authDomain: "education-app-a7555.firebaseapp.com",
+        databaseURL: "https://education-app-a7555-default-rtdb.firebaseio.com",
+        projectId: "education-app-a7555",
+        storageBucket: "education-app-a7555.firebasestorage.app",
+        messagingSenderId: "496541809916",
+        appId: "1:496541809916:web:ccf2061cd1cc5c04d5ab79"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    
+    // --- 3D ALERT SYSTEM ---
+    function show3DAlert(msg, type='info') {
+        const box = document.getElementById('custom-alert-box');
+        const icon = document.getElementById('alert-icon');
+        const txt = document.getElementById('alert-msg');
+        
+        box.className = ''; 
+        box.classList.add('alert-' + type);
+        
+        if(type === 'success') icon.className = 'fa fa-check-circle';
+        else if(type === 'error') icon.className = 'fa fa-exclamation-circle';
+        else icon.className = 'fa fa-info-circle';
+        
+        txt.innerText = msg;
+        box.classList.add('alert-visible');
+        
+        setTimeout(() => {
+            box.classList.remove('alert-visible');
+        }, 3000);
+    }
+
+    // --- MESSAGING LOGIC ---
+    let messaging;
+    try { 
+        messaging = firebase.messaging(); 
+        messaging.onMessage((payload) => {
+            console.log('Message received. ', payload);
+            show3DAlert(payload.notification.title + ": " + payload.notification.body, 'info');
+            updateNotifUI({exists:()=>true, val:()=>({new:{title:payload.notification.title, msg:payload.notification.body}})});
+        });
+    } catch (e) { console.log("Messaging not supported.", e); }
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./firebase-messaging-sw.js?v=' + new Date().getTime())
+        .then((registration) => {
+            if(messaging) messaging.useServiceWorker(registration);
+        }).catch(err => console.log('SW registration failed', err));
+    }
+
+    window.requestNotifyPermission = () => {
+        if (!("Notification" in window)) { show3DAlert("This browser does not support notifications.", 'error'); return; }
+        Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+                if(messaging) {
+                    messaging.getToken().then((currentToken) => {
+                        if (currentToken) {
+                            const key = currentToken.replace(/\.|#|\$|\[|\]/g, '_');
+                            db.ref('fcm_tokens/' + key).set({ token: currentToken, lastUpdated: firebase.database.ServerValue.TIMESTAMP })
+                            .then(() => { show3DAlert("Notifications Enabled!", 'success'); });
+                        }
+                    }).catch((err) => { console.log('Error retrieving token. ', err); });
+                }
+            } else { show3DAlert("Permission Denied!", 'error'); }
+        });
+    };
+
+    // --- SHARE LOGIC ---
+    window.shareAndCopy = (type) => {
+        let linkToShare = window.location.href;
+        let shareTitle = `Check out ${appSettings.name}!`;
+        
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(linkToShare).then(() => {
+                show3DAlert('Link Copied!', 'success');
+                if (navigator.share) {
+                    navigator.share({ title: shareTitle, text: 'I found this amazing app!', url: linkToShare }).catch(err => console.log('Share failed:', err));
+                }
+            }).catch(err => { fallbackCopy(linkToShare); });
+        } else { fallbackCopy(linkToShare); }
+    };
+    
+    function fallbackCopy(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text; textArea.style.position = 'fixed'; textArea.style.opacity = '0';
+        document.body.appendChild(textArea); textArea.focus(); textArea.select();
+        try { document.execCommand('copy'); show3DAlert('Link Copied to Clipboard!', 'success'); } catch (err) { prompt("Copy this link:", text); }
+        document.body.removeChild(textArea);
+    }
+
+    let currentUser = null, focusedInput = null;
+    let activeChatUser = null; 
+    let appSettings = {name: "Momentum Physics Classes", version: "4.4"}; // Ensure this matches meta tag
+    let dynamicPages = [];
+    let isAdmin = false;
+    let currentLiveKey = null;
+
+    // INIT SETTINGS & PAGES
+    function loadAppSettings(){
+        // App Info
+        db.ref('settings/appInfo').on('value', s=>{
+            if(s.exists()){
+                appSettings = s.val();
+                document.getElementById('header-title').innerText = appSettings.name;
+                document.getElementById('login-app-title').innerText = appSettings.name;
+                document.getElementById('page-title').innerText = appSettings.name;
+                document.getElementById('ms-app-name').innerText = appSettings.name;
+                document.getElementById('ms-watermark-name').innerText = appSettings.name;
+                
+                if(appSettings.logo) document.getElementById('sb-f-logo-img').src = appSettings.logo;
+                if(appSettings.copyright) document.getElementById('sb-copyright-text').innerText = appSettings.copyright;
+                if(appSettings.desc) document.getElementById('sb-f-desc-text').innerText = appSettings.desc;
+                
+                if(document.getElementById('set-app-name')) {
+                    document.getElementById('set-app-name').value = appSettings.name || '';
+                    document.getElementById('set-fcm-key').value = appSettings.fcmKey || '';
+                    document.getElementById('set-logo').value = appSettings.logo || '';
+                    document.getElementById('set-copyright').value = appSettings.copyright || '';
+                    document.getElementById('set-fb').value = appSettings.fb || '';
+                    document.getElementById('set-wa').value = appSettings.wa || '';
+                    document.getElementById('set-tg').value = appSettings.tg || '';
+                    document.getElementById('set-in').value = appSettings.in || '';
+                    document.getElementById('set-tw').value = appSettings.tw || '';
+                    document.getElementById('set-yt').value = appSettings.yt || '';
+                }
+
+                ['fb','wa','tg','in','tw','yt'].forEach(k => {
+                    const el = document.querySelector('.sb-social-icon.' + k);
+                    if(appSettings[k]) { 
+                        el.href = appSettings[k]; el.style.display = 'flex'; 
+                    } else {
+                        el.style.display = 'none';
+                    }
+                });
+            }
+        });
+        
+        // Version Check
+        db.ref('settings/appVersion').on('value', s => {
+            if(s.exists()) {
+                const remoteVer = parseFloat(s.val().version);
+                const localVer = parseFloat(document.querySelector('meta[name="version"]').content);
+                
+                if (remoteVer > localVer) {
+                    document.getElementById('update-modal').style.display = 'flex';
+                }
+            }
+        });
+
+        db.ref('settings/adminProfile').on('value', s=>{
+            if(s.exists()){
+                const d = s.val();
+                if(d.name) {
+                    document.getElementById('sb-name').innerText = d.name; // In sidebar when logged as Admin
+                    document.getElementById('adm-p-name').value = d.name;
+                    document.getElementById('wa-admin-name').innerText = d.name; // Update Chat Header
+                    document.getElementById('wa-admin-avatar').src = d.photo || "https://via.placeholder.com/40";
+                }
+                if(d.photo) {
+                    document.getElementById('sb-photo').src = d.photo; 
+                    document.getElementById('adm-p-photo').value = d.photo;
+                }
+                if(d.signature) document.getElementById('adm-p-sig').value = d.signature;
+                if(d.phone) document.getElementById('adm-p-phone').value = d.phone;
+            }
+        });
+
+        // Load Dynamic Pages
+        db.ref('dynamic_pages').on('value', s=>{
+            dynamicPages = [];
+            if(s.exists()) {
+                s.forEach(c => { dynamicPages.push({id: c.key, ...c.val()}); });
+            }
+            renderAdminPageList();
+            renderSidebarFooterLinks();
+        });
+    }
+    loadAppSettings();
+    
+    // --- UPDATED VERSION LOGIC ---
+    window.updateAppNow = () => {
+        // Clear caches to force reload WITHOUT changing the base URL structure
+        if(navigator.serviceWorker) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+                // Reload page with a fresh timestamp query param to bust cache
+                window.location.replace(window.location.pathname + '?v=' + new Date().getTime());
+            });
+        } else {
+            // Force reload from server
+            window.location.replace(window.location.pathname + '?v=' + new Date().getTime());
+        }
+    };
+
+    function handleClickOutside(event) {
+        const kb = document.getElementById('math-keyboard');
+        const btns = document.querySelectorAll('.admin-kb-toggle');
+        const modal = document.getElementById('notif-modal');
+        const notifIcon = document.querySelector('.notif-badge');
+        let clickedBtn = false;
+        btns.forEach(b => { if(b.contains(event.target)) clickedBtn = true; });
+        if (!kb.contains(event.target) && !clickedBtn && kb.style.display === 'block') toggleMathKeyboard(false);
+        if(modal.style.display === 'block' && !modal.contains(event.target) && !notifIcon.contains(event.target)) modal.style.display = 'none';
+    }
+
+    // --- SIDEBAR TOGGLE ---
+    function toggleSidebar() {
+        const sb = document.getElementById('app-sidebar');
+        const ov = document.getElementById('sidebar-overlay');
+        if(sb.classList.contains('active')) {
+            sb.classList.remove('active'); ov.style.display = 'none';
+        } else {
+            sb.classList.add('active'); ov.style.display = 'block';
+        }
+    }
+    function handleNav(viewId) { nav(viewId); toggleSidebar(); }
+    
+    // NEW: Render small links in sidebar footer
+    function renderSidebarFooterLinks() {
+        const div = document.getElementById('sb-dynamic-pages-links');
+        div.innerHTML = dynamicPages.map(p => `<a class="sb-dyn-link" onclick="openDynamicPage('${p.id}'); toggleSidebar();">${p.title}</a>`).join('');
+    }
+
+    function renderAdminPageList() {
+        const div = document.getElementById('pb-list');
+        div.innerHTML = dynamicPages.map(p => `<div class="result-list-item" style="justify-content:space-between;"><span>${p.title}</span><button class="btn-3d btn-danger" onclick="deletePage('${p.id}')">Del</button></div>`).join('');
+    }
+    window.savePage = () => {
+        const t = document.getElementById('pb-title').value;
+        const i = document.getElementById('pb-icon').value;
+        const c = document.getElementById('editor-content').innerHTML;
+        if(t && c) { db.ref('dynamic_pages').push({title:t, icon:i, content:c}); show3DAlert("Saved", 'success'); }
+    };
+    window.deletePage = (id) => { if(confirm("Delete Page?")) db.ref('dynamic_pages/'+id).remove(); };
+    window.openDynamicPage = (id) => {
+        const p = dynamicPages.find(x => x.id === id);
+        if(p) {
+            document.getElementById('dynamic-header-title').innerText = p.title;
+            document.getElementById('dynamic-page-content').innerHTML = p.content;
+            nav('view-dynamic-page');
+        }
+    }
+    window.execCmd = (c) => document.execCommand(c, false, null);
+    window.goBack = () => nav('view-home');
+
+    // --- NOTIFICATIONS ---
+    function listenNotifications(uid) {
+        db.ref('notifications').limitToLast(10).on('value', snap => {
+            updateNotifUI(snap);
+        });
+    }
+
+    function updateNotifUI(snap){
+        const list = document.getElementById('notif-list-container');
+        const dot = document.getElementById('notif-dot');
+        if(snap.exists()){
+            dot.style.display = "block";
+            list.innerHTML = "";
+            const data = snap.val();
+            const keys = Object.keys(data).reverse();
+            keys.forEach(k => {
+                const n = data[k];
+                list.innerHTML += `<div class="notif-item" onclick="nav('${n.targetView}'); document.getElementById('notif-modal').style.display='none';">
+                    <b>${n.title}</b><br><span style="font-size:12px; color:#555;">${n.msg}</span>
+                </div>`;
+            });
+        } else {
+            dot.style.display = "none";
+            list.innerHTML = "<div style='padding:20px; text-align:center;'>No Notifications</div>";
+        }
+    }
+
+    function toggleNotifModal() {
+        const m = document.getElementById('notif-modal');
+        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+        document.getElementById('notif-dot').style.display = 'none'; 
+    }
+
+    // --- AUTH ---
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            currentUser = user;
+            document.getElementById('auth-screen').style.display = 'none';
+            
+            // Check if profile exists; if not, go to setup.
+            db.ref('users/' + user.uid).once('value', s => {
+                 if (s.exists() && s.val().name) {
+                     checkUserProfile(user.uid);
+                     loadStudentChat(user.uid); 
+                     listenNotifications(user.uid);
+                     updateOnlineStatus(user.uid);
+                     show3DAlert("Welcome Back!", 'success');
+                 } else {
+                     // New Google User needs setup
+                     nav('view-profile-setup');
+                     document.getElementById('app-header').style.display='none';
+                     document.getElementById('bottom-nav').style.display='none';
+                 }
+            });
+
+        } else {
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('app-header').style.display = 'none';
+            document.getElementById('bottom-nav').style.display = 'none';
+        }
+    });
+
+    function updateOnlineStatus(uid) {
+        const userStatusRef = db.ref('status/' + uid);
+        const connectedRef = db.ref('.info/connected');
+        connectedRef.on('value', (snap) => {
+            if (snap.val() === true) {
+                userStatusRef.onDisconnect().set({ online: false, lastSeen: firebase.database.ServerValue.TIMESTAMP });
+                userStatusRef.set({ online: true, lastSeen: firebase.database.ServerValue.TIMESTAMP });
+            }
+        });
+    }
+
+    function logoutUser() { 
+        // Explicitly set Admin Offline if it's the admin
+        if(isAdmin) {
+            db.ref('status/admin').set({ online: false, lastSeen: firebase.database.ServerValue.TIMESTAMP });
+        }
+        auth.signOut().then(() => {
+            show3DAlert("Logged Out Successfully", 'info');
+            setTimeout(()=>location.reload(), 1000);
+        }); 
+    }
+    
+    function showForgotPassword() {
+        document.getElementById('main-auth-box').style.display = 'none';
+        document.getElementById('forgot-password-box').style.display = 'block';
+    }
+    
+    function forgotPassword() {
+        const email = document.getElementById('forgot-email').value;
+        if(email) {
+            auth.sendPasswordResetEmail(email).then(() => {
+                show3DAlert("Reset Link Sent! Check your email.", 'success');
+                showMainAuth();
+            }).catch(e => show3DAlert("Error: " + e.message, 'error'));
+        } else {
+            show3DAlert("Please Enter Email Address", 'error');
+        }
+    }
+
+    function emailLogin() { 
+        const e=document.getElementById('email').value, p=document.getElementById('pass').value; 
+        if(e&&p) {
+            auth.signInWithEmailAndPassword(e,p).catch(e => show3DAlert("Login Failed: " + e.message, 'error')); 
+        } else {
+            show3DAlert("Enter Email and Password", 'error');
+        }
+    }
+    
+    function emailSignup() { 
+        const e=document.getElementById('email').value, p=document.getElementById('pass').value; 
+        if(e&&p) {
+            auth.createUserWithEmailAndPassword(e,p).catch(e => show3DAlert("Signup Failed: " + e.message, 'error')); 
+        } else {
+            show3DAlert("Enter details correctly", 'error');
+        }
+    }
+    
+    function loginGoogle() { 
+        auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => {
+            if(e.code === 'auth/operation-not-allowed') show3DAlert('Enable Google Sign-In in Firebase Console', 'error');
+            else show3DAlert("Google Error: " + e.message, 'error');
+        }); 
+    }
+    
+    function showPhoneAuth() { document.getElementById('main-auth-box').style.display='none'; document.getElementById('phone-auth-box').style.display='block'; if(!window.recaptchaVerifier) window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container',{'size':'normal'}); window.recaptchaVerifier.render(); }
+    
+    function sendOTP() { 
+        const p=document.getElementById('phone-number').value; 
+        auth.signInWithPhoneNumber(p,window.recaptchaVerifier).then(r=>{
+            window.confirmationResult=r; document.getElementById('phone-step-1').style.display='none'; document.getElementById('phone-step-2').style.display='block';
+        }).catch(e => {
+            if(e.code === 'auth/operation-not-allowed') show3DAlert('Enable Phone Auth in Firebase Console', 'error');
+            else show3DAlert("OTP Error: " + e.message, 'error');
+        }); 
+    }
+    
+    function verifyOTP() { const c=document.getElementById('otp-input').value; window.confirmationResult.confirm(c).then(()=>{ show3DAlert("Phone Verified!", "success"); }).catch(e=>show3DAlert('Invalid OTP entered', 'error')); }
+    function showMainAuth() { document.getElementById('main-auth-box').style.display='block'; document.getElementById('phone-auth-box').style.display='none'; document.getElementById('admin-login-box').style.display='none'; document.getElementById('forgot-password-box').style.display='none'; }
+    function showAdminLogin() { document.getElementById('main-auth-box').style.display='none'; document.getElementById('admin-login-box').style.display='block'; }
+
+    // --- ADMIN ACCESS ---
+    function adminLogin() {
+        const id=document.getElementById('admin-id-input').value, p=document.getElementById('admin-pass-input').value;
+        if(id === "admin" && p === "12345") { grantAdminAccess(); return; }
+        db.ref('/').once('value', s=>{ 
+            const d=s.val(); 
+            if(d && id===d.admin_id && p==d.admin_pass) grantAdminAccess();
+            else show3DAlert("Invalid Admin Credentials", 'error'); 
+        });
+    }
+
+    function grantAdminAccess() {
+        isAdmin = true;
+        document.getElementById('auth-screen').style.display='none'; 
+        document.getElementById('view-admin').style.display='block'; 
+        document.getElementById('app-header').style.display='flex';
+        document.getElementById('header-title').innerText = "Admin Dashboard";
+        document.getElementById('bottom-nav').style.display='none';
+        document.getElementById('student-sidebar-menu').style.display='none';
+        document.getElementById('admin-sidebar-menu').style.display='block';
+        document.getElementById('sb-edit-icon').style.display = 'block'; 
+        document.getElementById('sb-class').style.display = 'none'; // Hide student label for admin
+        
+        show3DAlert("Admin Access Granted", 'success');
+        
+        // Set Admin Online Status
+        db.ref('status/admin').update({ online: true, lastSeen: null });
+        db.ref('status/admin').onDisconnect().update({ online: false, lastSeen: firebase.database.ServerValue.TIMESTAMP });
+
+        db.ref('settings/adminProfile').once('value', s=>{
+            if(s.exists()) {
+                const d=s.val();
+                if(d.name) document.getElementById('sb-name').innerText = d.name;
+                if(d.photo) document.getElementById('sb-photo').src = d.photo;
+            }
+        });
+
+        switchAdminTab('add-test');
+        loadAdminData();
+    }
+
+    // --- NAV ---
+    function nav(viewId) {
+        // Hides all views first
+        document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+        
+        if(viewId === 'view-test-runner') { document.getElementById(viewId).style.display = 'block'; }
+        else { 
+            // Shows targeted view
+            document.getElementById(viewId).classList.add('active'); 
+            document.getElementById('view-test-runner').style.display = 'none';
+        }
+
+        // Special check: If moving AWAY from marksheet or admin, reset/hide things
+        if(viewId !== 'view-marksheet') {
+            // Ensure Admin View is visible if we are navigating back to it
+            if(viewId === 'view-admin') document.getElementById('view-admin').style.display = 'block';
+        }
+        
+        // Header Management Logic
+        if(viewId === 'view-dynamic-page') {
+            document.getElementById('app-header').style.display = 'none';
+            document.getElementById('dynamic-header').style.display = 'flex';
+        } else if(viewId === 'view-admin') {
+            document.getElementById('app-header').style.display = 'flex';
+            document.getElementById('dynamic-header').style.display = 'none';
+        } else if(viewId === 'view-help') {
+            document.getElementById('app-header').style.display = 'none'; // Hide main header for student chat
+            document.getElementById('dynamic-header').style.display = 'none';
+        } else if(viewId === 'view-marksheet') {
+             document.getElementById('app-header').style.display = 'none';
+             document.getElementById('dynamic-header').style.display = 'none';
+        } else if(viewId === 'view-live-class-room') {
+             // Hide main header for immersive experience
+             document.getElementById('app-header').style.display = 'none';
+             document.getElementById('dynamic-header').style.display = 'none';
+        } else {
+            document.getElementById('app-header').style.display = 'flex';
+            document.getElementById('dynamic-header').style.display = 'none';
+        }
+
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        if(viewId === 'view-home') { document.getElementById('btn-home').classList.add('active'); loadHomeSlider(); }
+        if(viewId === 'view-tests') { document.getElementById('btn-tests').classList.add('active'); loadStudentTests(); }
+        if(viewId === 'view-results-history') { loadMyResults(); }
+        if(viewId === 'view-classes') { document.getElementById('btn-classes')?.classList.add('active'); loadRecordedList(); }
+        if(viewId === 'view-live-list') { loadLiveList(); }
+        if(viewId === 'view-recorded-videos') { loadRecordedList(); }
+        if(viewId === 'view-pdf') { loadPDFs(); }
+        if(viewId === 'view-profile') document.getElementById('btn-profile').classList.add('active');
+        if(viewId === 'view-rank-board') { loadAdminTestsForDropdown('rb-test-select'); } 
+        if(viewId === 'view-help') { document.getElementById('btn-chat').classList.add('active'); }
+    }
+
+    // --- CHAT SYSTEM (WHATSAPP STYLE) ---
+    function loadStudentChat(uid) {
+        const div = document.getElementById('student-chat-msgs');
+        
+        // Admin Status Listener
+        db.ref('status/admin').on('value', (s) => {
+            const st = s.val();
+            const statusEl = document.getElementById('wa-status-text');
+            if(st && st.online) { 
+                statusEl.innerText = "Online"; 
+            } else if (st && st.lastSeen) {
+                const date = new Date(st.lastSeen);
+                statusEl.innerText = "Last seen " + date.toLocaleDateString() + " " + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); 
+            } else {
+                statusEl.innerText = "Offline";
+            }
+        });
+
+        // Typing Listener
+        db.ref(`chats/${uid}/typing_admin`).on('value', s => {
+            if(s.val()) document.getElementById('wa-status-text').innerText = "typing...";
+        });
+
+        // Message Listener
+        db.ref(`chats/${uid}/messages`).on('child_added', s => {
+            const msg = s.val();
+            const msgKey = s.key;
+            const type = msg.sender === 'student' ? 'wa-sent' : 'wa-received';
+            const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            // Tick Logic
+            let tickHtml = '';
+            if(msg.sender === 'student') {
+                let tickColor = 'var(--wa-tick-gray)';
+                let tickIcon = '<i class="fa fa-check"></i>'; // 1 tick
+                if(msg.status === 'delivered') tickIcon = '<i class="fa fa-check-double"></i>'; // 2 ticks
+                if(msg.status === 'read') { tickIcon = '<i class="fa fa-check-double"></i>'; tickColor = 'var(--wa-tick-green)'; } // Blue/Green ticks
+                tickHtml = `<span class="wa-tick" style="color:${tickColor}">${tickIcon}</span>`;
+            }
+
+            // Mark as read if student opens chat and msg is from admin
+            if(msg.sender === 'admin' && msg.status !== 'read') {
+                db.ref(`chats/${uid}/messages/${msgKey}`).update({status: 'read'});
+            }
+
+            div.innerHTML += `<div class="wa-bubble ${type}">${msg.text}<div class="wa-meta"><span class="wa-time">${time}</span>${tickHtml}</div></div>`;
+            div.scrollTop = div.scrollHeight;
+        });
+    }
+
+    function handleTyping(role) {
+        const uid = role === 'student' ? currentUser.uid : activeChatUser;
+        const path = role === 'student' ? `chats/${uid}/typing_student` : `chats/${uid}/typing_admin`;
+        db.ref(path).set(true);
+        setTimeout(() => db.ref(path).set(false), 2000);
+    }
+
+    function sendStudentMessage() {
+        const inp = document.getElementById('chat-input-stu');
+        if(inp.value.trim()) {
+            db.ref('status/admin').once('value', s => {
+                const st = s.val();
+                let initialStatus = 'sent';
+                if(st && st.online) initialStatus = 'delivered';
+
+                db.ref(`chats/${currentUser.uid}/messages`).push({
+                    sender:'student', text:inp.value, timestamp: Date.now(), status: initialStatus
+                });
+                db.ref('admin_notifications').push({
+                    type: 'chat', uid: currentUser.uid, name: currentUser.displayName || 'Student', msg: inp.value, timestamp: Date.now()
+                });
+                inp.value = '';
+            });
+        }
+    }
+
+    // --- ADMIN CHAT LOGIC (WHATSAPP LIST) ---
+    function loadChatUsers() {
+        const listDiv = document.getElementById('chat-users-list');
+        listDiv.innerHTML = '<div style="padding:20px; color:white;">Loading chats...</div>';
+        
+        db.ref('users').once('value', uSnap => {
+            const users = uSnap.val() || {};
+            db.ref('chats').on('value', cSnap => { // Realtime listener for list
+                listDiv.innerHTML = "";
+                const chats = cSnap.val() || {};
+                
+                // Sort chats by last message time
+                const chatArray = [];
+                Object.keys(chats).forEach(uid => {
+                    const msgs = chats[uid].messages || {};
+                    const msgKeys = Object.keys(msgs);
+                    const lastMsgKey = msgKeys[msgKeys.length - 1];
+                    const lastMsg = msgs[lastMsgKey] || {text: 'No messages', timestamp: 0};
+                    chatArray.push({uid, lastMsg, user: users[uid] || {name: 'Unknown', photo: 'https://via.placeholder.com/50'}});
+                });
+
+                chatArray.sort((a,b) => b.lastMsg.timestamp - a.lastMsg.timestamp);
+
+                chatArray.forEach(item => {
+                    const time = item.lastMsg.timestamp ? new Date(item.lastMsg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '';
+                    listDiv.innerHTML += `
+                    <div class="wa-list-item" onclick="openAdminChat('${item.uid}', '${item.user.name}', '${item.user.photo}')">
+                        <img src="${item.user.photo}" class="wa-list-img">
+                        <div class="wa-list-content">
+                            <div style="display:flex; justify-content:space-between;">
+                                <div class="wa-list-name">${item.user.name}</div>
+                                <div class="wa-list-time">${time}</div>
+                            </div>
+                            <div class="wa-list-msg">${item.lastMsg.text}</div>
+                        </div>
+                    </div>`;
+                });
+            });
+        });
+    }
+
+    function openAdminChat(uid, name, photo) {
+        activeChatUser = uid;
+        document.getElementById('admin-chat-list-view').style.display = 'none';
+        document.getElementById('admin-chat-conversation-view').style.display = 'flex';
+        
+        // Hide Main Header in Admin Chat
+        document.getElementById('app-header').style.display = 'none';
+
+        document.getElementById('wa-student-name').innerText = name;
+        document.getElementById('wa-student-avatar').src = photo || "https://via.placeholder.com/40";
+        
+        // Student Status Listener
+        db.ref(`status/${uid}`).on('value', s => {
+            const st = s.val();
+            const el = document.getElementById('wa-student-status');
+            if(st && st.online) el.innerText = "Online";
+            else if(st && st.lastSeen) el.innerText = "Last seen " + new Date(st.lastSeen).toLocaleTimeString();
+            else el.innerText = "Offline";
+        });
+
+        // Typing Listener
+        db.ref(`chats/${uid}/typing_student`).on('value', s => {
+            if(s.val()) document.getElementById('wa-student-status').innerText = "typing...";
+        });
+
+        const div = document.getElementById('admin-chat-msgs'); div.innerHTML = "";
+        db.ref(`chats/${uid}/messages`).off();
+        db.ref(`chats/${uid}/messages`).on('child_added', s => {
+            const msg = s.val();
+            const msgKey = s.key;
+            const type = msg.sender === 'admin' ? 'wa-sent' : 'wa-received';
+            const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            // Admin Tick Logic
+            let tickHtml = '';
+            if(msg.sender === 'admin') {
+                let tickColor = 'var(--wa-tick-gray)';
+                let tickIcon = '<i class="fa fa-check"></i>';
+                if(msg.status === 'delivered') tickIcon = '<i class="fa fa-check-double"></i>';
+                if(msg.status === 'read') { tickIcon = '<i class="fa fa-check-double"></i>'; tickColor = 'var(--wa-tick-green)'; }
+                tickHtml = `<span class="wa-tick" style="color:${tickColor}">${tickIcon}</span>`;
+            }
+
+            // Mark student msg as read
+            if(msg.sender === 'student' && msg.status !== 'read') {
+                db.ref(`chats/${uid}/messages/${msgKey}`).update({status: 'read'});
+            }
+
+            div.innerHTML += `<div class="wa-bubble ${type}">${msg.text}<div class="wa-meta"><span class="wa-time">${time}</span>${tickHtml}</div></div>`;
+            div.scrollTop = div.scrollHeight;
+        });
+    }
+
+    function closeAdminChat() {
+        document.getElementById('admin-chat-conversation-view').style.display = 'none';
+        document.getElementById('admin-chat-list-view').style.display = 'flex';
+        // Restore Header
+        document.getElementById('app-header').style.display = 'flex';
+        activeChatUser = null;
+    }
+
+    function sendAdminMessage() {
+        const inp = document.getElementById('chat-input-adm');
+        if(inp.value.trim() && activeChatUser) {
+            db.ref(`status/${activeChatUser}`).once('value', s => {
+                const st = s.val();
+                let initialStatus = 'sent';
+                if(st && st.online) initialStatus = 'delivered';
+
+                db.ref(`chats/${activeChatUser}/messages`).push({
+                    sender:'admin', text:inp.value, timestamp: Date.now(), status: initialStatus
+                });
+                inp.value = '';
+            });
+        }
+    }
+
+    // --- PROFILE ---
+    function checkUserProfile(uid) {
+        db.ref('users/'+uid).once('value', s=>{
+            const d=s.val();
+            if(d && d.name) {
+                document.getElementById('sb-name').innerText = d.name;
+                
+                let classVal = d.class ? d.class.toString().replace(/\D/g, '') : '';
+                if(classVal) classVal = "Class - " + classVal + "th";
+                
+                document.getElementById('sb-class').innerText = classVal;
+                document.getElementById('sb-class').style.display = 'block'; 
+                
+                document.getElementById('sb-photo').src = d.photo || "https://via.placeholder.com/150";
+                
+                document.getElementById('profile-view-name').innerText = d.name;
+                document.getElementById('profile-view-img').src = d.photo || "https://via.placeholder.com/150";
+                document.getElementById('profile-view-email').innerText = d.email || currentUser.email;
+                document.getElementById('profile-view-class').innerText = classVal;
+                document.getElementById('profile-view-father').innerText = d.fatherName;
+                document.getElementById('profile-view-mother').innerText = d.motherName;
+                document.getElementById('profile-view-mobile').innerText = d.mobile;
+                document.getElementById('profile-view-roll').innerText = d.roll;
+                document.getElementById('profile-view-subject').innerText = d.subject || '--';
+
+                document.getElementById('edit-name').value = d.name;
+                document.getElementById('edit-father').value = d.fatherName;
+                document.getElementById('edit-mother').value = d.motherName;
+                document.getElementById('edit-subject').value = d.subject || '';
+                document.getElementById('edit-mobile').value = d.mobile;
+
+                document.getElementById('app-header').style.display='flex';
+                document.getElementById('bottom-nav').style.display='flex';
+                nav('view-home');
+            } else {
+                nav('view-profile-setup');
+                document.getElementById('bottom-nav').style.display='none';
+            }
+        });
+    }
+
+    function saveProfile() {
+        const d = { 
+            name: document.getElementById('p-name').value, 
+            fatherName: document.getElementById('p-father').value, 
+            motherName: document.getElementById('p-mother').value, 
+            class: document.getElementById('p-class').value, 
+            subject: document.getElementById('p-subject').value,
+            roll: document.getElementById('p-roll').value, 
+            mobile: document.getElementById('p-mobile').value, 
+            photo: currentUser.photoURL || "https://via.placeholder.com/150", 
+            email: currentUser.email, 
+            uid: currentUser.uid, 
+            canTest: false 
+        };
+        if(d.name) db.ref('users/'+currentUser.uid).set(d).then(()=>location.reload());
+    }
+    
+    function saveEditedProfile() {
+        const u = { 
+            name: document.getElementById('edit-name').value, 
+            fatherName: document.getElementById('edit-father').value, 
+            motherName: document.getElementById('edit-mother').value, 
+            subject: document.getElementById('edit-subject').value,
+            mobile: document.getElementById('edit-mobile').value 
+        };
+        db.ref('users/'+currentUser.uid).update(u).then(()=>{ show3DAlert("Updated", 'success'); nav('view-profile'); checkUserProfile(currentUser.uid); });
+    }
+    
+    function changeUserPassword() {
+        const p1=document.getElementById('new-password').value, p2=document.getElementById('confirm-password').value;
+        if(p1 && p1===p2) currentUser.updatePassword(p1).then(()=>{ show3DAlert("Relogin needed", 'info'); logoutUser(); }).catch(e=>show3DAlert(e.message, 'error'));
+        else show3DAlert("Match passwords", 'error');
+    }
+
+    // --- STUDENT EXAM (PROFESSIONAL UI) ---
+    function loadStudentTests() {
+        const c=document.getElementById('test-list-container'); c.innerHTML='Loading...';
+        db.ref('users/'+currentUser.uid).once('value', u=>{
+            if(!u.val().canTest) { c.innerHTML='<div class="box-3d" style="padding:20px; color:red; text-align:center;">🚫 Test Access Pending. Contact Admin.</div>'; return; }
+            db.ref('tests').once('value', t=>{
+                c.innerHTML=''; if(!t.exists()){c.innerHTML='No Tests Available';return;}
+                const now = new Date();
+                t.forEach(test=>{
+                    const td=test.val();
+                    const startT = new Date(td.startTime);
+                    const endT = new Date(td.endTime);
+                    let statusBadge = "";
+                    let actionBtn = "";
+
+                    db.ref(`results/${test.key}/${currentUser.uid}`).once('value', r=>{
+                        const done = r.exists();
+                        if(done) {
+                            statusBadge = '<span class="tc-badge badge-done">Completed</span>';
+                            actionBtn = `<button class="tc-btn" style="background:#3498db;" onclick="openReview('${test.key}')">View Analysis</button>`;
+                        } else if(now < startT) {
+                            statusBadge = '<span class="tc-badge badge-upcoming">Upcoming</span>';
+                            actionBtn = `<button class="tc-btn" style="background:#f39c12; cursor:default;">Starts ${startT.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</button>`;
+                        } else if(now > endT) {
+                            statusBadge = '<span class="tc-badge badge-live" style="background:#ffebee; color:red;">Expired</span>';
+                            actionBtn = '<button class="tc-btn" style="background:#e74c3c; cursor:default;">Missed</button>';
+                        } else {
+                            statusBadge = '<span class="tc-badge badge-live">Live Now</span>';
+                            actionBtn = `<button class="tc-btn" onclick="startExam('${test.key}',${td.timePerQ},${td.gapTime}, '${td.listTopic}')">Start Exam <i class="fa fa-arrow-right"></i></button>`;
+                        }
+
+                        c.innerHTML += `
+                        <div class="test-card-pro">
+                            <div class="tc-header">
+                                <div class="tc-title">${td.title}</div>
+                                ${statusBadge}
+                            </div>
+                            <div class="tc-body">
+                                <div class="tc-info">
+                                    <span><i class="fa fa-clock"></i> ${td.timePerQ}s / Q</span>
+                                    <span><i class="fa fa-calendar"></i> ${startT.toLocaleDateString()}</span>
+                                </div>
+                                ${actionBtn}
+                            </div>
+                        </div>`;
+                    });
+                });
+            });
+        });
+    }
+
+    function loadRankBoard() {
+        const tid = document.getElementById('rb-test-select').value;
+        const div = document.getElementById('rank-board-container'); div.innerHTML = "Loading...";
+        if(!tid || tid === "Select Test") return;
+        db.ref('users').once('value', uSnap => {
+            const users = uSnap.val();
+            db.ref(`results/${tid}`).once('value', rSnap => {
+                const results = rSnap.val();
+                if(!results) { div.innerHTML = "No results yet."; return; }
+                let sortedRes = [];
+                Object.keys(results).forEach(uid => { if(users[uid]) sortedRes.push({ uid: uid, name: users[uid].name, photo: users[uid].photo, score: results[uid].score, totalTime: results[uid].totalTime }); });
+                sortedRes.sort((a,b) => b.score - a.score || a.totalTime - b.totalTime);
+                div.innerHTML = ""; let rank = 1;
+                sortedRes.forEach(s => {
+                    let badgeColor = rank===1?"gold":(rank===2?"silver":(rank===3?"#cd7f32":"#4e54c8"));
+                    div.innerHTML += `<div class="result-list-item"><div class="rank-badge" style="background:${badgeColor}">${rank}</div><img src="${s.photo}" class="res-thumb"><div style="flex:1;"><b>${s.name}</b><br>Score: ${s.score}</div></div>`;
+                    rank++;
+                });
+            });
+        });
+    }
+
+    // --- TEST ENGINE ---
+    let curQ=[], qIdx=0, score=0, wrong=0, tmr=null, activeT=null, qTime=0, gTime=0, startTime=0;
+    let userReviewData = []; let isTransitioning = false; 
+
+    function startExam(tid, tq, gt, listTopic) {
+        if(!confirm("Start Test?")) return;
+        activeT=tid; qTime=tq; gTime=gt; qIdx=0; score=0; wrong=0; startTime=Date.now();
+        userReviewData = [];
+        
+        db.ref('question_pool/' + listTopic).once('value', s => {
+            curQ = [];
+            if(s.exists()){
+                s.forEach(qSnap => { curQ.push(qSnap.val()); });
+                if(curQ.length > 0){ 
+                    document.getElementById('view-test-runner').style.display='flex'; // Flex for sticky layout
+                    document.getElementById('bottom-nav').style.display='none'; 
+                    document.getElementById('q-total').innerText = curQ.length;
+                    showQ(); 
+                } else { show3DAlert("No Questions in list: " + listTopic, 'error'); }
+            } else { show3DAlert("Question List not found!", 'error'); }
+        });
+    }
+
+    function showQ() {
+        if(qIdx >= curQ.length) { endExam(); return; }
+        const prog = ((qIdx) / curQ.length) * 100;
+        document.getElementById('progress-bar').style.width = prog + "%";
+        isTransitioning = false;
+        const q=curQ[qIdx]; 
+        document.getElementById('q-text').innerText = (qIdx+1) + ". " + q.text; 
+        document.getElementById('q-num').innerText = qIdx + 1;
+        let l=qTime; document.getElementById('exam-timer').innerText=l;
+        if(tmr) clearInterval(tmr);
+        document.getElementById('options-area').innerHTML=`
+            <button class="opt-btn-pro" onclick="chk(1,${q.correct},this)">(A) ${q.opt1}</button>
+            <button class="opt-btn-pro" onclick="chk(2,${q.correct},this)">(B) ${q.opt2}</button>
+            <button class="opt-btn-pro" onclick="chk(3,${q.correct},this)">(C) ${q.opt3}</button>
+            <button class="opt-btn-pro" onclick="chk(4,${q.correct},this)">(D) ${q.opt4}</button>
+        `;
+        tmr=setInterval(()=>{ 
+            l--; document.getElementById('exam-timer').innerText=l; 
+            if(l<=0) { clearInterval(tmr); autoFail(); } 
+        }, 1000);
+    }
+
+    function chk(s,c,e) { 
+        if(isTransitioning) return; isTransitioning = true;
+        clearInterval(tmr);
+        document.querySelectorAll('.opt-btn-pro').forEach(b=>b.disabled=true); 
+        e.classList.add('selected-opt');
+        const q = curQ[qIdx];
+        userReviewData.push({ q: q.text, opt1: q.opt1, opt2: q.opt2, opt3: q.opt3, opt4: q.opt4, selected: s, correct: c });
+        if(s==c) score++; else wrong++;
+        setTimeout(next, gTime*1000); 
+    }
+
+    function autoFail() { 
+        if(isTransitioning) return; isTransitioning = true;
+        const q = curQ[qIdx];
+        userReviewData.push({ q: q.text, opt1: q.opt1, opt2: q.opt2, opt3: q.opt3, opt4: q.opt4, selected: 0, correct: q.correct });
+        wrong++; setTimeout(next, gTime*1000); 
+    }
+
+    function next() { qIdx++; if(tmr) clearInterval(tmr); showQ(); }
+
+    function endExam() { 
+        if(tmr) clearInterval(tmr);
+        document.getElementById('view-test-runner').style.display='none'; 
+        document.getElementById('bottom-nav').style.display='flex';
+        const taken = Math.floor((Date.now()-startTime)/1000); 
+        db.ref(`results/${activeT}/${currentUser.uid}`).set({
+            score:score, wrong:wrong, totalTime:taken, review: userReviewData
+        }).then(()=>{ 
+            show3DAlert("Test Submitted! Opening Analysis...", 'success'); 
+            openReview(activeT); 
+        }); 
+    }
+
+    // --- MARKSHEET & REVIEW ---
+    window.loadMyResults = () => {
+        const c = document.getElementById('my-results-container'); c.innerHTML = "Loading...";
+        db.ref('tests').once('value', testsSnap => {
+            const allTests = testsSnap.val() || {}; c.innerHTML = "";
+            Object.keys(allTests).forEach(tid => {
+                db.ref(`results/${tid}/${currentUser.uid}`).once('value', rSnap => {
+                    if(rSnap.exists()) {
+                        const r = rSnap.val(); const t = allTests[tid];
+                        c.innerHTML += `<div class="result-list-item">
+                            <div style="flex:1"><b>${t.title}</b><br><span style="color:green">Score: ${r.score}</span></div>
+                            <button class="btn-3d" style="padding:5px 10px;" onclick="openMarksheet('${currentUser.uid}', '${tid}')"><i class="fa fa-download"></i> Marksheet</button>
+                        </div>`;
+                    }
+                });
+            });
+        });
+    }
+
+    window.openReview = (tid) => {
+        db.ref(`results/${tid}/${currentUser.uid}/review`).once('value', s=>{
+            if(!s.exists()) { show3DAlert("Review not available for this old test", 'error'); return; }
+            const data = s.val();
+            const con = document.getElementById('review-container'); con.innerHTML = "";
+            data.forEach((item, idx) => {
+                const ops = [item.opt1, item.opt2, item.opt3, item.opt4];
+                const myAns = item.selected > 0 ? ops[item.selected-1] : "Not Attempted";
+                const corAns = ops[item.correct-1];
+                
+                let statusClass = 'wrong';
+                if(item.selected == item.correct) statusClass = 'correct';
+                
+                con.innerHTML += `
+                <div class="review-card ${statusClass}">
+                    <div class="review-q">Q${idx+1}: ${item.q}</div>
+                    <div class="review-ans ans-user">Your Answer: ${myAns}</div>
+                    <div class="review-ans ans-correct">Correct Answer: ${corAns}</div>
+                </div>`;
+            });
+            nav('view-review-answers');
+        });
+    }
+
+    window.openMarksheet = (uid, tid) => {
+         // CLEAN VIEW LOGIC: Hide Admin Container totally
+         if(isAdmin) {
+             document.getElementById('view-admin').style.display = 'none';
+         }
+
+         // Switch to clean marksheet view
+         nav('view-marksheet');
+
+         db.ref(`users/${uid}`).once('value', u=>{ const user=u.val();
+            db.ref(`results/${tid}/${uid}`).once('value', r=>{ const res=r.val();
+                db.ref(`tests/${tid}`).once('value', t=>{ const tm=t.val();
+                    document.getElementById('ms-name').innerText = user.name; 
+                    document.getElementById('ms-roll').innerText = user.roll;
+                    
+                    let classVal = user.class ? user.class.toString().replace(/\D/g, '') : '';
+                    if(classVal) classVal = "Class - " + classVal + "th";
+                    document.getElementById('ms-class').innerText = classVal; 
+                    
+                    document.getElementById('ms-subject').innerText = tm.subject || "";
+
+                    document.getElementById('ms-test-title').innerText = tm.title; 
+                    document.getElementById('ms-correct').innerText = res.score; 
+                    document.getElementById('ms-wrong').innerText = res.wrong; 
+                    document.getElementById('ms-total-q').innerText = (res.score + res.wrong); 
+                    
+                    const marksPerQ = tm.marksPerQ || 1; 
+                    const totalScore = res.score * marksPerQ;
+                    document.getElementById('ms-score').innerText = totalScore; 
+
+                    document.getElementById('ms-photo').src = user.photo || "https://via.placeholder.com/150";
+                    document.getElementById('ms-date').innerText = new Date().toLocaleDateString();
+
+                    db.ref('settings/adminProfile').once('value', s=>{
+                        const ap = s.val();
+                        if(ap && ap.signature) document.getElementById('ms-sig-img').src = ap.signature;
+                        else document.getElementById('ms-sig-img').style.display='none';
+                    });
+
+                    let grade = "Pass"; const s = totalScore; 
+                    if(s < tm.gradeFail) grade = "FAIL"; else if(s >= tm.gradeFirst) grade = "EXCELLENT"; else if(s >= tm.gradeSec) grade = "GOOD";
+                    document.getElementById('ms-grade').innerText = grade;
+                });
+            });
+        });
+    }
+    
+    // Updated Print Function
+    window.printMarksheet = () => {
+        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+           show3DAlert("Tap 'PDF' or 'Save as PDF' in the printer options.", 'info');
+        }
+        window.print();
+    }
+
+    function marksheetBack() {
+        if(isAdmin) {
+            // Restore Admin View
+            document.getElementById('admin-sidebar-menu').style.display = 'block';
+            document.getElementById('view-admin').style.display = 'block'; // Make sure container is visible
+            nav('view-admin');
+            switchAdminTab('results');
+        } else {
+            nav('view-results-history');
+        }
+    }
+
+    // --- ADMIN FUNCS ---
+    function switchAdminTab(t){ document.querySelectorAll('.admin-tab').forEach(e=>e.style.display='none'); document.getElementById('adm-'+t).style.display='block'; 
+        if(t=='add-test') loadTopicsForDropdown('at-list-select');
+        if(t=='view-questions') loadTopicsForDropdown('vq-test-select');
+        if(t.includes('results') || t.includes('rank')) loadAdminTestsForDropdown('res-test-select');
+        if(t=='manage-tests') loadManageTests();
+        if(t=='live-chat') loadChatUsers();
+        if(t=='manage-slider') loadManageSliders();
+        if(t=='manage-content') loadManageContent();
+        if(t=='notifications') loadManageNotifs();
+        if(t=='page-builder') renderAdminPageList();
+    }
+
+    // CONTENT MANAGEMENT (LIVE/PDF/VIDEO)
+    function addContent() {
+        const type = document.getElementById('content-type').value;
+        const title = document.getElementById('content-title').value;
+        const link = document.getElementById('content-link').value;
+        const desc = document.getElementById('content-desc').value;
+        
+        // --- NEW LOGIC: Is Live Now Checkbox ---
+        const isLive = document.getElementById('is-live-check') ? document.getElementById('is-live-check').checked : false;
+
+        if(title && link) {
+            db.ref('content/' + type).push({
+                title: title, link: link, desc: desc, timestamp: Date.now(), isLive: isLive
+            }).then(() => {
+                show3DAlert("Content Added!", 'success');
+                loadManageContent();
+                // Clear inputs
+                document.getElementById('content-title').value = "";
+                document.getElementById('content-link').value = "";
+                document.getElementById('content-desc').value = "";
+                if(document.getElementById('is-live-check')) document.getElementById('is-live-check').checked = false;
+            });
+        } else { show3DAlert("Title and Link are required!", 'error'); }
+    }
+
+    function loadManageContent() {
+        const div = document.getElementById('admin-content-list');
+        div.innerHTML = "Loading...";
+        
+        db.ref('content').once('value', s => {
+            div.innerHTML = "";
+            const data = s.val();
+            if(!data) { div.innerHTML = "No Content Added."; return; }
+            
+            // Loop through types (live, pdf, video)
+            Object.keys(data).forEach(type => {
+                const items = data[type];
+                Object.keys(items).forEach(key => {
+                    const item = items[key];
+                    const liveTag = item.isLive ? '<span style="color:red; font-weight:bold;">[LIVE NOW]</span>' : '';
+                    
+                    div.innerHTML += `
+                    <div class="result-list-item">
+                        <div style="flex:1;">
+                            <span class="tc-badge" style="background:#eee;">${type.toUpperCase()}</span>
+                            ${liveTag}
+                            <b>${item.title}</b><br>
+                            <small>${item.desc || ''}</small>
+                        </div>
+                        <button class="btn-3d btn-danger" onclick="deleteContent('${type}', '${key}')">Del</button>
+                    </div>`;
+                });
+            });
+        });
+    }
+
+    window.deleteContent = (type, key) => {
+        if(confirm("Delete this content?")) {
+            db.ref('content/' + type + '/' + key).remove().then(() => {
+                show3DAlert("Content Deleted Successfully!", 'success');
+                loadManageContent();
+            });
+        }
+    };
+    
+    // APP VERSION MANAGEMENT - UPDATED
+    function saveAppVersion() {
+        const ver = document.getElementById('app-ver-num').value;
+        const link = document.getElementById('app-ver-link').value;
+        if(ver) {
+            db.ref('settings/appVersion').set({version: ver, link: link || ''})
+            .then(() => show3DAlert("Version Updated! Users will get update popup.", 'success'));
+        }
+    }
+
+    // STUDENT CONTENT LOADERS
+    function getEmbedUrl(url) {
+        // Basic check for Zoom
+        if(url.includes("zoom.us")) return "ZOOM";
+
+        // Regex to handle youtu.be, youtube.com/watch, embed, shorts, etc.
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        const match = url.match(regExp);
+
+        if (match && match[7].length == 11) {
+            return 'https://www.youtube.com/embed/' + match[7];
+        }
+        return url; // Fallback if not standard YouTube
+    }
+
+    function playVideo(title, url, contextKey) {
+        if(url.includes("zoom.us")) {
+            window.open(url, '_blank');
+            return;
+        }
+
+        nav('view-live-class-room');
+        const embedUrl = getEmbedUrl(url);
+        
+        // Added allow attributes for better playback support
+        document.getElementById('live-player-container').innerHTML = `
+            <iframe src="${embedUrl}?rel=0&modestbranding=1" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+            </iframe>`;
+        
+        currentLiveKey = contextKey || 'general_chat';
+        document.getElementById('live-chat-msgs').innerHTML = "";
+        
+        if (contextKey) {
+            loadLiveChat(contextKey);
+        }
+    }
+    
+    // LOAD LIVE LIST ONLY
+    function loadLiveList() {
+        const div = document.getElementById('student-live-only-list');
+        div.innerHTML = "Loading...";
+        
+        db.ref('content/live').once('value', s => {
+            const data = s.val();
+            div.innerHTML = "";
+            let hasLive = false;
+            
+            if(data) {
+                Object.keys(data).forEach(key => {
+                    const item = data[key];
+                    if(item.isLive) {
+                        hasLive = true;
+                        let actionHtml = '';
+                        if(item.link.includes("zoom.us")) {
+                            actionHtml = `<button class="btn-3d btn-zoom" onclick="window.open('${item.link}', '_blank')">Join Zoom Meeting</button>`;
+                        } else {
+                            actionHtml = `<button class="btn-3d btn-danger" onclick="playVideo('${item.title}', '${item.link}', '${key}')">Watch Stream</button>`;
+                        }
+
+                        div.innerHTML += `
+                        <div class="test-card-pro" style="border-left:5px solid red;">
+                            <div class="tc-header">
+                                <div class="tc-title">${item.title}</div>
+                                <span class="tc-badge badge-live">LIVE</span>
+                            </div>
+                            <div class="tc-body">
+                                <p style="font-size:12px; margin-bottom:10px;">${item.desc || 'Join now!'}</p>
+                                ${actionHtml}
+                            </div>
+                        </div>`;
+                    }
+                });
+            }
+            
+            if(!hasLive) div.innerHTML = "<div style='padding:20px; color:#888;'>No Live Classes right now. Check Recorded.</div>";
+        });
+    }
+
+    // LOAD RECORDED LIST ONLY
+    function loadRecordedList() {
+        const div = document.getElementById('student-video-list');
+        div.innerHTML = "Loading...";
+        
+        Promise.all([
+            db.ref('content/live').once('value'),
+            db.ref('content/video').once('value')
+        ]).then(snaps => {
+            div.innerHTML = "";
+            const liveData = snaps[0].val();
+            const videoData = snaps[1].val();
+            let hasContent = false;
+            
+            // Ended Live Streams
+            if(liveData) {
+                Object.keys(liveData).forEach(key => {
+                    const item = liveData[key];
+                    if(!item.isLive) {
+                        hasContent = true;
+                        div.innerHTML += `
+                        <div class="content-item" onclick="playVideo('${item.title}', '${item.link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
+                            <i class="fa fa-history" style="color:gray; margin-right:15px; font-size:20px;"></i>
+                            <div><b>${item.title}</b><br><small>Past Stream</small></div>
+                        </div>`;
+                    }
+                });
+            }
+
+            // Uploaded Videos
+            if(videoData) {
+                Object.keys(videoData).forEach(key => {
+                    const item = videoData[key];
+                    hasContent = true;
+                    div.innerHTML += `
+                    <div class="content-item" onclick="playVideo('${item.title}', '${item.link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
+                        <i class="fa fa-play-circle" style="color:#4e54c8; margin-right:15px; font-size:20px;"></i>
+                        <div><b>${item.title}</b><br><small>${item.desc || 'Video'}</small></div>
+                    </div>`;
+                });
+            }
+
+            if(!hasContent) div.innerHTML = "<div style='padding:20px; color:#888;'>No recorded videos found.</div>";
+        });
+    }
+    
+    // JOIN LIVE CLASS SHORTCUT (Takes to List)
+    function joinLiveClass() {
+        nav('view-live-list');
+    }
+
+    function leaveLiveClass() {
+        nav('view-home');
+        document.getElementById('live-player-container').innerHTML = ""; // Stop video
+    }
+
+    function loadLiveChat(contentKey) {
+        const div = document.getElementById('live-chat-msgs');
+        div.innerHTML = "";
+        db.ref(`live_comments/${contentKey}`).off();
+        db.ref(`live_comments/${contentKey}`).limitToLast(50).on('child_added', s => {
+            const m = s.val();
+            div.innerHTML += `<div class="live-chat-bubble"><b>${m.name}:</b> ${m.text}</div>`;
+            div.scrollTop = div.scrollHeight;
+        });
+    }
+
+    function sendLiveComment() {
+        const txt = document.getElementById('live-msg-input').value;
+        if(txt && currentLiveKey && currentUser) {
+            db.ref(`live_comments/${currentLiveKey}`).push({
+                name: currentUser.displayName || "Student",
+                text: txt,
+                timestamp: Date.now()
+            });
+            document.getElementById('live-msg-input').value = "";
+        }
+    }
+
+    function loadPDFs() {
+        const div = document.getElementById('student-pdf-list');
+        div.innerHTML = "Loading...";
+        db.ref('content/pdf').once('value', s => {
+            const data = s.val();
+            div.innerHTML = "";
+            if(data) {
+                Object.values(data).forEach(item => {
+                    div.innerHTML += `
+                    <div class="content-item" onclick="window.open('${item.link}', '_blank')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
+                        <i class="fa fa-file-pdf" style="color:#e74c3c; margin-right:15px; font-size:20px;"></i>
+                        <div><b>${item.title}</b><br><small>${item.desc}</small></div>
+                    </div>`;
+                });
+            } else {
+                div.innerHTML = "<div style='padding:20px; color:#888;'>No PDF notes available.</div>";
+            }
+        });
+    }
+
+    function saveAppSettings() {
+        const n = document.getElementById('set-app-name').value;
+        const fcm = document.getElementById('set-fcm-key').value;
+        
+        const settingsData = {
+            name: n, fcmKey: fcm,
+            logo: document.getElementById('set-logo').value,
+            copyright: document.getElementById('set-copyright').value,
+            fb: document.getElementById('set-fb').value,
+            wa: document.getElementById('set-wa').value,
+            tg: document.getElementById('set-tg').value,
+            in: document.getElementById('set-in').value,
+            tw: document.getElementById('set-tw').value,
+            yt: document.getElementById('set-yt').value
+        };
+
+        if(n) db.ref('settings/appInfo').update(settingsData).then(()=>show3DAlert("Settings Saved! Reload app.", 'success'));
+    }
+    
+    function saveAdminProfile() {
+        const n = document.getElementById('adm-p-name').value;
+        const ph = document.getElementById('adm-p-phone').value;
+        const pic = document.getElementById('adm-p-photo').value;
+        const sig = document.getElementById('adm-p-sig').value;
+        
+        if(n) db.ref('settings/adminProfile').set({name:n, phone:ph, photo:pic, signature:sig}).then(()=>{
+            show3DAlert("Profile & Signature Updated!", 'success');
+            document.getElementById('sb-name').innerText = n;
+            if(pic) document.getElementById('sb-photo').src = pic;
+        });
+    }
+
+    function loadManageNotifs() {
+        const div = document.getElementById('adm-notif-list');
+        div.innerHTML = "Loading...";
+        let html = "";
+        
+        db.ref('admin_notifications').once('value', s1=>{
+            const msgs = s1.val();
+            if(msgs) Object.keys(msgs).forEach(k => {
+                const m = msgs[k];
+                html += `<div class="result-list-item" style="justify-content:space-between; border-left:4px solid red;"><div><b>Chat Alert:</b> ${m.name}<br>${m.msg}</div><button class="btn-3d btn-danger" onclick="delNotif('admin_notifications', '${k}')">Del</button></div>`;
+            });
+            
+            db.ref('notifications').once('value', s2=>{
+                const nots = s2.val();
+                if(nots) Object.keys(nots).forEach(k => {
+                    const n = nots[k];
+                    html += `<div class="result-list-item" style="justify-content:space-between; border-left:4px solid blue;"><div><b>Global:</b> ${n.title}<br>${n.msg}</div><button class="btn-3d btn-danger" onclick="delNotif('notifications', '${k}')">Del</button></div>`;
+                });
+                div.innerHTML = html || "No Notifications found.";
+            });
+        });
+    }
+    window.delNotif = (path, key) => db.ref(path + '/' + key).remove().then(()=>loadManageNotifs());
+
+    // Other Admin Helpers
+    function loadTopicsForDropdown(elemId) {
+        const s = document.getElementById(elemId); s.innerHTML = '<option value="">Select Topic List</option>';
+        db.ref('question_pool').once('value', sn => {
+            sn.forEach(list => { s.innerHTML += `<option value="${list.key}">${list.key} (${list.numChildren()} Qs)</option>`; });
+        });
+    }
+    function createTest(){ 
+        const t={
+            title:document.getElementById('at-title').value,
+            subject:document.getElementById('at-subject').value,
+            listTopic:document.getElementById('at-list-select').value, 
+            class:document.getElementById('at-class').value, startTime: document.getElementById('at-start').value,
+            endTime: document.getElementById('at-end').value, timePerQ:document.getElementById('at-time').value, 
+            gapTime:document.getElementById('at-gap').value, marksPerQ: parseInt(document.getElementById('at-marks').value) || 1, 
+            gradeFirst: parseInt(document.getElementById('grade-first').value) || 0, gradeSec: parseInt(document.getElementById('grade-sec').value) || 0,
+            gradeFail: parseInt(document.getElementById('grade-fail').value) || 0
+        }; 
+        if(t.title && t.listTopic && t.startTime) {
+            db.ref('tests').push(t).then(()=>{
+                 show3DAlert('Test Created Successfully!', 'success');
+                 db.ref('notifications').push({ title: "New Test", msg: `${t.title} for Class ${t.class}`, targetView: "view-tests", timestamp: Date.now() });
+            }); 
+        }
+    }
+    function saveQuestion(){ 
+        const listName = document.getElementById('aq-list-name').value.trim();
+        if(!listName) return show3DAlert("Enter List Name", 'error');
+        const q={ text:document.getElementById('aq-text').value, opt1:document.getElementById('aq-op1').value, opt2:document.getElementById('aq-op2').value, opt3:document.getElementById('aq-op3').value, opt4:document.getElementById('aq-op4').value, correct:document.getElementById('aq-correct').value }; 
+        if(q.text) db.ref('question_pool/'+listName).push(q).then(()=>{ document.getElementById('aq-text').value=''; show3DAlert("Question Saved!", 'success'); }); 
+    }
+    function loadQuestionsList() {
+        const listName = document.getElementById('vq-test-select').value;
+        const area = document.getElementById('questions-list-area'); area.innerHTML="Loading...";
+        db.ref('question_pool/'+listName).once('value', s=>{
+            area.innerHTML=""; if(!s.exists()){ area.innerHTML="Empty List"; return; }
+            let i=1; s.forEach(qS=>{ const q=qS.val(); area.innerHTML+=`<div class="result-list-item" style="display:block;"><strong>Q${i}:</strong> ${q.text}<br><small>Ans: ${q.correct}</small></div>`; i++; });
+        });
+    }
+    function loadAdminTestsForDropdown(elemId){ 
+        const s = document.getElementById(elemId); if(!s) return; s.innerHTML='<option value="">Select Test</option>'; 
+        db.ref('tests').once('value', vSnap=>{ vSnap.forEach(x=>{ s.innerHTML+=`<option value="${x.key}">${x.val().title}</option>`; }) }); 
+    }
+    function loadManageTests(){
+        const div=document.getElementById('manage-tests-area'); div.innerHTML="Loading...";
+        db.ref('tests').once('value', s=>{
+            div.innerHTML=""; s.forEach(t=>{ div.innerHTML+=`<div class="result-list-item" style="justify-content:space-between;"><div><b>${t.val().title}</b></div><button class="btn-3d btn-danger" onclick="deleteTest('${t.key}')">Delete</button></div>`; });
+        });
+    }
+    function deleteTest(key){ if(confirm("Delete Test?")) db.ref('tests/'+key).remove().then(() => {
+        show3DAlert("Test Deleted!", 'success');
+        loadManageTests();
+    }); }
+
+    // Init Logic
+    loadHomeSlider();
+
+    // Results & List Logic
+    window.loadResults = () => {
+        const tid=document.getElementById('res-test-select').value; 
+        const div=document.getElementById('results-area'); div.innerHTML='Loading...'; 
+        db.ref('users').once('value', us=>{ 
+            const users=us.val(); 
+            db.ref(`results/${tid}`).once('value', rs=>{ 
+                div.innerHTML=''; const res=rs.val(); 
+                if(!res) { div.innerHTML='No results found'; return; } 
+                Object.keys(res).forEach(uid => { 
+                    const r=res[uid]; const u=users[uid]||{name:'Unknown', fatherName:'--'}; 
+                    div.innerHTML += `<div class="result-list-item" onclick="openMarksheet('${uid}','${tid}')"><img src="${u.photo || 'https://via.placeholder.com/50'}" class="res-thumb"><div><b>${u.name}</b><br>Correct: ${r.score}</div><button class="btn-3d" style="margin-left:auto;">Sheet</button></div>`; 
+                }); 
+            }); 
+        }); 
+    }
+
+    function loadAdminData(){
+        db.ref('users').once('value', s=>{ const l=document.getElementById('admin-student-list'); l.innerHTML='';
+            s.forEach(u=>{ const d=u.val(); const color = d.canTest ? '#27ae60' : '#e74c3c';
+                l.innerHTML+=`<div class="result-list-item"><img src="${d.photo||'https://via.placeholder.com/50'}" class="res-thumb"><div style="flex:1"><b>${d.name}</b></div><button class="btn-3d" style="padding:5px;" onclick="updPhoto('${u.key}')">Img</button><button class="btn-3d" style="padding:5px; background:${color}; color:white;" onclick="updAcc('${u.key}',${!d.canTest})">${d.canTest?'Block':'Allow'}</button></div>`; 
+            });
+        });
+    }
+    window.updAcc = (k,v) => db.ref('users/'+k+'/canTest').set(v).then(()=>loadAdminData());
+    window.updPhoto = (k) => { const u=prompt("Img URL"); if(u) db.ref('users/'+k+'/photo').set(u).then(()=>loadAdminData()); }
+    function addSlider() { 
+        const mob = document.getElementById('slider-img-mob').value;
+        const tab = document.getElementById('slider-img-tab').value;
+        const pc = document.getElementById('slider-img-pc').value;
+        if(mob) {
+            db.ref('settings/sliders').push({imgMob: mob, imgTab: tab, imgPc: pc}).then(()=>{show3DAlert("Slider Added!", 'success'); loadManageSliders();});
+        }
+    }
+    function loadManageSliders() { const div = document.getElementById('slider-list-adm'); div.innerHTML="Loading..."; db.ref('settings/sliders').once('value', s=>{ div.innerHTML=""; const data=s.val(); if(data) Object.keys(data).forEach(k=>{ div.innerHTML+=`<div style="margin:5px; border-bottom:1px solid #ccc; display:flex; justify-content:space-between;"><img src="${data[k].imgMob}" style="height:30px;"><button class="btn-3d btn-danger" onclick="deleteSlider('${k}')">Del</button></div>` }); }); }
+    window.deleteSlider = (k) => db.ref(`settings/sliders/${k}`).remove().then(()=>loadManageSliders());
+    function loadHomeSlider() { 
+        const con = document.getElementById('home-slider'); 
+        db.ref('settings/sliders').once('value', s => { 
+            const data = s.val(); con.innerHTML = ""; 
+            if(data) { 
+                let screenWidth = window.innerWidth;
+                Object.values(data).forEach((slide, i) => { 
+                    let img = slide.imgMob;
+                    if(screenWidth > 1024) img = slide.imgPc || slide.imgMob;
+                    else if(screenWidth > 768) img = slide.imgTab || slide.imgMob;
+                    con.innerHTML += `<img src="${img}" class="slide ${i===0?'active':''}">`; 
+                }); 
+                showSlides(); 
+            } else { con.innerHTML = `<img src="https://via.placeholder.com/800x400?text=Welcome" class="slide active">`; } 
+        }); 
+    }
+    let slideIndex = 0; function showSlides() { let slides = document.querySelectorAll(".slide"); if(slides.length === 0) return; for (let i = 0; i < slides.length; i++) slides[i].classList.remove("active"); slideIndex++; if (slideIndex > slides.length) slideIndex = 1; slides[slideIndex - 1].classList.add("active"); setTimeout(showSlides, 3000); }
+    // KB
+    function toggleMathKeyboard(show){ const kb = document.getElementById('math-keyboard'); kb.style.display = show ? 'block' : 'none'; document.body.style.paddingBottom = show ? '180px' : '70px'; }
+    function setLastFocus(e){ focusedInput=e; }
+    function insSym(c){ if(focusedInput) { const start = focusedInput.selectionStart; const end = focusedInput.selectionEnd; const text = focusedInput.value; focusedInput.value = text.substring(0, start) + c + text.substring(end); focusedInput.selectionStart = focusedInput.selectionEnd = start + 1; focusedInput.focus(); } }
+    function addCustomSym() { const v=document.getElementById('custom-sym').value; if(v){insSym(v); document.getElementById('custom-sym').value='';} }
+
+</script>
+
+</body>
+</html>
