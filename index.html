@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Version Control Metadata -->
-    <meta name="version" content="4.4"> 
+    <meta name="version" content="5.1"> 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -32,14 +32,13 @@
             --shadow-inset: inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff;
             --success-grad: linear-gradient(145deg, #2ecc71, #27ae60);
             
-            /* WhatsApp Theme Colors */
-            --wa-header: #075E54;
-            --wa-bg: #101d25; 
-            --wa-sent: #005c4b;
-            --wa-received: #202c33;
-            --wa-text: #e9edef;
-            --wa-tick-gray: #999;
-            --wa-tick-green: #25D366;
+            /* UPDATED CHAT THEME (Clean Light Theme) */
+            --chat-bg: #e5ddd5;
+            --chat-header-bg: #ffffff;
+            --chat-sent-bg: #4e54c8;
+            --chat-sent-text: #ffffff;
+            --chat-recv-bg: #ffffff;
+            --chat-recv-text: #333333;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -95,6 +94,10 @@
             padding: 25px; border-radius: 20px; text-align: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin-top: 20px;
         }
+        #login-logo-img {
+            width: 180px; height: 180px; object-fit: contain; margin-bottom: 20px;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+        }
         
         /* --- HEADER --- */
         .app-header {
@@ -131,10 +134,23 @@
         }
         .sb-item:active { transform: scale(0.98); }
         
-        /* Sidebar Footer */
+        /* Sidebar Footer (UPDATED FOR FULL CIRCLE LOGO) */
         .sb-footer { padding: 15px; text-align: center; border-top: 1px solid #ddd; background: #fdfdfd; margin-top: auto; }
-        .sb-f-logo-bg { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #eee; }
-        .sb-f-logo-img { width: 25px; height: 25px; object-fit: contain; }
+        .sb-f-logo-bg { 
+            width: 50px; height: 50px; /* Increased Size */
+            background: white; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            margin: 0 auto 5px auto; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            border: 2px solid #eee; 
+            overflow: hidden; /* Important for full circle */
+            padding: 0; /* Remove padding */
+        }
+        .sb-f-logo-img { 
+            width: 100%; height: 100%; 
+            object-fit: cover; /* Fills the circle */
+            display: block; 
+        }
         .sb-f-desc { font-size: 9px; color: #666; margin-bottom: 8px; font-weight: 500; line-height: 1.2; }
         .sb-f-social-title { font-weight: 700; color: #333; font-size: 11px; margin-bottom: 5px; }
         .sb-socials { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
@@ -198,66 +214,77 @@
         .tc-info i { width: 15px; text-align: center; color: var(--primary); }
         .tc-btn { padding: 8px 20px; border-radius: 25px; border: none; font-weight: 600; font-size: 12px; cursor: pointer; background: var(--primary); color: white; box-shadow: 0 3px 10px rgba(78, 84, 200, 0.3); }
 
-        /* --- WHATSAPP STYLE CHAT (FIXED SCROLL) --- */
+        /* --- NEW CHAT STYLE (THEME MATCHING) --- */
         .wa-container {
             display: flex; flex-direction: column; height: 100%; 
-            background: var(--wa-bg); position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
+            background: #f0f2f5; 
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
         }
         .wa-header {
-            background: #1f2c34; color: white; padding: 10px 15px;
-            display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            background: var(--primary); color: white; padding: 10px 15px;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             flex-shrink: 0;
         }
-        .wa-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #ccc; }
+        .wa-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #ccc; border: 2px solid white; }
         .wa-info { flex: 1; display: flex; flex-direction: column; }
         .wa-name { font-weight: 600; font-size: 16px; color: white; }
-        .wa-status { font-size: 11px; opacity: 0.8; color: #ccc; }
+        .wa-status { font-size: 11px; opacity: 0.9; color: #eee; }
         .wa-icons { display: flex; gap: 20px; font-size: 18px; color: white; }
         .wa-body {
             flex: 1; overflow-y: auto; padding: 15px; 
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            background-color: #0b141a; background-blend-mode: overlay; background-repeat: repeat; opacity: 1;
+            background-color: #f0f2f5;
+            background-image: linear-gradient(#e6e9f0 1px, transparent 1px), linear-gradient(90deg, #e6e9f0 1px, transparent 1px);
+            background-size: 20px 20px;
         }
         .wa-bubble {
-            max-width: 75%; padding: 8px 12px; border-radius: 8px; margin-bottom: 5px;
-            font-size: 14px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-            word-wrap: break-word; color: #e9edef;
+            max-width: 75%; padding: 10px 14px; border-radius: 12px; margin-bottom: 8px;
+            font-size: 14px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            word-wrap: break-word;
         }
-        .wa-sent { background: var(--wa-sent); align-self: flex-end; margin-left: auto; border-top-right-radius: 0; }
-        .wa-received { background: var(--wa-received); align-self: flex-start; border-top-left-radius: 0; }
-        .wa-meta { display: flex; justify-content: flex-end; align-items: center; gap: 3px; margin-top: 2px; }
-        .wa-time { font-size: 9px; color: #8696a0; }
-        .wa-tick { font-size: 10px; color: var(--wa-tick-gray); }
-        .wa-tick.read { color: var(--wa-tick-green); }
+        .wa-sent { 
+            background: var(--chat-sent-bg); 
+            color: var(--chat-sent-text); 
+            align-self: flex-end; margin-left: auto; border-bottom-right-radius: 2px; 
+        }
+        .wa-received { 
+            background: var(--chat-recv-bg); 
+            color: var(--chat-recv-text); 
+            align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #eee;
+        }
+        .wa-meta { display: flex; justify-content: flex-end; align-items: center; gap: 3px; margin-top: 4px; }
+        .wa-time { font-size: 9px; opacity: 0.7; }
+        .wa-tick { font-size: 10px; color: rgba(255,255,255,0.7); }
+        .wa-sent .wa-tick { color: rgba(255,255,255,0.8); }
+        .wa-received .wa-time { color: #888; }
         
         .wa-footer {
-            background: #1f2c34; padding: 8px 10px; display: flex; align-items: center; gap: 8px;
-            flex-shrink: 0;
+            background: white; padding: 10px; display: flex; align-items: center; gap: 10px;
+            flex-shrink: 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
         }
         .wa-input {
-            flex: 1; width: 0; border: none; padding: 12px 15px; border-radius: 25px; outline: none; font-size: 15px;
-            background: #2a3942; color: white;
+            flex: 1; width: 0; border: 1px solid #ddd; padding: 10px 15px; border-radius: 25px; 
+            outline: none; font-size: 15px; background: #f9f9f9; color: #333;
         }
         .wa-btn-round {
-            width: 45px; height: 45px; background: #00a884; color: white;
+            width: 45px; height: 45px; background: var(--primary); color: white;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-size: 18px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             flex-shrink: 0;
         }
 
-        /* --- ADMIN LIST VIEW --- */
-        .wa-list-container { background: #111b21; height: 100%; overflow-y: auto; }
+        /* --- ADMIN LIST VIEW (CLEAN STYLE) --- */
+        .wa-list-container { background: white; height: 100%; overflow-y: auto; }
         .wa-list-item {
-            display: flex; align-items: center; padding: 12px 15px;
-            border-bottom: 1px solid #222d36; cursor: pointer;
+            display: flex; align-items: center; padding: 15px;
+            border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: 0.2s;
         }
-        .wa-list-item:hover { background: #202c33; }
-        .wa-list-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .wa-list-item:hover { background: #f9f9f9; }
+        .wa-list-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 2px solid #eee; }
         .wa-list-content { flex: 1; }
-        .wa-list-name { color: #e9edef; font-weight: 600; font-size: 16px; }
-        .wa-list-msg { color: #8696a0; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+        .wa-list-name { color: #333; font-weight: 600; font-size: 16px; }
+        .wa-list-msg { color: #777; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
         .wa-list-meta { text-align: right; }
-        .wa-list-time { color: #8696a0; font-size: 11px; margin-bottom: 5px; }
+        .wa-list-time { color: #999; font-size: 11px; margin-bottom: 5px; }
 
         /* --- ADVANCED TEST UI --- */
         .test-3d-bg {
@@ -373,20 +400,22 @@
             .report-inner-border { min-height: auto; }
         }
 
-        /* --- PRINT A4 (IMPROVED FOR PDF) --- */
+        /* --- PRINT A4 (IMPROVED FOR PDF - FULL PAGE FIX) --- */
         @media print {
             body * { visibility: hidden; }
-            @page { size: A4; margin: 5mm; }
+            @page { size: A4; margin: 0; }
             .report-paper {
-                width: 100%; max-width: 210mm; height: auto; min-height: 260mm; /* Reduced from 297mm */
-                margin: 0; border: none; box-shadow: none; padding: 5mm;
-                transform: scale(1) !important;
+                width: 100%; height: 100%; position: absolute; left: 0; top: 0;
+                margin: 0; border: none; box-shadow: none; padding: 0;
+                transform: scale(0.95); transform-origin: top center;
                 page-break-inside: avoid;
             }
-            .report-inner-border { min-height: 250mm; padding: 10mm; }
+            .report-border { width: 100%; height: 100%; border: 5px double #333; box-sizing: border-box; padding: 5mm; }
+            .report-inner-border { width: 100%; height: 100%; border: 2px solid #666; box-sizing: border-box; padding: 10mm; }
+            
             #view-marksheet, #view-marksheet * { visibility: visible; }
             .marksheet-header { display: none !important; }
-            .marksheet-body { padding: 0 !important; height: auto !important; overflow: visible !important; }
+            .marksheet-body { padding: 0 !important; height: 100% !important; overflow: visible !important; }
             #view-marksheet { 
                 position: absolute; left: 0; top: 0; width: 100%; height: 100%; margin: 0; padding: 0; 
                 background: white; display: block !important; z-index: 9999; 
@@ -401,10 +430,18 @@
 
         /* --- LIVE CLASS ROOM --- */
         .video-container {
-            width: 100%; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: black;
+            width: 100%; 
+            position: relative; 
+            background: black;
+            /* Flex Fix for Blank Page */
+            flex: 1; 
+            min-height: 250px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
         }
         .video-container iframe {
-            position: absolute; top:0; left:0; width: 100%; height: 100%; border:none;
+            width: 100%; height: 100%; border:none;
         }
         .live-chat-box {
             flex: 1; display: flex; flex-direction: column; background: #fff; border-top: 1px solid #ccc;
@@ -475,6 +512,7 @@
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('live-chat')"><i class="fa fa-comments"></i> Admin Chat</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-slider')"><i class="fa fa-images"></i> Manage Slider</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-content')"><i class="fa fa-book"></i> Manage Content</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-share-links')"><i class="fa fa-link"></i> Manage Share Links</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('settings')"><i class="fa fa-wrench"></i> Settings & Name</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('app-version')"><i class="fa fa-code-branch"></i> App Version</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('profile')"><i class="fa fa-user-shield"></i> Admin Profile</div>
@@ -506,9 +544,8 @@
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
     <div style="text-align:center; margin-bottom:10px;">
-        <i class="fa fa-graduation-cap fa-3x" style="color:white; text-shadow: 0 2px 10px rgba(0,0,0,0.3);"></i>
-        <h2 id="login-app-title">Momentum Physics Classes</h2>
-        <p style="font-size:10px; color:white;" id="login-app-ver">Ver 4.4</p>
+        <img id="login-logo-img" src="https://via.placeholder.com/150?text=Logo" alt="App Logo">
+        <!-- REMOVED NAME AND VERSION TEXT HERE -->
     </div>
     <div class="auth-box" id="main-auth-box">
         <h3>Login / Signup</h3>
@@ -646,7 +683,7 @@
 
 <!-- REVIEW ANSWERS PAGE -->
 <div id="view-review-answers" class="view-container">
-    <button class="btn-3d" onclick="nav('view-results-history')">Back</button>
+    <button class="btn-3d" onclick="goBackFromReview()">Back</button>
     <h3 style="margin:15px 0;">Test Review</h3>
     <div id="review-container"></div>
 </div>
@@ -660,12 +697,16 @@
 <div id="view-share" class="view-container">
     <div class="box-3d" style="padding:20px; text-align:center;">
         <div style="padding: 10px; background: white; display: inline-block; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 15px;">
-            <img src="https://via.placeholder.com/200x200?text=Share+App" id="share-app-img" style="max-width: 160px; height: auto; display: block; border-radius: 5px;">
+            <img src="https://via.placeholder.com/250x250?text=Share+App" id="share-qr-img" style="max-width: 280px; width:100%; height: auto; display: block; border-radius: 5px;">
         </div>
         <h3 style="color:var(--primary);">Share App</h3>
         <p style="font-size:12px; color:#666; margin-bottom:20px;">Share with friends and family!</p>
         <button class="btn-3d btn-success" onclick="shareAndCopy('app')" style="width:100%; margin-bottom:10px;"><i class="fa fa-mobile-alt"></i> Share App Link</button>
         <button class="btn-3d" onclick="shareAndCopy('website')" style="width:100%;"><i class="fa fa-globe"></i> Share Website Link</button>
+        
+        <!-- NEW SHARE LINKS SECTION -->
+        <hr style="margin:20px 0;">
+        <div id="share-page-links" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
 </div>
 
@@ -680,7 +721,7 @@
             <div class="report-border"><div class="report-inner-border">
                 <div class="watermark" id="ms-watermark-name">FUTURE EDU</div>
                 <div class="sheet-header">
-                    <i class="fa fa-graduation-cap fa-3x" style="color:var(--primary); margin-bottom:10px;"></i>
+                    <img id="ms-logo-img" src="https://via.placeholder.com/100?text=Logo" style="height: 130px; object-fit: contain; margin-bottom: 10px;">
                     <h1 id="ms-app-name">FUTURE EDU</h1>
                     <p>Official Achievement Record</p>
                 </div>
@@ -803,7 +844,7 @@
 <!-- ADMIN DASHBOARD -->
 <div id="view-admin" class="view-container">
     <div class="admin-scroll-menu">
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-test')">1. Create Test</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-questions')">2. Add Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('view-questions')">3. View Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('students')">4. Students</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('results')">5. Results</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-tests')">6. Manage Tests</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('live-chat')">7. Live Chat</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-slider')">8. Manage Slider</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-content')">9. Content (PDF/Live)</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('settings')">10. Settings</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('profile')">11. Profile</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('notifications')">12. Notifications</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('page-builder')">13. Page Builder</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('app-version')">14. App Version</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-test')">1. Create Test</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-questions')">2. Add Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('view-questions')">3. View Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('students')">4. Students</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('results')">5. Results</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-tests')">6. Manage Tests</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('live-chat')">7. Live Chat</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-slider')">8. Manage Slider</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-content')">9. Content (PDF/Live)</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-share-links')">10. Share Links</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('settings')">11. Settings</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('profile')">12. Profile</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('notifications')">13. Notifications</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('page-builder')">14. Page Builder</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('app-version')">15. App Version</button>
     </div>
 
     <!-- TABS -->
@@ -817,14 +858,17 @@
     <div id="adm-manage-tests" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Manage Tests</h4><div id="manage-tests-area" style="margin-top:10px;"></div></div></div>
     
     <!-- ADMIN CHAT (WHATSAPP LIST STYLE) FIXED SCROLL -->
-    <div id="adm-live-chat" class="admin-tab" style="display:none; padding:0; position:fixed; top:60px; bottom:0; left:0; width:100%; background:#111b21; z-index:50;">
+    <div id="adm-live-chat" class="admin-tab" style="display:none; padding:0; position:fixed; top:0; bottom:0; left:0; width:100%; background:#f0f2f5; z-index:50;">
         <div id="admin-chat-list-view" style="height:100%; display:flex; flex-direction:column;">
-            <div style="padding:15px; background:#1f2c34; color:white; font-weight:bold; flex-shrink:0;">Chats</div>
+            <!-- FIX: Back button now calls exitAdminChatMode to close this overlay -->
+            <div style="padding:15px; background:var(--primary); color:white; font-weight:bold; flex-shrink:0; display:flex; align-items:center; gap:15px;">
+                <i class="fa fa-arrow-left" style="cursor:pointer;" onclick="exitAdminChatMode()"></i> Chats
+            </div>
             <div id="chat-users-list" class="wa-list-container" style="flex:1;"></div>
         </div>
         <div id="admin-chat-conversation-view" class="wa-container" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:5000;">
             <div class="wa-header">
-                <i class="fa fa-arrow-left" onclick="closeAdminChat()" style="cursor:pointer;"></i>
+                <i class="fa fa-arrow-left" onclick="closeAdminChat()" style="cursor:pointer; font-size: 20px;"></i>
                 <img src="" class="wa-avatar" id="wa-student-avatar">
                 <div class="wa-info">
                     <div class="wa-name" id="wa-student-name">Student</div>
@@ -877,6 +921,19 @@
             <div id="admin-content-list" style="max-height:300px; overflow-y:auto; margin-top:10px;"></div>
         </div>
     </div>
+    
+    <!-- ADMIN SHARE LINKS MANAGEMENT -->
+    <div id="adm-manage-share-links" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;">
+            <h4>Manage Share Links</h4>
+            <p style="font-size:12px; color:gray;">Add links to appear at the bottom of the "Share App" page.</p>
+            <input type="text" id="sl-title" class="input-3d" placeholder="Link Title (e.g. Join Telegram)">
+            <input type="text" id="sl-url" class="input-3d" placeholder="URL (https://...)">
+            <input type="text" id="sl-icon" class="input-3d" placeholder="Icon Class (e.g. fab fa-telegram)">
+            <button class="btn-3d btn-success" onclick="addShareLink()" style="width:100%; margin-bottom:15px;">Add Link</button>
+            <div id="admin-share-links-list"></div>
+        </div>
+    </div>
 
     <div id="adm-manage-slider" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Manage Home Sliders</h4><label style="font-size:11px;">Mobile View URL</label><input type="text" id="slider-img-mob" class="input-3d" placeholder="Mobile Image"><label style="font-size:11px;">Tablet/Desktop Mode URL</label><input type="text" id="slider-img-tab" class="input-3d" placeholder="Tablet Image"><label style="font-size:11px;">PC/Laptop View URL</label><input type="text" id="slider-img-pc" class="input-3d" placeholder="PC Image"><button class="btn-3d btn-success" style="width:100%; margin-bottom:15px;" onclick="addSlider()">Add Slide</button><div id="slider-list-adm"></div></div></div>
     
@@ -895,7 +952,12 @@
         <div class="box-3d" style="padding:15px;">
             <h4>App Settings</h4>
             <p>Update App Name:</p><input type="text" id="set-app-name" class="input-3d" placeholder="App Name (e.g. Momentum Physics Classes)">
-            <p>Logo URL:</p><input type="text" id="set-logo" class="input-3d" placeholder="Image URL">
+            <p>Login Page Logo URL:</p><input type="text" id="set-logo" class="input-3d" placeholder="Login Page Logo URL">
+            <p>Marksheet Logo URL:</p><input type="text" id="set-sheet-logo" class="input-3d" placeholder="Marksheet Logo URL">
+            <p>Sidebar Footer Logo URL:</p><input type="text" id="set-footer-logo" class="input-3d" placeholder="Small Sidebar Circle Logo URL">
+            <p>QR Code Image URL:</p><input type="text" id="set-qr" class="input-3d" placeholder="QR Code Image URL">
+            <p>App Share Link:</p><input type="text" id="set-app-link" class="input-3d" placeholder="Play Store Link">
+            <p>Website Share Link:</p><input type="text" id="set-web-link" class="input-3d" placeholder="Website Link">
             <p>Copyright Text:</p><input type="text" id="set-copyright" class="input-3d" placeholder="© 2025 ...">
             <br><h4>Social Links</h4>
             <input type="text" id="set-fb" class="input-3d" placeholder="Facebook URL"><input type="text" id="set-wa" class="input-3d" placeholder="WhatsApp Phone"><input type="text" id="set-tg" class="input-3d" placeholder="Telegram URL"><input type="text" id="set-in" class="input-3d" placeholder="Instagram URL"><input type="text" id="set-tw" class="input-3d" placeholder="Twitter URL"><input type="text" id="set-yt" class="input-3d" placeholder="YouTube URL">
@@ -1065,7 +1127,10 @@
 
     // --- SHARE LOGIC ---
     window.shareAndCopy = (type) => {
-        let linkToShare = window.location.href;
+        let linkToShare = window.location.href; // Default
+        if(type === 'app' && appSettings.appLink) linkToShare = appSettings.appLink;
+        if(type === 'website' && appSettings.webLink) linkToShare = appSettings.webLink;
+
         let shareTitle = `Check out ${appSettings.name}!`;
         
         if (navigator.clipboard && window.isSecureContext) {
@@ -1088,7 +1153,7 @@
 
     let currentUser = null, focusedInput = null;
     let activeChatUser = null; 
-    let appSettings = {name: "Momentum Physics Classes", version: "4.4"}; // Ensure this matches meta tag
+    let appSettings = {name: "Momentum Physics Classes", version: "5.1"}; // Ensure this matches meta tag
     let dynamicPages = [];
     let isAdmin = false;
     let currentLiveKey = null;
@@ -1105,14 +1170,34 @@
                 document.getElementById('ms-app-name').innerText = appSettings.name;
                 document.getElementById('ms-watermark-name').innerText = appSettings.name;
                 
-                if(appSettings.logo) document.getElementById('sb-f-logo-img').src = appSettings.logo;
+                if(appSettings.logo) {
+                    document.getElementById('login-logo-img').src = appSettings.logo; // Default login logo
+                }
+                
+                // SIDEBAR FOOTER LOGO
+                if(appSettings.footerLogo) {
+                    document.getElementById('sb-f-logo-img').src = appSettings.footerLogo;
+                } else if(appSettings.logo) {
+                    document.getElementById('sb-f-logo-img').src = appSettings.logo; // Fallback
+                }
+                
+                // NEW LOGOS
+                if(appSettings.marksheetLogo) document.getElementById('ms-logo-img').src = appSettings.marksheetLogo;
                 if(appSettings.copyright) document.getElementById('sb-copyright-text').innerText = appSettings.copyright;
                 if(appSettings.desc) document.getElementById('sb-f-desc-text').innerText = appSettings.desc;
+                
+                // SHARE PAGE UPDATES
+                if(appSettings.qrCode) document.getElementById('share-qr-img').src = appSettings.qrCode;
                 
                 if(document.getElementById('set-app-name')) {
                     document.getElementById('set-app-name').value = appSettings.name || '';
                     document.getElementById('set-fcm-key').value = appSettings.fcmKey || '';
                     document.getElementById('set-logo').value = appSettings.logo || '';
+                    document.getElementById('set-sheet-logo').value = appSettings.marksheetLogo || '';
+                    document.getElementById('set-footer-logo').value = appSettings.footerLogo || '';
+                    document.getElementById('set-qr').value = appSettings.qrCode || '';
+                    document.getElementById('set-app-link').value = appSettings.appLink || '';
+                    document.getElementById('set-web-link').value = appSettings.webLink || '';
                     document.getElementById('set-copyright').value = appSettings.copyright || '';
                     document.getElementById('set-fb').value = appSettings.fb || '';
                     document.getElementById('set-wa').value = appSettings.wa || '';
@@ -1335,10 +1420,15 @@
     function forgotPassword() {
         const email = document.getElementById('forgot-email').value;
         if(email) {
-            auth.sendPasswordResetEmail(email).then(() => {
-                show3DAlert("Reset Link Sent! Check your email.", 'success');
+            auth.sendPasswordResetEmail(email)
+            .then(() => {
+                show3DAlert("Reset link sent!", 'success');
                 showMainAuth();
-            }).catch(e => show3DAlert("Error: " + e.message, 'error'));
+            }).catch(e => {
+                if(e.code === 'auth/user-not-found') show3DAlert("Email not registered", 'error');
+                else if(e.code === 'auth/invalid-email') show3DAlert("Incorrect Email ID", 'error');
+                else show3DAlert("Error: " + e.message, 'error');
+            });
         } else {
             show3DAlert("Please Enter Email Address", 'error');
         }
@@ -1347,7 +1437,14 @@
     function emailLogin() { 
         const e=document.getElementById('email').value, p=document.getElementById('pass').value; 
         if(e&&p) {
-            auth.signInWithEmailAndPassword(e,p).catch(e => show3DAlert("Login Failed: " + e.message, 'error')); 
+            auth.signInWithEmailAndPassword(e,p)
+            .then(() => show3DAlert("Login Successful!", "success"))
+            .catch(e => {
+                let msg = e.message;
+                if(e.code === 'auth/wrong-password') msg = "Incorrect Password!";
+                if(e.code === 'auth/user-not-found') msg = "User not found. Please Signup.";
+                show3DAlert(msg, 'error');
+            }); 
         } else {
             show3DAlert("Enter Email and Password", 'error');
         }
@@ -1356,32 +1453,60 @@
     function emailSignup() { 
         const e=document.getElementById('email').value, p=document.getElementById('pass').value; 
         if(e&&p) {
-            auth.createUserWithEmailAndPassword(e,p).catch(e => show3DAlert("Signup Failed: " + e.message, 'error')); 
+            auth.createUserWithEmailAndPassword(e,p)
+            .then(() => show3DAlert("Signup Successful!", "success"))
+            .catch(e => show3DAlert("Signup Failed: " + e.message, 'error')); 
         } else {
             show3DAlert("Enter details correctly", 'error');
         }
     }
     
     function loginGoogle() { 
-        auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => {
+        auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+        .then(() => show3DAlert("Google Login Successful!", "success"))
+        .catch(e => {
             if(e.code === 'auth/operation-not-allowed') show3DAlert('Enable Google Sign-In in Firebase Console', 'error');
             else show3DAlert("Google Error: " + e.message, 'error');
         }); 
     }
     
-    function showPhoneAuth() { document.getElementById('main-auth-box').style.display='none'; document.getElementById('phone-auth-box').style.display='block'; if(!window.recaptchaVerifier) window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container',{'size':'normal'}); window.recaptchaVerifier.render(); }
+    function showPhoneAuth() { 
+        document.getElementById('main-auth-box').style.display='none'; 
+        document.getElementById('phone-auth-box').style.display='block'; 
+        // Reset Recaptcha
+        document.getElementById('recaptcha-container').innerHTML = '';
+        if(window.recaptchaVerifier) window.recaptchaVerifier.clear();
+        
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            'size': 'normal',
+            'callback': (response) => {
+                // reCAPTCHA solved, allow signInWithPhoneNumber.
+            }
+        });
+        window.recaptchaVerifier.render(); 
+    }
     
     function sendOTP() { 
         const p=document.getElementById('phone-number').value; 
         auth.signInWithPhoneNumber(p,window.recaptchaVerifier).then(r=>{
-            window.confirmationResult=r; document.getElementById('phone-step-1').style.display='none'; document.getElementById('phone-step-2').style.display='block';
+            window.confirmationResult=r; 
+            document.getElementById('phone-step-1').style.display='none'; 
+            document.getElementById('phone-step-2').style.display='block';
+            show3DAlert("OTP Sent!", "success");
         }).catch(e => {
             if(e.code === 'auth/operation-not-allowed') show3DAlert('Enable Phone Auth in Firebase Console', 'error');
+            else if(e.code === 'auth/invalid-phone-number') show3DAlert("Incorrect Number", 'error');
             else show3DAlert("OTP Error: " + e.message, 'error');
         }); 
     }
     
-    function verifyOTP() { const c=document.getElementById('otp-input').value; window.confirmationResult.confirm(c).then(()=>{ show3DAlert("Phone Verified!", "success"); }).catch(e=>show3DAlert('Invalid OTP entered', 'error')); }
+    function verifyOTP() { 
+        const c=document.getElementById('otp-input').value; 
+        window.confirmationResult.confirm(c)
+        .then(()=>{ show3DAlert("Phone Verified!", "success"); })
+        .catch(e=>show3DAlert('Invalid OTP entered', 'error')); 
+    }
+
     function showMainAuth() { document.getElementById('main-auth-box').style.display='block'; document.getElementById('phone-auth-box').style.display='none'; document.getElementById('admin-login-box').style.display='none'; document.getElementById('forgot-password-box').style.display='none'; }
     function showAdminLogin() { document.getElementById('main-auth-box').style.display='none'; document.getElementById('admin-login-box').style.display='block'; }
 
@@ -1477,6 +1602,7 @@
         if(viewId === 'view-profile') document.getElementById('btn-profile').classList.add('active');
         if(viewId === 'view-rank-board') { loadAdminTestsForDropdown('rb-test-select'); } 
         if(viewId === 'view-help') { document.getElementById('btn-chat').classList.add('active'); }
+        if(viewId === 'view-share') { renderShareLinksUser(); }
     }
 
     // --- CHAT SYSTEM (WHATSAPP STYLE) ---
@@ -1652,8 +1778,11 @@
     function closeAdminChat() {
         document.getElementById('admin-chat-conversation-view').style.display = 'none';
         document.getElementById('admin-chat-list-view').style.display = 'flex';
-        // Restore Header
-        document.getElementById('app-header').style.display = 'flex';
+        // Restore Header (but only if not in "live-chat" list view mode, which hides it)
+        // Since we are going back to the list view, and list view hides header, keep it hidden or restore based on logic.
+        // Actually, the request says "Admin Panel ka header nahi dikhna chahiye" in Chat List Page.
+        // So we keep app-header hidden while in chat tab.
+        // document.getElementById('app-header').style.display = 'flex'; 
         activeChatUser = null;
     }
 
@@ -1918,9 +2047,11 @@
         });
     }
 
-    window.openReview = (tid) => {
-        db.ref(`results/${tid}/${currentUser.uid}/review`).once('value', s=>{
-            if(!s.exists()) { show3DAlert("Review not available for this old test", 'error'); return; }
+    // MODIFIED openReview to support Admin Access
+    window.openReview = (tid, targetUid = null) => {
+        const uid = targetUid || currentUser.uid;
+        db.ref(`results/${tid}/${uid}/review`).once('value', s=>{
+            if(!s.exists()) { show3DAlert("Review not available", 'error'); return; }
             const data = s.val();
             const con = document.getElementById('review-container'); con.innerHTML = "";
             data.forEach((item, idx) => {
@@ -1938,8 +2069,25 @@
                     <div class="review-ans ans-correct">Correct Answer: ${corAns}</div>
                 </div>`;
             });
+            
+            // Clean view logic for Admin
+            if(isAdmin) {
+                document.getElementById('view-admin').style.display = 'none';
+            }
+            
             nav('view-review-answers');
         });
+    }
+
+    function goBackFromReview() {
+        if(isAdmin) {
+            // Return to Admin Dashboard
+            document.getElementById('view-admin').style.display = 'block';
+            nav('view-admin');
+            switchAdminTab('results');
+        } else {
+            nav('view-results-history');
+        }
     }
 
     window.openMarksheet = (uid, tid) => {
@@ -1950,6 +2098,11 @@
 
          // Switch to clean marksheet view
          nav('view-marksheet');
+
+         // Force Update Marksheet Data from App Settings
+         document.getElementById('ms-app-name').innerText = appSettings.name;
+         document.getElementById('ms-watermark-name').innerText = appSettings.name;
+         if(appSettings.marksheetLogo) document.getElementById('ms-logo-img').src = appSettings.marksheetLogo;
 
          db.ref(`users/${uid}`).once('value', u=>{ const user=u.val();
             db.ref(`results/${tid}/${uid}`).once('value', r=>{ const res=r.val();
@@ -2010,7 +2163,18 @@
     }
 
     // --- ADMIN FUNCS ---
-    function switchAdminTab(t){ document.querySelectorAll('.admin-tab').forEach(e=>e.style.display='none'); document.getElementById('adm-'+t).style.display='block'; 
+    function switchAdminTab(t){ 
+        document.querySelectorAll('.admin-tab').forEach(e=>e.style.display='none'); 
+        document.getElementById('adm-'+t).style.display='block'; 
+        
+        // Hide Main App Header when in Live Chat Tab (as requested)
+        if(t === 'live-chat') {
+            document.getElementById('app-header').style.display = 'none';
+        } else {
+            // If we are logged in as admin, ensure header is visible for other tabs
+             document.getElementById('app-header').style.display = 'flex';
+        }
+
         if(t=='add-test') loadTopicsForDropdown('at-list-select');
         if(t=='view-questions') loadTopicsForDropdown('vq-test-select');
         if(t.includes('results') || t.includes('rank')) loadAdminTestsForDropdown('res-test-select');
@@ -2020,6 +2184,30 @@
         if(t=='manage-content') loadManageContent();
         if(t=='notifications') loadManageNotifs();
         if(t=='page-builder') renderAdminPageList();
+        if(t=='manage-share-links') loadShareLinksAdmin();
+        if(t=='settings') populateAdminSettingsInputs(); // NEW: Populate inputs
+    }
+
+    function populateAdminSettingsInputs() {
+        if(!document.getElementById('set-app-name')) return;
+        // Populate inputs from global appSettings
+        document.getElementById('set-app-name').value = appSettings.name || '';
+        document.getElementById('set-fcm-key').value = appSettings.fcmKey || '';
+        document.getElementById('set-logo').value = appSettings.logo || '';
+        document.getElementById('set-sheet-logo').value = appSettings.marksheetLogo || '';
+        document.getElementById('set-footer-logo').value = appSettings.footerLogo || '';
+        document.getElementById('set-qr').value = appSettings.qrCode || '';
+        document.getElementById('set-app-link').value = appSettings.appLink || '';
+        document.getElementById('set-web-link').value = appSettings.webLink || '';
+        document.getElementById('set-copyright').value = appSettings.copyright || '';
+        
+        // Populate Social
+        document.getElementById('set-fb').value = appSettings.fb || '';
+        document.getElementById('set-wa').value = appSettings.wa || '';
+        document.getElementById('set-tg').value = appSettings.tg || '';
+        document.getElementById('set-in').value = appSettings.in || '';
+        document.getElementById('set-tw').value = appSettings.tw || '';
+        document.getElementById('set-yt').value = appSettings.yt || '';
     }
 
     // CONTENT MANAGEMENT (LIVE/PDF/VIDEO)
@@ -2102,14 +2290,15 @@
         // Basic check for Zoom
         if(url.includes("zoom.us")) return "ZOOM";
 
-        // Regex to handle youtu.be, youtube.com/watch, embed, shorts, etc.
-        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        // Regex to handle youtu.be, , embed, live, shorts
+        // Updated regex to support /live/
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(live\/))\??v?=?([^#&?]*).*/;
         const match = url.match(regExp);
 
-        if (match && match[7].length == 11) {
-            return 'https://www.youtube.com/embed/' + match[7];
+        if (match && match[8].length == 11) {
+            return 'https://www.youtube.com/embed/' + match[8];
         }
-        return url; // Fallback if not standard YouTube
+        return url; // Fallback if not standard YouTube (e.g. Google Drive)
     }
 
     function playVideo(title, url, contextKey) {
@@ -2121,9 +2310,9 @@
         nav('view-live-class-room');
         const embedUrl = getEmbedUrl(url);
         
-        // Added allow attributes for better playback support
+        // Fixed: Ensure the iframe loads and isn't blank
         document.getElementById('live-player-container').innerHTML = `
-            <iframe src="${embedUrl}?rel=0&modestbranding=1" 
+            <iframe src="${embedUrl}?rel=0&modestbranding=1&autoplay=1" 
                     frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                     allowfullscreen>
@@ -2284,6 +2473,11 @@
         const settingsData = {
             name: n, fcmKey: fcm,
             logo: document.getElementById('set-logo').value,
+            marksheetLogo: document.getElementById('set-sheet-logo').value,
+            footerLogo: document.getElementById('set-footer-logo').value, // NEW FIELD
+            qrCode: document.getElementById('set-qr').value,
+            appLink: document.getElementById('set-app-link').value,
+            webLink: document.getElementById('set-web-link').value,
             copyright: document.getElementById('set-copyright').value,
             fb: document.getElementById('set-fb').value,
             wa: document.getElementById('set-wa').value,
@@ -2333,6 +2527,44 @@
     }
     window.delNotif = (path, key) => db.ref(path + '/' + key).remove().then(()=>loadManageNotifs());
 
+    // --- SHARE LINKS FUNCTIONS ---
+    function addShareLink() {
+        const title = document.getElementById('sl-title').value;
+        const url = document.getElementById('sl-url').value;
+        const icon = document.getElementById('sl-icon').value || 'fa fa-link';
+        if(title && url) {
+            db.ref('settings/share_links').push({title, url, icon}).then(()=>{
+                show3DAlert("Link Added!", 'success');
+                document.getElementById('sl-title').value = '';
+                document.getElementById('sl-url').value = '';
+                loadShareLinksAdmin();
+            });
+        }
+    }
+    function deleteShareLink(key) {
+        if(confirm("Delete Link?")) db.ref('settings/share_links/'+key).remove().then(()=>loadShareLinksAdmin());
+    }
+    function loadShareLinksAdmin() {
+        const div = document.getElementById('admin-share-links-list');
+        div.innerHTML = "Loading...";
+        db.ref('settings/share_links').once('value', s => {
+            const d = s.val(); div.innerHTML = "";
+            if(d) Object.keys(d).forEach(k => {
+                div.innerHTML += `<div class="result-list-item" style="justify-content:space-between;"><div><i class="${d[k].icon}"></i> ${d[k].title}</div><button class="btn-3d btn-danger" onclick="deleteShareLink('${k}')">Del</button></div>`;
+            });
+        });
+    }
+    function renderShareLinksUser() {
+        const div = document.getElementById('share-page-links');
+        div.innerHTML = "";
+        db.ref('settings/share_links').once('value', s => {
+            const d = s.val();
+            if(d) Object.values(d).forEach(l => {
+                div.innerHTML += `<button class="btn-3d" onclick="window.open('${l.url}', '_blank')" style="width:100%; text-align:left;"><i class="${l.icon}" style="margin-right:10px;"></i> ${l.title}</button>`;
+            });
+        });
+    }
+
     // Other Admin Helpers
     function loadTopicsForDropdown(elemId) {
         const s = document.getElementById(elemId); s.innerHTML = '<option value="">Select Topic List</option>';
@@ -2369,9 +2601,22 @@
         const area = document.getElementById('questions-list-area'); area.innerHTML="Loading...";
         db.ref('question_pool/'+listName).once('value', s=>{
             area.innerHTML=""; if(!s.exists()){ area.innerHTML="Empty List"; return; }
-            let i=1; s.forEach(qS=>{ const q=qS.val(); area.innerHTML+=`<div class="result-list-item" style="display:block;"><strong>Q${i}:</strong> ${q.text}<br><small>Ans: ${q.correct}</small></div>`; i++; });
+            let i=1; 
+            s.forEach(qS=>{ 
+                const q=qS.val(); 
+                // ADDED DELETE BUTTON
+                area.innerHTML+=`<div class="result-list-item" style="display:block; position:relative;">
+                    <strong>Q${i}:</strong> ${q.text}<br><small>Ans: ${q.correct}</small>
+                    <button class="btn-3d btn-danger" style="position:absolute; right:10px; top:10px; padding:5px 10px; font-size:10px;" onclick="deleteQuestion('${listName}', '${qS.key}')">Del</button>
+                </div>`; 
+                i++; 
+            });
         });
     }
+    window.deleteQuestion = (list, key) => {
+        if(confirm("Delete this question?")) db.ref('question_pool/'+list+'/'+key).remove().then(()=>loadQuestionsList());
+    }
+
     function loadAdminTestsForDropdown(elemId){ 
         const s = document.getElementById(elemId); if(!s) return; s.innerHTML='<option value="">Select Test</option>'; 
         db.ref('tests').once('value', vSnap=>{ vSnap.forEach(x=>{ s.innerHTML+=`<option value="${x.key}">${x.val().title}</option>`; }) }); 
@@ -2387,6 +2632,16 @@
         loadManageTests();
     }); }
 
+    // NEW FUNCTION: Exit Admin Chat Mode Correctly
+    function exitAdminChatMode() {
+        // Hide the chat tab
+        document.getElementById('adm-live-chat').style.display = 'none';
+        // Ensure Main Header is visible
+        document.getElementById('app-header').style.display = 'flex';
+        // Go back to first tab or re-render
+        switchAdminTab('add-test');
+    }
+
     // Init Logic
     loadHomeSlider();
 
@@ -2401,7 +2656,14 @@
                 if(!res) { div.innerHTML='No results found'; return; } 
                 Object.keys(res).forEach(uid => { 
                     const r=res[uid]; const u=users[uid]||{name:'Unknown', fatherName:'--'}; 
-                    div.innerHTML += `<div class="result-list-item" onclick="openMarksheet('${uid}','${tid}')"><img src="${u.photo || 'https://via.placeholder.com/50'}" class="res-thumb"><div><b>${u.name}</b><br>Correct: ${r.score}</div><button class="btn-3d" style="margin-left:auto;">Sheet</button></div>`; 
+                    // UPDATED TO SHOW CORRECT/WRONG & ADDED REVIEW BUTTON
+                    div.innerHTML += `<div class="result-list-item">
+                        <div style="flex:1" onclick="openMarksheet('${uid}','${tid}')">
+                            <b>${u.name}</b><br>Score: ${r.score} | C: ${r.score} | W: ${r.wrong}
+                        </div>
+                        <button class="btn-3d" style="padding:5px;" onclick="openReview('${tid}', '${uid}')">Review</button>
+                        <button class="btn-3d" style="padding:5px; margin-left:5px;" onclick="openMarksheet('${uid}','${tid}')">Sheet</button>
+                    </div>`; 
                 }); 
             }); 
         }); 
