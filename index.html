@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Version Control Metadata -->
-    <meta name="version" content="5.1"> 
+    <meta name="version" content="5.3"> 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -32,7 +32,7 @@
             --shadow-inset: inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff;
             --success-grad: linear-gradient(145deg, #2ecc71, #27ae60);
             
-            /* UPDATED CHAT THEME (Clean Light Theme) */
+            /* CHAT THEME */
             --chat-bg: #e5ddd5;
             --chat-header-bg: #ffffff;
             --chat-sent-bg: #4e54c8;
@@ -97,6 +97,7 @@
         #login-logo-img {
             width: 180px; height: 180px; object-fit: contain; margin-bottom: 20px;
             filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+            background: transparent;
         }
         
         /* --- HEADER --- */
@@ -134,21 +135,21 @@
         }
         .sb-item:active { transform: scale(0.98); }
         
-        /* Sidebar Footer (UPDATED FOR FULL CIRCLE LOGO) */
+        /* Sidebar Footer (FIXED LOGO SIZE) */
         .sb-footer { padding: 15px; text-align: center; border-top: 1px solid #ddd; background: #fdfdfd; margin-top: auto; }
         .sb-f-logo-bg { 
-            width: 50px; height: 50px; /* Increased Size */
+            width: 60px; height: 60px; /* Explicit size */
             background: white; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
-            margin: 0 auto 5px auto; 
+            margin: 0 auto 10px auto; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
             border: 2px solid #eee; 
-            overflow: hidden; /* Important for full circle */
-            padding: 0; /* Remove padding */
+            overflow: hidden; /* Ensure image stays inside circle */
+            padding: 0;
         }
         .sb-f-logo-img { 
             width: 100%; height: 100%; 
-            object-fit: cover; /* Fills the circle */
+            object-fit: cover; /* Cover entire circle */
             display: block; 
         }
         .sb-f-desc { font-size: 9px; color: #666; margin-bottom: 8px; font-weight: 500; line-height: 1.2; }
@@ -214,70 +215,30 @@
         .tc-info i { width: 15px; text-align: center; color: var(--primary); }
         .tc-btn { padding: 8px 20px; border-radius: 25px; border: none; font-weight: 600; font-size: 12px; cursor: pointer; background: var(--primary); color: white; box-shadow: 0 3px 10px rgba(78, 84, 200, 0.3); }
 
-        /* --- NEW CHAT STYLE (THEME MATCHING) --- */
-        .wa-container {
-            display: flex; flex-direction: column; height: 100%; 
-            background: #f0f2f5; 
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
-        }
-        .wa-header {
-            background: var(--primary); color: white; padding: 10px 15px;
-            display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
+        /* --- NEW CHAT STYLE --- */
+        .wa-container { display: flex; flex-direction: column; height: 100%; background: #f0f2f5; position: fixed; top: 0; left: 0; width: 100%; z-index: 2000; }
+        .wa-header { background: var(--primary); color: white; padding: 10px 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
         .wa-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #ccc; border: 2px solid white; }
         .wa-info { flex: 1; display: flex; flex-direction: column; }
         .wa-name { font-weight: 600; font-size: 16px; color: white; }
         .wa-status { font-size: 11px; opacity: 0.9; color: #eee; }
         .wa-icons { display: flex; gap: 20px; font-size: 18px; color: white; }
-        .wa-body {
-            flex: 1; overflow-y: auto; padding: 15px; 
-            background-color: #f0f2f5;
-            background-image: linear-gradient(#e6e9f0 1px, transparent 1px), linear-gradient(90deg, #e6e9f0 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-        .wa-bubble {
-            max-width: 75%; padding: 10px 14px; border-radius: 12px; margin-bottom: 8px;
-            font-size: 14px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            word-wrap: break-word;
-        }
-        .wa-sent { 
-            background: var(--chat-sent-bg); 
-            color: var(--chat-sent-text); 
-            align-self: flex-end; margin-left: auto; border-bottom-right-radius: 2px; 
-        }
-        .wa-received { 
-            background: var(--chat-recv-bg); 
-            color: var(--chat-recv-text); 
-            align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #eee;
-        }
+        .wa-body { flex: 1; overflow-y: auto; padding: 15px; background-color: #f0f2f5; background-image: linear-gradient(#e6e9f0 1px, transparent 1px), linear-gradient(90deg, #e6e9f0 1px, transparent 1px); background-size: 20px 20px; }
+        .wa-bubble { max-width: 75%; padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; font-size: 14px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-wrap: break-word; }
+        .wa-sent { background: var(--chat-sent-bg); color: var(--chat-sent-text); align-self: flex-end; margin-left: auto; border-bottom-right-radius: 2px; }
+        .wa-received { background: var(--chat-recv-bg); color: var(--chat-recv-text); align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #eee; }
         .wa-meta { display: flex; justify-content: flex-end; align-items: center; gap: 3px; margin-top: 4px; }
         .wa-time { font-size: 9px; opacity: 0.7; }
         .wa-tick { font-size: 10px; color: rgba(255,255,255,0.7); }
         .wa-sent .wa-tick { color: rgba(255,255,255,0.8); }
         .wa-received .wa-time { color: #888; }
-        
-        .wa-footer {
-            background: white; padding: 10px; display: flex; align-items: center; gap: 10px;
-            flex-shrink: 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
-        }
-        .wa-input {
-            flex: 1; width: 0; border: 1px solid #ddd; padding: 10px 15px; border-radius: 25px; 
-            outline: none; font-size: 15px; background: #f9f9f9; color: #333;
-        }
-        .wa-btn-round {
-            width: 45px; height: 45px; background: var(--primary); color: white;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 18px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            flex-shrink: 0;
-        }
+        .wa-footer { background: white; padding: 10px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
+        .wa-input { flex: 1; width: 0; border: 1px solid #ddd; padding: 10px 15px; border-radius: 25px; outline: none; font-size: 15px; background: #f9f9f9; color: #333; }
+        .wa-btn-round { width: 45px; height: 45px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); flex-shrink: 0; }
 
-        /* --- ADMIN LIST VIEW (CLEAN STYLE) --- */
+        /* --- ADMIN LIST VIEW --- */
         .wa-list-container { background: white; height: 100%; overflow-y: auto; }
-        .wa-list-item {
-            display: flex; align-items: center; padding: 15px;
-            border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: 0.2s;
-        }
+        .wa-list-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: 0.2s; }
         .wa-list-item:hover { background: #f9f9f9; }
         .wa-list-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 2px solid #eee; }
         .wa-list-content { flex: 1; }
@@ -287,41 +248,19 @@
         .wa-list-time { color: #999; font-size: 11px; margin-bottom: 5px; }
 
         /* --- ADVANCED TEST UI --- */
-        .test-3d-bg {
-            background: #f0f2f5; height: 100vh; width: 100%; position: fixed; top: 0; left: 0; z-index: 2000;
-            display: flex; flex-direction: column;
-        }
-        .test-header-sticky {
-            background: white; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between; align-items: center; z-index: 10;
-        }
-        .test-timer-badge {
-            background: #e74c3c; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;
-            display: flex; align-items: center; gap: 5px; box-shadow: 0 3px 8px rgba(231, 76, 60, 0.3);
-        }
+        .test-3d-bg { background: #f0f2f5; height: 100vh; width: 100%; position: fixed; top: 0; left: 0; z-index: 2000; display: flex; flex-direction: column; }
+        .test-header-sticky { background: white; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .test-timer-badge { background: #e74c3c; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px; box-shadow: 0 3px 8px rgba(231, 76, 60, 0.3); }
         .test-scroll-area { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; }
-        .question-card-pro {
-            background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #eee;
-        }
+        .question-card-pro { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
         .q-text-pro { font-size: 16px; font-weight: 600; color: #333; line-height: 1.6; margin-bottom: 20px; }
-        .opt-btn-pro {
-            display: block; width: 100%; padding: 15px; margin-bottom: 10px; border: 2px solid #f0f2f5;
-            border-radius: 10px; background: white; color: #555; font-weight: 500; text-align: left;
-            cursor: pointer; transition: 0.2s;
-        }
+        .opt-btn-pro { display: block; width: 100%; padding: 15px; margin-bottom: 10px; border: 2px solid #f0f2f5; border-radius: 10px; background: white; color: #555; font-weight: 500; text-align: left; cursor: pointer; transition: 0.2s; }
         .opt-btn-pro:hover { background: #f9f9f9; border-color: #ddd; }
         .opt-btn-pro.selected-opt { border-color: var(--primary); background: #eef2ff; color: var(--primary); font-weight: bold; }
-        .test-footer-fixed {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
-        }
+        .test-footer-fixed { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
 
         /* --- REVIEW PAGE DESIGN --- */
-        .review-card {
-            background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid #ccc;
-        }
+        .review-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid #ccc; }
         .review-card.correct { border-left-color: #2ecc71; }
         .review-card.wrong { border-left-color: #e74c3c; }
         .review-q { font-weight: 600; margin-bottom: 10px; color: #333; }
@@ -330,42 +269,22 @@
         .ans-correct { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; font-weight: 600; }
         .ans-wrong { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
 
-        /* --- PROFESSIONAL MARKSHEET --- */
-        .marksheet-header {
-            position: fixed; top: 0; left: 0; width: 100%; height: 60px;
-            background: white; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 2000;
-        }
-        .marksheet-body {
-            padding-top: 70px; padding-bottom: 20px; overflow-y: auto; height: 100vh;
-        }
+        /* --- PROFESSIONAL MARKSHEET & ANSWER KEY --- */
+        .marksheet-header { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 2000; }
+        .marksheet-body { padding-top: 70px; padding-bottom: 20px; overflow-y: auto; height: 100vh; }
         
-        .report-paper { 
-            width: 100%; max-width: 210mm; min-height: 297mm; background: #fff; position: relative;
-            padding: 20px; margin: 0 auto; border: 1px solid #ccc; box-sizing: border-box; box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
+        .report-paper { width: 100%; max-width: 210mm; min-height: 297mm; background: #fff; position: relative; padding: 20px; margin: 0 auto; border: 1px solid #ccc; box-sizing: border-box; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
         .report-border { border: 5px double #333; padding: 10px; box-sizing: border-box; width: 100%; height: 100%; min-height: 280mm; }
         .report-inner-border { border: 2px solid #666; padding: 20px; box-sizing: border-box; position: relative; width: 100%; height: 100%; }
-        .watermark {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 8vw; opacity: 0.05; font-weight: bold; pointer-events: none; text-transform: uppercase; white-space: nowrap;
-        }
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 8vw; opacity: 0.05; font-weight: bold; pointer-events: none; text-transform: uppercase; white-space: nowrap; }
         .sheet-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
         .sheet-header h1 { font-family: 'Playfair Display', serif; font-size: 24px; color: #333; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
         .sheet-header p { margin: 5px 0 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
         
         /* List Items */
-        .result-list-item { 
-            background: white; margin-bottom: 10px; border-radius: 10px; 
-            padding: 10px; display: flex; align-items: center; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        .result-list-item { background: white; margin-bottom: 10px; border-radius: 10px; padding: 10px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .res-thumb { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 2px solid var(--primary); }
-        .rank-badge {
-            width: 30px; height: 30px; border-radius: 50%; color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; margin-right: 10px; flex-shrink: 0; font-size: 12px;
-        }
+        .rank-badge { width: 30px; height: 30px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; flex-shrink: 0; font-size: 12px; }
 
         /* Dynamic Page View */
         .dynamic-content { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); min-height: 400px; font-size: 14px; line-height: 1.6; color: #333; }
@@ -380,11 +299,7 @@
         .key-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px; }
         .math-key { padding: 10px 15px; background: white; border-radius: 5px; cursor: pointer; font-weight: bold; min-width: 40px; text-align: center; color: black; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
         .admin-kb-toggle { background: var(--primary); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        #notif-modal {
-            position: fixed; top: 60px; right: 10px; width: 300px; background: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 10px; z-index: 5000;
-            display: none; max-height: 400px; overflow-y: auto;
-        }
+        #notif-modal { position: fixed; top: 60px; right: 10px; width: 300px; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 10px; z-index: 5000; display: none; max-height: 400px; overflow-y: auto; }
         .notif-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
         .notif-item:hover { background: #f9f9f9; }
 
@@ -393,68 +308,96 @@
         .editor-btn { background: white; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
         #editor-content { width: 100%; min-height: 250px; background: white; border-radius: 8px; padding: 15px; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05); outline: none; margin-bottom: 15px; }
 
-        /* --- RESPONSIVE MARKSHEET FIX --- */
+        /* --- RESPONSIVE MARKSHEET & ANSWER KEY FIX --- */
         @media screen and (max-width: 768px) {
             .report-paper { width: 100%; max-width: 100%; min-height: auto; height: auto; padding: 10px; zoom: 0.65; }
             .report-border { min-height: auto; }
             .report-inner-border { min-height: auto; }
         }
 
-        /* --- PRINT A4 (IMPROVED FOR PDF - FULL PAGE FIX) --- */
+        /* --- PRINT A4 (FIXED FOR FULL SCREEN & BORDERS) --- */
         @media print {
             body * { visibility: hidden; }
-            @page { size: A4; margin: 0; }
-            .report-paper {
-                width: 100%; height: 100%; position: absolute; left: 0; top: 0;
-                margin: 0; border: none; box-shadow: none; padding: 0;
-                transform: scale(0.95); transform-origin: top center;
-                page-break-inside: avoid;
-            }
-            .report-border { width: 100%; height: 100%; border: 5px double #333; box-sizing: border-box; padding: 5mm; }
-            .report-inner-border { width: 100%; height: 100%; border: 2px solid #666; box-sizing: border-box; padding: 10mm; }
+            body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: white; }
             
-            #view-marksheet, #view-marksheet * { visibility: visible; }
-            .marksheet-header { display: none !important; }
-            .marksheet-body { padding: 0 !important; height: 100% !important; overflow: visible !important; }
-            #view-marksheet { 
-                position: absolute; left: 0; top: 0; width: 100%; height: 100%; margin: 0; padding: 0; 
-                background: white; display: block !important; z-index: 9999; 
-                -webkit-print-color-adjust: exact !important; 
-                print-color-adjust: exact !important;
+            /* General Print Container (Marksheet & Answer Key) */
+            .view-container.active { 
+                display: block !important; 
+                padding: 0 !important; 
+                margin: 0 !important; 
+                width: 100%; 
+                height: auto; 
+                overflow: visible !important;
             }
-            .sheet-header h1 { font-size: 36px; }
-            .watermark { font-size: 80px; opacity: 0.1; }
-            .btn-3d { display: none !important; }
-            .sidebar, .app-header, .bottom-nav { display: none !important; }
+            
+            /* Target Report Paper */
+            .report-paper {
+                visibility: visible;
+                position: relative;
+                width: 100%; 
+                max-width: 100%;
+                margin: 0; 
+                padding: 0; 
+                border: none; 
+                box-shadow: none;
+                transform: none;
+            }
+
+            /* --- BORDER ON EVERY PAGE TRICK --- */
+            /* We use a fixed position div that repeats on every print page */
+            .print-border-overlay {
+                visibility: visible;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: 5px double #333;
+                box-sizing: border-box;
+                z-index: 1000;
+                pointer-events: none; /* Let clicks pass through */
+                margin: 0;
+                padding: 5mm; /* Space between outer border and page edge */
+            }
+            
+            .report-border, .report-inner-border {
+                border: none !important; /* Remove original borders in print mode */
+                padding: 15mm !important; /* Add padding to content to sit inside the fixed border */
+                width: 100%;
+                height: auto;
+            }
+
+            /* Hide Headers/Footers */
+            .marksheet-header, .sidebar, .app-header, .bottom-nav, .btn-3d { display: none !important; }
+            
+            /* Make Content Visible */
+            #view-marksheet, #view-marksheet * { visibility: visible; }
+            #view-answer-key, #view-answer-key * { visibility: visible; }
         }
 
         /* --- LIVE CLASS ROOM --- */
-        .video-container {
-            width: 100%; 
-            position: relative; 
-            background: black;
-            /* Flex Fix for Blank Page */
-            flex: 1; 
-            min-height: 250px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
+        .video-container { width: 100%; position: relative; background: black; flex: 1; min-height: 250px; display: flex; align-items: center; justify-content: center; }
+        .video-container iframe { width: 100%; height: 100%; border:none; }
+        .live-chat-box { flex: 1; display: flex; flex-direction: column; background: #fff; border-top: 1px solid #ccc; }
+        .live-msgs { flex: 1; overflow-y: auto; padding: 10px; background: #f9f9f9; }
+        .live-chat-input-area { padding: 10px; display: flex; gap: 10px; border-top: 1px solid #eee; }
+        .live-chat-bubble { background: white; padding: 5px 10px; border-radius: 10px; margin-bottom: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); font-size: 13px; }
+
+        /* --- ANSWER KEY PRINT STYLES --- */
+        .ak-question { 
+            margin-bottom: 15px; 
+            page-break-inside: avoid; /* Prevent splitting question */
+            break-inside: avoid;
+            border-bottom: 1px dashed #ccc; 
+            padding-bottom: 10px; 
+            /* Fix overflow */
+            word-wrap: break-word; 
+            overflow-wrap: break-word; 
+            width: 100%;
         }
-        .video-container iframe {
-            width: 100%; height: 100%; border:none;
-        }
-        .live-chat-box {
-            flex: 1; display: flex; flex-direction: column; background: #fff; border-top: 1px solid #ccc;
-        }
-        .live-msgs {
-            flex: 1; overflow-y: auto; padding: 10px; background: #f9f9f9;
-        }
-        .live-chat-input-area {
-            padding: 10px; display: flex; gap: 10px; border-top: 1px solid #eee;
-        }
-        .live-chat-bubble {
-            background: white; padding: 5px 10px; border-radius: 10px; margin-bottom: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); font-size: 13px;
-        }
+        .ak-q-text { font-weight: bold; margin-bottom: 5px; color: #000; }
+        .ak-opt { font-size: 12px; margin-left: 15px; color: #333; word-wrap: break-word; }
+        .ak-correct { color: #006400; font-weight: bold; text-decoration: underline; }
 
     </style>
 </head>
@@ -524,7 +467,7 @@
 
         <!-- Sidebar Footer (Inside Scroll) -->
         <div class="sb-footer">
-            <div class="sb-f-logo-bg"><img src="https://via.placeholder.com/50" id="sb-f-logo-img" class="sb-f-logo-img" alt="Logo"></div>
+            <div class="sb-f-logo-bg"><img src="https://via.placeholder.com/50" id="sb-f-logo-img" class="sb-f-logo-img" alt="Logo" onerror="this.src='https://via.placeholder.com/50?text=Logo'"></div>
             <p class="sb-f-desc" id="sb-f-desc-text">Your trusted platform for the best deals.</p>
             <div class="sb-f-social-title">Follow Us On Social Media</div>
             <div class="sb-socials">
@@ -544,8 +487,7 @@
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
     <div style="text-align:center; margin-bottom:10px;">
-        <img id="login-logo-img" src="https://via.placeholder.com/150?text=Logo" alt="App Logo">
-        <!-- REMOVED NAME AND VERSION TEXT HERE -->
+        <img id="login-logo-img" src="https://via.placeholder.com/150?text=Logo" alt="App Logo" onerror="this.src='https://via.placeholder.com/150?text=Logo'">
     </div>
     <div class="auth-box" id="main-auth-box">
         <h3>Login / Signup</h3>
@@ -688,6 +630,27 @@
     <div id="review-container"></div>
 </div>
 
+<!-- ANSWER KEY PRINTABLE VIEW (NEW) -->
+<div id="view-answer-key" class="view-container" style="padding:0;">
+    <div class="marksheet-header">
+        <button class="btn-3d btn-danger" onclick="nav('view-pdf')" style="flex:1; margin-right:5px;"><i class="fa fa-arrow-left"></i> Back</button>
+        <button class="btn-3d btn-success" onclick="printMarksheet()" style="flex:1; margin-left:5px;"><i class="fa fa-download"></i> Print PDF</button>
+    </div>
+    <div class="marksheet-body">
+        <div class="report-paper">
+            <div class="print-border-overlay"></div> <!-- Border Trick -->
+            <div class="report-border"><div class="report-inner-border">
+                <div class="sheet-header">
+                     <img id="ak-logo-img" src="https://via.placeholder.com/100?text=Logo" style="height: 100px; object-fit: contain; margin-bottom: 10px;" onerror="this.style.display='none'">
+                    <h1 id="ak-app-name">ANSWER KEY</h1>
+                    <p id="ak-topic">Test Topic</p>
+                </div>
+                <div id="answer-key-content" style="text-align: left;"></div>
+            </div></div>
+        </div>
+    </div>
+</div>
+
 <!-- DYNAMIC PAGE VIEWER -->
 <div id="view-dynamic-page" class="view-container">
     <div id="dynamic-page-content" class="dynamic-content"></div>
@@ -718,10 +681,11 @@
     </div>
     <div class="marksheet-body">
         <div class="report-paper">
+            <div class="print-border-overlay"></div> <!-- Border Trick -->
             <div class="report-border"><div class="report-inner-border">
                 <div class="watermark" id="ms-watermark-name">FUTURE EDU</div>
                 <div class="sheet-header">
-                    <img id="ms-logo-img" src="https://via.placeholder.com/100?text=Logo" style="height: 130px; object-fit: contain; margin-bottom: 10px;">
+                    <img id="ms-logo-img" src="https://via.placeholder.com/100?text=Logo" style="height: 130px; object-fit: contain; margin-bottom: 10px;" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
                     <h1 id="ms-app-name">FUTURE EDU</h1>
                     <p>Official Achievement Record</p>
                 </div>
@@ -1153,7 +1117,7 @@
 
     let currentUser = null, focusedInput = null;
     let activeChatUser = null; 
-    let appSettings = {name: "Momentum Physics Classes", version: "5.1"}; // Ensure this matches meta tag
+    let appSettings = {name: "Momentum Physics Classes", version: "5.3"}; // Ensure this matches meta tag
     let dynamicPages = [];
     let isAdmin = false;
     let currentLiveKey = null;
@@ -1169,6 +1133,7 @@
                 document.getElementById('page-title').innerText = appSettings.name;
                 document.getElementById('ms-app-name').innerText = appSettings.name;
                 document.getElementById('ms-watermark-name').innerText = appSettings.name;
+                document.getElementById('ak-app-name').innerText = appSettings.name; // Answer Key Title
                 
                 if(appSettings.logo) {
                     document.getElementById('login-logo-img').src = appSettings.logo; // Default login logo
@@ -1182,7 +1147,11 @@
                 }
                 
                 // NEW LOGOS
-                if(appSettings.marksheetLogo) document.getElementById('ms-logo-img').src = appSettings.marksheetLogo;
+                if(appSettings.marksheetLogo) {
+                    document.getElementById('ms-logo-img').src = appSettings.marksheetLogo;
+                    document.getElementById('ak-logo-img').src = appSettings.marksheetLogo;
+                    document.getElementById('ak-logo-img').style.display = 'block';
+                }
                 if(appSettings.copyright) document.getElementById('sb-copyright-text').innerText = appSettings.copyright;
                 if(appSettings.desc) document.getElementById('sb-f-desc-text').innerText = appSettings.desc;
                 
@@ -1564,7 +1533,7 @@
         }
 
         // Special check: If moving AWAY from marksheet or admin, reset/hide things
-        if(viewId !== 'view-marksheet') {
+        if(viewId !== 'view-marksheet' && viewId !== 'view-answer-key') {
             // Ensure Admin View is visible if we are navigating back to it
             if(viewId === 'view-admin') document.getElementById('view-admin').style.display = 'block';
         }
@@ -1579,7 +1548,7 @@
         } else if(viewId === 'view-help') {
             document.getElementById('app-header').style.display = 'none'; // Hide main header for student chat
             document.getElementById('dynamic-header').style.display = 'none';
-        } else if(viewId === 'view-marksheet') {
+        } else if(viewId === 'view-marksheet' || viewId === 'view-answer-key') {
              document.getElementById('app-header').style.display = 'none';
              document.getElementById('dynamic-header').style.display = 'none';
         } else if(viewId === 'view-live-class-room') {
@@ -2185,7 +2154,7 @@
         if(t=='notifications') loadManageNotifs();
         if(t=='page-builder') renderAdminPageList();
         if(t=='manage-share-links') loadShareLinksAdmin();
-        if(t=='settings') populateAdminSettingsInputs(); // NEW: Populate inputs
+        if(t=='settings') populateAdminSettingsInputs(); 
     }
 
     function populateAdminSettingsInputs() {
@@ -2287,283 +2256,166 @@
 
     // STUDENT CONTENT LOADERS
     function getEmbedUrl(url) {
-        // Basic check for Zoom
         if(url.includes("zoom.us")) return "ZOOM";
-
-        // Regex to handle youtu.be, , embed, live, shorts
-        // Updated regex to support /live/
         const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(live\/))\??v?=?([^#&?]*).*/;
         const match = url.match(regExp);
-
-        if (match && match[8].length == 11) {
-            return 'https://www.youtube.com/embed/' + match[8];
-        }
-        return url; // Fallback if not standard YouTube (e.g. Google Drive)
+        if (match && match[8].length == 11) return 'https://www.youtube.com/embed/' + match[8];
+        return url;
     }
 
     function playVideo(title, url, contextKey) {
-        if(url.includes("zoom.us")) {
-            window.open(url, '_blank');
-            return;
-        }
-
+        if(url.includes("zoom.us")) { window.open(url, '_blank'); return; }
         nav('view-live-class-room');
         const embedUrl = getEmbedUrl(url);
-        
-        // Fixed: Ensure the iframe loads and isn't blank
-        document.getElementById('live-player-container').innerHTML = `
-            <iframe src="${embedUrl}?rel=0&modestbranding=1&autoplay=1" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-            </iframe>`;
-        
+        document.getElementById('live-player-container').innerHTML = `<iframe src="${embedUrl}?rel=0&modestbranding=1&autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
         currentLiveKey = contextKey || 'general_chat';
         document.getElementById('live-chat-msgs').innerHTML = "";
-        
-        if (contextKey) {
-            loadLiveChat(contextKey);
-        }
+        if (contextKey) { loadLiveChat(contextKey); }
     }
     
     // LOAD LIVE LIST ONLY
     function loadLiveList() {
         const div = document.getElementById('student-live-only-list');
         div.innerHTML = "Loading...";
-        
         db.ref('content/live').once('value', s => {
-            const data = s.val();
-            div.innerHTML = "";
-            let hasLive = false;
-            
+            const data = s.val(); div.innerHTML = "";
             if(data) {
                 Object.keys(data).forEach(key => {
                     const item = data[key];
                     if(item.isLive) {
-                        hasLive = true;
-                        let actionHtml = '';
-                        if(item.link.includes("zoom.us")) {
-                            actionHtml = `<button class="btn-3d btn-zoom" onclick="window.open('${item.link}', '_blank')">Join Zoom Meeting</button>`;
-                        } else {
-                            actionHtml = `<button class="btn-3d btn-danger" onclick="playVideo('${item.title}', '${item.link}', '${key}')">Watch Stream</button>`;
-                        }
-
-                        div.innerHTML += `
-                        <div class="test-card-pro" style="border-left:5px solid red;">
-                            <div class="tc-header">
-                                <div class="tc-title">${item.title}</div>
-                                <span class="tc-badge badge-live">LIVE</span>
-                            </div>
-                            <div class="tc-body">
-                                <p style="font-size:12px; margin-bottom:10px;">${item.desc || 'Join now!'}</p>
-                                ${actionHtml}
-                            </div>
-                        </div>`;
+                        let actionHtml = item.link.includes("zoom.us") ? `<button class="btn-3d btn-zoom" onclick="window.open('${item.link}', '_blank')">Join Zoom Meeting</button>` : `<button class="btn-3d btn-danger" onclick="playVideo('${item.title}', '${item.link}', '${key}')">Watch Stream</button>`;
+                        div.innerHTML += `<div class="test-card-pro" style="border-left:5px solid red;"><div class="tc-header"><div class="tc-title">${item.title}</div><span class="tc-badge badge-live">LIVE</span></div><div class="tc-body"><p style="font-size:12px; margin-bottom:10px;">${item.desc || 'Join now!'}</p>${actionHtml}</div></div>`;
                     }
                 });
             }
-            
-            if(!hasLive) div.innerHTML = "<div style='padding:20px; color:#888;'>No Live Classes right now. Check Recorded.</div>";
+            if(!div.innerHTML) div.innerHTML = "<div style='padding:20px; color:#888;'>No Live Classes right now.</div>";
         });
     }
 
-    // LOAD RECORDED LIST ONLY
+    // LOAD RECORDED LIST
     function loadRecordedList() {
         const div = document.getElementById('student-video-list');
         div.innerHTML = "Loading...";
-        
-        Promise.all([
-            db.ref('content/live').once('value'),
-            db.ref('content/video').once('value')
-        ]).then(snaps => {
-            div.innerHTML = "";
-            const liveData = snaps[0].val();
-            const videoData = snaps[1].val();
-            let hasContent = false;
-            
-            // Ended Live Streams
-            if(liveData) {
-                Object.keys(liveData).forEach(key => {
-                    const item = liveData[key];
-                    if(!item.isLive) {
-                        hasContent = true;
-                        div.innerHTML += `
-                        <div class="content-item" onclick="playVideo('${item.title}', '${item.link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
-                            <i class="fa fa-history" style="color:gray; margin-right:15px; font-size:20px;"></i>
-                            <div><b>${item.title}</b><br><small>Past Stream</small></div>
-                        </div>`;
-                    }
-                });
-            }
-
-            // Uploaded Videos
-            if(videoData) {
-                Object.keys(videoData).forEach(key => {
-                    const item = videoData[key];
-                    hasContent = true;
-                    div.innerHTML += `
-                    <div class="content-item" onclick="playVideo('${item.title}', '${item.link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
-                        <i class="fa fa-play-circle" style="color:#4e54c8; margin-right:15px; font-size:20px;"></i>
-                        <div><b>${item.title}</b><br><small>${item.desc || 'Video'}</small></div>
-                    </div>`;
-                });
-            }
-
-            if(!hasContent) div.innerHTML = "<div style='padding:20px; color:#888;'>No recorded videos found.</div>";
+        Promise.all([db.ref('content/live').once('value'), db.ref('content/video').once('value')]).then(snaps => {
+            div.innerHTML = ""; const liveData = snaps[0].val(); const videoData = snaps[1].val();
+            if(liveData) Object.keys(liveData).forEach(key => { if(!liveData[key].isLive) div.innerHTML += `<div class="content-item" onclick="playVideo('${liveData[key].title}', '${liveData[key].link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;"><i class="fa fa-history" style="color:gray; margin-right:15px; font-size:20px;"></i><div><b>${liveData[key].title}</b><br><small>Past Stream</small></div></div>`; });
+            if(videoData) Object.keys(videoData).forEach(key => { div.innerHTML += `<div class="content-item" onclick="playVideo('${videoData[key].title}', '${videoData[key].link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;"><i class="fa fa-play-circle" style="color:#4e54c8; margin-right:15px; font-size:20px;"></i><div><b>${videoData[key].title}</b><br><small>${videoData[key].desc || 'Video'}</small></div></div>`; });
+            if(!div.innerHTML) div.innerHTML = "<div style='padding:20px; color:#888;'>No recorded videos found.</div>";
         });
     }
     
-    // JOIN LIVE CLASS SHORTCUT (Takes to List)
-    function joinLiveClass() {
-        nav('view-live-list');
-    }
-
-    function leaveLiveClass() {
-        nav('view-home');
-        document.getElementById('live-player-container').innerHTML = ""; // Stop video
-    }
+    // JOIN LIVE CLASS SHORTCUT
+    function joinLiveClass() { nav('view-live-list'); }
+    function leaveLiveClass() { nav('view-home'); document.getElementById('live-player-container').innerHTML = ""; }
 
     function loadLiveChat(contentKey) {
-        const div = document.getElementById('live-chat-msgs');
-        div.innerHTML = "";
+        const div = document.getElementById('live-chat-msgs'); div.innerHTML = "";
         db.ref(`live_comments/${contentKey}`).off();
         db.ref(`live_comments/${contentKey}`).limitToLast(50).on('child_added', s => {
-            const m = s.val();
-            div.innerHTML += `<div class="live-chat-bubble"><b>${m.name}:</b> ${m.text}</div>`;
-            div.scrollTop = div.scrollHeight;
+            const m = s.val(); div.innerHTML += `<div class="live-chat-bubble"><b>${m.name}:</b> ${m.text}</div>`; div.scrollTop = div.scrollHeight;
         });
     }
 
     function sendLiveComment() {
         const txt = document.getElementById('live-msg-input').value;
         if(txt && currentLiveKey && currentUser) {
-            db.ref(`live_comments/${currentLiveKey}`).push({
-                name: currentUser.displayName || "Student",
-                text: txt,
-                timestamp: Date.now()
-            });
+            db.ref(`live_comments/${currentLiveKey}`).push({ name: currentUser.displayName || "Student", text: txt, timestamp: Date.now() });
             document.getElementById('live-msg-input').value = "";
         }
     }
 
+    // --- PDF & ANSWER KEY LOGIC ---
     function loadPDFs() {
         const div = document.getElementById('student-pdf-list');
         div.innerHTML = "Loading...";
         db.ref('content/pdf').once('value', s => {
-            const data = s.val();
-            div.innerHTML = "";
+            const data = s.val(); div.innerHTML = "";
             if(data) {
                 Object.values(data).forEach(item => {
-                    div.innerHTML += `
-                    <div class="content-item" onclick="window.open('${item.link}', '_blank')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
-                        <i class="fa fa-file-pdf" style="color:#e74c3c; margin-right:15px; font-size:20px;"></i>
-                        <div><b>${item.title}</b><br><small>${item.desc}</small></div>
-                    </div>`;
+                    if(item.link.startsWith('key://')) {
+                        // Answer Key Special Handling
+                        const topic = item.link.replace('key://', '');
+                        div.innerHTML += `<div class="content-item" onclick="openAnswerKeyView('${topic}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px; background:#e8f5e9; border:1px solid #c8e6c9;">
+                            <i class="fa fa-key" style="color:#2e7d32; margin-right:15px; font-size:20px;"></i>
+                            <div><b>${item.title}</b><br><small style="color:#2e7d32;">Click to View Answer Key</small></div>
+                        </div>`;
+                    } else {
+                        // Normal PDF Link
+                        div.innerHTML += `<div class="content-item" onclick="window.open('${item.link}', '_blank')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
+                            <i class="fa fa-file-pdf" style="color:#e74c3c; margin-right:15px; font-size:20px;"></i>
+                            <div><b>${item.title}</b><br><small>${item.desc}</small></div>
+                        </div>`;
+                    }
                 });
-            } else {
-                div.innerHTML = "<div style='padding:20px; color:#888;'>No PDF notes available.</div>";
-            }
+            } else { div.innerHTML = "<div style='padding:20px; color:#888;'>No PDF notes available.</div>"; }
         });
     }
 
-    function saveAppSettings() {
-        const n = document.getElementById('set-app-name').value;
-        const fcm = document.getElementById('set-fcm-key').value;
-        
-        const settingsData = {
-            name: n, fcmKey: fcm,
-            logo: document.getElementById('set-logo').value,
-            marksheetLogo: document.getElementById('set-sheet-logo').value,
-            footerLogo: document.getElementById('set-footer-logo').value, // NEW FIELD
-            qrCode: document.getElementById('set-qr').value,
-            appLink: document.getElementById('set-app-link').value,
-            webLink: document.getElementById('set-web-link').value,
-            copyright: document.getElementById('set-copyright').value,
-            fb: document.getElementById('set-fb').value,
-            wa: document.getElementById('set-wa').value,
-            tg: document.getElementById('set-tg').value,
-            in: document.getElementById('set-in').value,
-            tw: document.getElementById('set-tw').value,
-            yt: document.getElementById('set-yt').value
-        };
-
-        if(n) db.ref('settings/appInfo').update(settingsData).then(()=>show3DAlert("Settings Saved! Reload app.", 'success'));
-    }
-    
-    function saveAdminProfile() {
-        const n = document.getElementById('adm-p-name').value;
-        const ph = document.getElementById('adm-p-phone').value;
-        const pic = document.getElementById('adm-p-photo').value;
-        const sig = document.getElementById('adm-p-sig').value;
-        
-        if(n) db.ref('settings/adminProfile').set({name:n, phone:ph, photo:pic, signature:sig}).then(()=>{
-            show3DAlert("Profile & Signature Updated!", 'success');
-            document.getElementById('sb-name').innerText = n;
-            if(pic) document.getElementById('sb-photo').src = pic;
-        });
-    }
-
-    function loadManageNotifs() {
-        const div = document.getElementById('adm-notif-list');
-        div.innerHTML = "Loading...";
-        let html = "";
-        
-        db.ref('admin_notifications').once('value', s1=>{
-            const msgs = s1.val();
-            if(msgs) Object.keys(msgs).forEach(k => {
-                const m = msgs[k];
-                html += `<div class="result-list-item" style="justify-content:space-between; border-left:4px solid red;"><div><b>Chat Alert:</b> ${m.name}<br>${m.msg}</div><button class="btn-3d btn-danger" onclick="delNotif('admin_notifications', '${k}')">Del</button></div>`;
+    // --- NEW: Publish Answer Key Button Logic (Admin) ---
+    function loadManageTests(){
+        const div=document.getElementById('manage-tests-area'); div.innerHTML="Loading...";
+        db.ref('tests').once('value', s=>{
+            div.innerHTML=""; 
+            s.forEach(t=>{ 
+                const test = t.val();
+                div.innerHTML += `
+                <div class="result-list-item" style="flex-wrap: wrap; gap: 5px;">
+                    <div style="flex:1; min-width: 150px;"><b>${test.title}</b><br><small>${test.listTopic}</small></div>
+                    <button class="btn-3d btn-success" style="padding:5px 10px; font-size:10px;" onclick="publishAnswerKey('${t.key}', '${test.title}', '${test.listTopic}')">Publish Key</button>
+                    <button class="btn-3d btn-danger" style="padding:5px 10px; font-size:10px;" onclick="deleteTest('${t.key}')">Del</button>
+                </div>`; 
             });
+        });
+    }
+
+    window.publishAnswerKey = (testKey, testTitle, listTopic) => {
+        if(confirm(`Publish Answer Key for "${testTitle}" to Study Materials?`)) {
+            const keyTitle = `Answer Key: ${testTitle}`;
+            // Use special protocol key:// to identify internal answer key views
+            const internalLink = `key://${listTopic}`;
             
-            db.ref('notifications').once('value', s2=>{
-                const nots = s2.val();
-                if(nots) Object.keys(nots).forEach(k => {
-                    const n = nots[k];
-                    html += `<div class="result-list-item" style="justify-content:space-between; border-left:4px solid blue;"><div><b>Global:</b> ${n.title}<br>${n.msg}</div><button class="btn-3d btn-danger" onclick="delNotif('notifications', '${k}')">Del</button></div>`;
-                });
-                div.innerHTML = html || "No Notifications found.";
-            });
-        });
-    }
-    window.delNotif = (path, key) => db.ref(path + '/' + key).remove().then(()=>loadManageNotifs());
-
-    // --- SHARE LINKS FUNCTIONS ---
-    function addShareLink() {
-        const title = document.getElementById('sl-title').value;
-        const url = document.getElementById('sl-url').value;
-        const icon = document.getElementById('sl-icon').value || 'fa fa-link';
-        if(title && url) {
-            db.ref('settings/share_links').push({title, url, icon}).then(()=>{
-                show3DAlert("Link Added!", 'success');
-                document.getElementById('sl-title').value = '';
-                document.getElementById('sl-url').value = '';
-                loadShareLinksAdmin();
+            db.ref('content/pdf').push({
+                title: keyTitle,
+                link: internalLink,
+                desc: `Official Solution for ${testTitle}`,
+                timestamp: Date.now()
+            }).then(() => {
+                show3DAlert("Answer Key Published to PDF Section!", "success");
             });
         }
-    }
-    function deleteShareLink(key) {
-        if(confirm("Delete Link?")) db.ref('settings/share_links/'+key).remove().then(()=>loadShareLinksAdmin());
-    }
-    function loadShareLinksAdmin() {
-        const div = document.getElementById('admin-share-links-list');
-        div.innerHTML = "Loading...";
-        db.ref('settings/share_links').once('value', s => {
-            const d = s.val(); div.innerHTML = "";
-            if(d) Object.keys(d).forEach(k => {
-                div.innerHTML += `<div class="result-list-item" style="justify-content:space-between;"><div><i class="${d[k].icon}"></i> ${d[k].title}</div><button class="btn-3d btn-danger" onclick="deleteShareLink('${k}')">Del</button></div>`;
+    };
+
+    // --- NEW: Render Answer Key View (Student) ---
+    window.openAnswerKeyView = (topic) => {
+        nav('view-answer-key');
+        const container = document.getElementById('answer-key-content');
+        container.innerHTML = "Loading Questions...";
+        document.getElementById('ak-topic').innerText = topic;
+        document.getElementById('ak-app-name').innerText = appSettings.name || "Answer Key";
+
+        db.ref(`question_pool/${topic}`).once('value', s => {
+            if(!s.exists()) { container.innerHTML = "No questions found for this topic."; return; }
+            container.innerHTML = "";
+            let i = 1;
+            s.forEach(qSnap => {
+                const q = qSnap.val();
+                const correctIdx = q.correct;
+                const options = [q.opt1, q.opt2, q.opt3, q.opt4];
+                const correctText = options[correctIdx-1];
+                
+                container.innerHTML += `
+                <div class="ak-question">
+                    <div class="ak-q-text">Q${i}: ${q.text}</div>
+                    <div class="ak-opt">(A) ${q.opt1}</div>
+                    <div class="ak-opt">(B) ${q.opt2}</div>
+                    <div class="ak-opt">(C) ${q.opt3}</div>
+                    <div class="ak-opt">(D) ${q.opt4}</div>
+                    <div class="ak-opt ak-correct">Correct Answer: (${['A','B','C','D'][correctIdx-1]}) ${correctText}</div>
+                </div>`;
+                i++;
             });
         });
-    }
-    function renderShareLinksUser() {
-        const div = document.getElementById('share-page-links');
-        div.innerHTML = "";
-        db.ref('settings/share_links').once('value', s => {
-            const d = s.val();
-            if(d) Object.values(d).forEach(l => {
-                div.innerHTML += `<button class="btn-3d" onclick="window.open('${l.url}', '_blank')" style="width:100%; text-align:left;"><i class="${l.icon}" style="margin-right:10px;"></i> ${l.title}</button>`;
-            });
-        });
-    }
+    };
 
     // Other Admin Helpers
     function loadTopicsForDropdown(elemId) {
@@ -2621,12 +2473,7 @@
         const s = document.getElementById(elemId); if(!s) return; s.innerHTML='<option value="">Select Test</option>'; 
         db.ref('tests').once('value', vSnap=>{ vSnap.forEach(x=>{ s.innerHTML+=`<option value="${x.key}">${x.val().title}</option>`; }) }); 
     }
-    function loadManageTests(){
-        const div=document.getElementById('manage-tests-area'); div.innerHTML="Loading...";
-        db.ref('tests').once('value', s=>{
-            div.innerHTML=""; s.forEach(t=>{ div.innerHTML+=`<div class="result-list-item" style="justify-content:space-between;"><div><b>${t.val().title}</b></div><button class="btn-3d btn-danger" onclick="deleteTest('${t.key}')">Delete</button></div>`; });
-        });
-    }
+
     function deleteTest(key){ if(confirm("Delete Test?")) db.ref('tests/'+key).remove().then(() => {
         show3DAlert("Test Deleted!", 'success');
         loadManageTests();
@@ -2711,6 +2558,28 @@
     function insSym(c){ if(focusedInput) { const start = focusedInput.selectionStart; const end = focusedInput.selectionEnd; const text = focusedInput.value; focusedInput.value = text.substring(0, start) + c + text.substring(end); focusedInput.selectionStart = focusedInput.selectionEnd = start + 1; focusedInput.focus(); } }
     function addCustomSym() { const v=document.getElementById('custom-sym').value; if(v){insSym(v); document.getElementById('custom-sym').value='';} }
 
+    // Init App Settings
+    function saveAppSettings() {
+        const n = document.getElementById('set-app-name').value;
+        const fcm = document.getElementById('set-fcm-key').value;
+        const settingsData = {
+            name: n, fcmKey: fcm,
+            logo: document.getElementById('set-logo').value,
+            marksheetLogo: document.getElementById('set-sheet-logo').value,
+            footerLogo: document.getElementById('set-footer-logo').value,
+            qrCode: document.getElementById('set-qr').value,
+            appLink: document.getElementById('set-app-link').value,
+            webLink: document.getElementById('set-web-link').value,
+            copyright: document.getElementById('set-copyright').value,
+            fb: document.getElementById('set-fb').value,
+            wa: document.getElementById('set-wa').value,
+            tg: document.getElementById('set-tg').value,
+            in: document.getElementById('set-in').value,
+            tw: document.getElementById('set-tw').value,
+            yt: document.getElementById('set-yt').value
+        };
+        if(n) db.ref('settings/appInfo').update(settingsData).then(()=>show3DAlert("Settings Saved! Reload app.", 'success'));
+    }
 </script>
 
 </body>
