@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Version Control Metadata -->
-    <meta name="version" content="5.3"> 
+    <meta name="version" content="5.5"> 
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -95,7 +95,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin-top: 20px;
         }
         #login-logo-img {
-            width: 180px; height: 180px; object-fit: contain; margin-bottom: 20px;
+            width: 120px; height: 120px; object-fit: contain; margin-bottom: 20px;
             filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
             background: transparent;
         }
@@ -151,6 +151,7 @@
             width: 100%; height: 100%; 
             object-fit: cover; /* Cover entire circle */
             display: block; 
+            border-radius: 50%;
         }
         .sb-f-desc { font-size: 9px; color: #666; margin-bottom: 8px; font-weight: 500; line-height: 1.2; }
         .sb-f-social-title { font-weight: 700; color: #333; font-size: 11px; margin-bottom: 5px; }
@@ -185,6 +186,17 @@
         }
         .slide { width: 100%; height: 100%; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.5s; object-fit: cover; }
         .slide.active { opacity: 1; }
+        
+        /* SLIDER DOTS */
+        .slider-dots {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 5px; z-index: 10;
+        }
+        .dot { 
+            width: 8px; height: 8px; background: rgba(255,255,255,0.5); 
+            border-radius: 50%; transition: 0.3s; cursor: pointer;
+        }
+        .dot.active { background: white; transform: scale(1.2); }
 
         /* --- VIEWS --- */
         .view-container { padding: 15px; padding-top: 80px; display: none; padding-bottom: 80px;}
@@ -594,6 +606,7 @@
 <div id="view-home" class="view-container">
     <div class="slider-container" id="home-slider">
         <!-- Dynamic Slides -->
+        <div class="slider-dots" id="slider-dots"></div> <!-- NEW DOTS -->
     </div>
     <div class="grid-box">
         <div class="content-item" onclick="joinLiveClass()"><i class="fa fa-video fa-2x" style="color:red; margin-bottom:10px;"></i><h4>Live Class</h4></div>
@@ -1117,7 +1130,7 @@
 
     let currentUser = null, focusedInput = null;
     let activeChatUser = null; 
-    let appSettings = {name: "Momentum Physics Classes", version: "5.3"}; // Ensure this matches meta tag
+    let appSettings = {name: "Momentum Physics Classes", version: "5.5"}; // Ensure this matches meta tag
     let dynamicPages = [];
     let isAdmin = false;
     let currentLiveKey = null;
@@ -1135,6 +1148,7 @@
                 document.getElementById('ms-watermark-name').innerText = appSettings.name;
                 document.getElementById('ak-app-name').innerText = appSettings.name; // Answer Key Title
                 
+                // --- LOGO HANDLING ---
                 if(appSettings.logo) {
                     document.getElementById('login-logo-img').src = appSettings.logo; // Default login logo
                 }
@@ -1834,7 +1848,7 @@
             name: document.getElementById('edit-name').value, 
             fatherName: document.getElementById('edit-father').value, 
             motherName: document.getElementById('edit-mother').value, 
-            subject: document.getElementById('edit-subject').value,
+            subject: document.getElementById('edit-subject').value, 
             mobile: document.getElementById('edit-mobile').value 
         };
         db.ref('users/'+currentUser.uid).update(u).then(()=>{ show3DAlert("Updated", 'success'); nav('view-profile'); checkUserProfile(currentUser.uid); });
@@ -2111,10 +2125,10 @@
         });
     }
     
-    // Updated Print Function
+    // Updated Print Function (Forces Browser Print)
     window.printMarksheet = () => {
         if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-           show3DAlert("Tap 'PDF' or 'Save as PDF' in the printer options.", 'info');
+           show3DAlert("Select 'Save as PDF' from the printer options.", 'info');
         }
         window.print();
     }
@@ -2191,7 +2205,7 @@
 
         if(title && link) {
             db.ref('content/' + type).push({
-                title: title, link: link, desc: desc, timestamp: Date.now(), isLive: isLive
+                title: title, link: link, desc: desc, timestamp: Date.now(), isLive: isLive, isVisible: true
             }).then(() => {
                 show3DAlert("Content Added!", 'success');
                 loadManageContent();
@@ -2219,19 +2233,31 @@
                 Object.keys(items).forEach(key => {
                     const item = items[key];
                     const liveTag = item.isLive ? '<span style="color:red; font-weight:bold;">[LIVE NOW]</span>' : '';
+                    const visibleText = (item.isVisible === false) ? '<span style="color:orange;">(Hidden)</span>' : '';
                     
                     div.innerHTML += `
                     <div class="result-list-item">
                         <div style="flex:1;">
                             <span class="tc-badge" style="background:#eee;">${type.toUpperCase()}</span>
-                            ${liveTag}
+                            ${liveTag} ${visibleText}
                             <b>${item.title}</b><br>
                             <small>${item.desc || ''}</small>
                         </div>
+                        <button class="btn-3d btn-warning" style="margin-right:5px; font-size:10px;" onclick="toggleContentVisibility('${type}', '${key}', ${item.isVisible !== false})">
+                            ${item.isVisible === false ? 'Show' : 'Hide'}
+                        </button>
                         <button class="btn-3d btn-danger" onclick="deleteContent('${type}', '${key}')">Del</button>
                     </div>`;
                 });
             });
+        });
+    }
+
+    // Toggle Content Visibility (Public/Private)
+    window.toggleContentVisibility = (type, key, currentStatus) => {
+        db.ref(`content/${type}/${key}/isVisible`).set(!currentStatus).then(() => {
+            show3DAlert(currentStatus ? "Content Hidden" : "Content Visible", 'info');
+            loadManageContent();
         });
     }
 
@@ -2282,6 +2308,7 @@
             if(data) {
                 Object.keys(data).forEach(key => {
                     const item = data[key];
+                    if(item.isVisible === false) return; // Skip Hidden
                     if(item.isLive) {
                         let actionHtml = item.link.includes("zoom.us") ? `<button class="btn-3d btn-zoom" onclick="window.open('${item.link}', '_blank')">Join Zoom Meeting</button>` : `<button class="btn-3d btn-danger" onclick="playVideo('${item.title}', '${item.link}', '${key}')">Watch Stream</button>`;
                         div.innerHTML += `<div class="test-card-pro" style="border-left:5px solid red;"><div class="tc-header"><div class="tc-title">${item.title}</div><span class="tc-badge badge-live">LIVE</span></div><div class="tc-body"><p style="font-size:12px; margin-bottom:10px;">${item.desc || 'Join now!'}</p>${actionHtml}</div></div>`;
@@ -2298,8 +2325,8 @@
         div.innerHTML = "Loading...";
         Promise.all([db.ref('content/live').once('value'), db.ref('content/video').once('value')]).then(snaps => {
             div.innerHTML = ""; const liveData = snaps[0].val(); const videoData = snaps[1].val();
-            if(liveData) Object.keys(liveData).forEach(key => { if(!liveData[key].isLive) div.innerHTML += `<div class="content-item" onclick="playVideo('${liveData[key].title}', '${liveData[key].link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;"><i class="fa fa-history" style="color:gray; margin-right:15px; font-size:20px;"></i><div><b>${liveData[key].title}</b><br><small>Past Stream</small></div></div>`; });
-            if(videoData) Object.keys(videoData).forEach(key => { div.innerHTML += `<div class="content-item" onclick="playVideo('${videoData[key].title}', '${videoData[key].link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;"><i class="fa fa-play-circle" style="color:#4e54c8; margin-right:15px; font-size:20px;"></i><div><b>${videoData[key].title}</b><br><small>${videoData[key].desc || 'Video'}</small></div></div>`; });
+            if(liveData) Object.keys(liveData).forEach(key => { if(!liveData[key].isLive && liveData[key].isVisible !== false) div.innerHTML += `<div class="content-item" onclick="playVideo('${liveData[key].title}', '${liveData[key].link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;"><i class="fa fa-history" style="color:gray; margin-right:15px; font-size:20px;"></i><div><b>${liveData[key].title}</b><br><small>Past Stream</small></div></div>`; });
+            if(videoData) Object.keys(videoData).forEach(key => { if(videoData[key].isVisible !== false) div.innerHTML += `<div class="content-item" onclick="playVideo('${videoData[key].title}', '${videoData[key].link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;"><i class="fa fa-play-circle" style="color:#4e54c8; margin-right:15px; font-size:20px;"></i><div><b>${videoData[key].title}</b><br><small>${videoData[key].desc || 'Video'}</small></div></div>`; });
             if(!div.innerHTML) div.innerHTML = "<div style='padding:20px; color:#888;'>No recorded videos found.</div>";
         });
     }
@@ -2332,6 +2359,8 @@
             const data = s.val(); div.innerHTML = "";
             if(data) {
                 Object.values(data).forEach(item => {
+                    if(item.isVisible === false) return; // Skip if hidden
+                    
                     if(item.link.startsWith('key://')) {
                         // Answer Key Special Handling
                         const topic = item.link.replace('key://', '');
@@ -2378,7 +2407,8 @@
                 title: keyTitle,
                 link: internalLink,
                 desc: `Official Solution for ${testTitle}`,
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                isVisible: true // Default public
             }).then(() => {
                 show3DAlert("Answer Key Published to PDF Section!", "success");
             });
@@ -2535,23 +2565,65 @@
     }
     function loadManageSliders() { const div = document.getElementById('slider-list-adm'); div.innerHTML="Loading..."; db.ref('settings/sliders').once('value', s=>{ div.innerHTML=""; const data=s.val(); if(data) Object.keys(data).forEach(k=>{ div.innerHTML+=`<div style="margin:5px; border-bottom:1px solid #ccc; display:flex; justify-content:space-between;"><img src="${data[k].imgMob}" style="height:30px;"><button class="btn-3d btn-danger" onclick="deleteSlider('${k}')">Del</button></div>` }); }); }
     window.deleteSlider = (k) => db.ref(`settings/sliders/${k}`).remove().then(()=>loadManageSliders());
+    
+    // --- UPDATED SLIDER LOGIC ---
     function loadHomeSlider() { 
         const con = document.getElementById('home-slider'); 
+        const dotsCon = document.getElementById('slider-dots');
+        
         db.ref('settings/sliders').once('value', s => { 
-            const data = s.val(); con.innerHTML = ""; 
+            const data = s.val(); 
+            con.innerHTML = '<div class="slider-dots" id="slider-dots"></div>'; // Reset, keeping dots container
+            const dotsContainer = document.getElementById('slider-dots');
+
             if(data) { 
                 let screenWidth = window.innerWidth;
-                Object.values(data).forEach((slide, i) => { 
+                const slides = Object.values(data);
+                
+                // Generate Images and Dots
+                slides.forEach((slide, i) => { 
                     let img = slide.imgMob;
                     if(screenWidth > 1024) img = slide.imgPc || slide.imgMob;
                     else if(screenWidth > 768) img = slide.imgTab || slide.imgMob;
-                    con.innerHTML += `<img src="${img}" class="slide ${i===0?'active':''}">`; 
+                    
+                    // Add Slide
+                    const imgEl = document.createElement('img');
+                    imgEl.src = img;
+                    imgEl.className = `slide ${i===0?'active':''}`;
+                    con.appendChild(imgEl);
+                    
+                    // Add Dot
+                    const dot = document.createElement('div');
+                    dot.className = `dot ${i===0?'active':''}`;
+                    dotsContainer.appendChild(dot);
                 }); 
                 showSlides(); 
-            } else { con.innerHTML = `<img src="https://via.placeholder.com/800x400?text=Welcome" class="slide active">`; } 
+            } else { 
+                con.innerHTML += `<img src="https://via.placeholder.com/800x400?text=Welcome" class="slide active">`; 
+            } 
         }); 
     }
-    let slideIndex = 0; function showSlides() { let slides = document.querySelectorAll(".slide"); if(slides.length === 0) return; for (let i = 0; i < slides.length; i++) slides[i].classList.remove("active"); slideIndex++; if (slideIndex > slides.length) slideIndex = 1; slides[slideIndex - 1].classList.add("active"); setTimeout(showSlides, 3000); }
+    
+    let slideIndex = 0; 
+    function showSlides() { 
+        let slides = document.querySelectorAll(".slide"); 
+        let dots = document.querySelectorAll(".dot");
+        if(slides.length === 0) return; 
+        
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].classList.remove("active");
+            if(dots[i]) dots[i].classList.remove("active");
+        }
+        
+        slideIndex++; 
+        if (slideIndex > slides.length) slideIndex = 1; 
+        
+        slides[slideIndex - 1].classList.add("active");
+        if(dots[slideIndex - 1]) dots[slideIndex - 1].classList.add("active");
+        
+        setTimeout(showSlides, 3000); 
+    }
+
     // KB
     function toggleMathKeyboard(show){ const kb = document.getElementById('math-keyboard'); kb.style.display = show ? 'block' : 'none'; document.body.style.paddingBottom = show ? '180px' : '70px'; }
     function setLastFocus(e){ focusedInput=e; }
