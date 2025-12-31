@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Version Control Metadata -->
-    <meta name="version" content="5.5"> 
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+    <meta name="version" content="5.7"> 
+    <meta http-equiv="Cache-Control" content="public, max-age=3600">
     
     <title id="page-title">Momentum Physics Classes</title>
 
@@ -92,12 +90,7 @@
         .auth-box { 
             width: 100%; max-width: 380px; background: white; color: #333;
             padding: 25px; border-radius: 20px; text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin-top: 20px;
-        }
-        #login-logo-img {
-            width: 120px; height: 120px; object-fit: contain; margin-bottom: 20px;
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
-            background: transparent;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin-top: 0;
         }
         
         /* --- HEADER --- */
@@ -135,24 +128,8 @@
         }
         .sb-item:active { transform: scale(0.98); }
         
-        /* Sidebar Footer (FIXED LOGO SIZE) */
+        /* Sidebar Footer */
         .sb-footer { padding: 15px; text-align: center; border-top: 1px solid #ddd; background: #fdfdfd; margin-top: auto; }
-        .sb-f-logo-bg { 
-            width: 60px; height: 60px; /* Explicit size */
-            background: white; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            margin: 0 auto 10px auto; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-            border: 2px solid #eee; 
-            overflow: hidden; /* Ensure image stays inside circle */
-            padding: 0;
-        }
-        .sb-f-logo-img { 
-            width: 100%; height: 100%; 
-            object-fit: cover; /* Cover entire circle */
-            display: block; 
-            border-radius: 50%;
-        }
         .sb-f-desc { font-size: 9px; color: #666; margin-bottom: 8px; font-weight: 500; line-height: 1.2; }
         .sb-f-social-title { font-weight: 700; color: #333; font-size: 11px; margin-bottom: 5px; }
         .sb-socials { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
@@ -287,8 +264,11 @@
         
         .report-paper { width: 100%; max-width: 210mm; min-height: 297mm; background: #fff; position: relative; padding: 20px; margin: 0 auto; border: 1px solid #ccc; box-sizing: border-box; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
         .report-border { border: 5px double #333; padding: 10px; box-sizing: border-box; width: 100%; height: 100%; min-height: 280mm; }
-        .report-inner-border { border: 2px solid #666; padding: 20px; box-sizing: border-box; position: relative; width: 100%; height: 100%; }
-        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 8vw; opacity: 0.05; font-weight: bold; pointer-events: none; text-transform: uppercase; white-space: nowrap; }
+        .report-inner-border { border: 2px solid #666; padding: 20px; box-sizing: border-box; position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; }
+        
+        /* FIX WATERMARK OVERFLOW */
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 50px; opacity: 0.05; font-weight: bold; pointer-events: none; text-transform: uppercase; white-space: nowrap; width: 100%; text-align: center; }
+        
         .sheet-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
         .sheet-header h1 { font-family: 'Playfair Display', serif; font-size: 24px; color: #333; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
         .sheet-header p { margin: 5px 0 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
@@ -330,9 +310,9 @@
         /* --- PRINT A4 (FIXED FOR FULL SCREEN & BORDERS) --- */
         @media print {
             body * { visibility: hidden; }
-            body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: white; }
+            body, html { margin: 0; padding: 0; width: 210mm; height: auto; background: white; overflow: visible !important; }
             
-            /* General Print Container (Marksheet & Answer Key) */
+            /* General Print Container (Marksheet) */
             .view-container.active { 
                 display: block !important; 
                 padding: 0 !important; 
@@ -340,51 +320,69 @@
                 width: 100%; 
                 height: auto; 
                 overflow: visible !important;
+                visibility: visible !important;
             }
             
             /* Target Report Paper */
             .report-paper {
-                visibility: visible;
-                position: relative;
-                width: 100%; 
-                max-width: 100%;
-                margin: 0; 
-                padding: 0; 
-                border: none; 
-                box-shadow: none;
-                transform: none;
+                visibility: visible !important;
+                position: relative !important;
+                width: 210mm !important; 
+                height: auto !important;
+                min-height: 296mm !important;
+                margin: 0 auto 10mm auto !important; 
+                padding: 0 !important; 
+                border: none !important; 
+                box-shadow: none !important;
+                transform: none !important;
+                zoom: 1 !important;
+                page-break-after: always;
+                page-break-inside: avoid;
+                break-inside: avoid;
+                display: block !important;
+                overflow: visible !important;
             }
 
-            /* --- BORDER ON EVERY PAGE TRICK --- */
-            /* We use a fixed position div that repeats on every print page */
             .print-border-overlay {
-                visibility: visible;
-                position: fixed;
+                visibility: visible !important;
+                position: absolute !important;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                border: 5px double #333;
+                border: 25px !important;
                 box-sizing: border-box;
                 z-index: 1000;
-                pointer-events: none; /* Let clicks pass through */
+                pointer-events: none;
                 margin: 0;
-                padding: 5mm; /* Space between outer border and page edge */
             }
             
-            .report-border, .report-inner-border {
-                border: none !important; /* Remove original borders in print mode */
-                padding: 15mm !important; /* Add padding to content to sit inside the fixed border */
-                width: 100%;
-                height: auto;
+            .report-border {
+                border: none !important;
+                padding: 5px !important; /* FIXED GAP Logo/Border */
+                width: 100% !important;
+                height: 100% !important;
+                min-height: 280mm !important;
+                visibility: visible !important;
+                display: block !important;
+            }
+            
+            .report-inner-border {
+                border: 2px solid #666 !important;
+                padding: 30px !important;
+                width: 100% !important;
+                height: 100% !important;
+                min-height: 270mm !important;
+                visibility: visible !important;
+                display: flex !important;
+                flex-direction: column !important;
             }
 
             /* Hide Headers/Footers */
             .marksheet-header, .sidebar, .app-header, .bottom-nav, .btn-3d { display: none !important; }
             
             /* Make Content Visible */
-            #view-marksheet, #view-marksheet * { visibility: visible; }
-            #view-answer-key, #view-answer-key * { visibility: visible; }
+            #view-marksheet, #view-marksheet *, #view-answer-key, #view-answer-key * { visibility: visible !important; }
         }
 
         /* --- LIVE CLASS ROOM --- */
@@ -395,27 +393,11 @@
         .live-chat-input-area { padding: 10px; display: flex; gap: 10px; border-top: 1px solid #eee; }
         .live-chat-bubble { background: white; padding: 5px 10px; border-radius: 10px; margin-bottom: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); font-size: 13px; }
 
-        /* --- ANSWER KEY PRINT STYLES --- */
-        .ak-question { 
-            margin-bottom: 15px; 
-            page-break-inside: avoid; /* Prevent splitting question */
-            break-inside: avoid;
-            border-bottom: 1px dashed #ccc; 
-            padding-bottom: 10px; 
-            /* Fix overflow */
-            word-wrap: break-word; 
-            overflow-wrap: break-word; 
-            width: 100%;
-        }
-        .ak-q-text { font-weight: bold; margin-bottom: 5px; color: #000; }
-        .ak-opt { font-size: 12px; margin-left: 15px; color: #333; word-wrap: break-word; }
-        .ak-correct { color: #006400; font-weight: bold; text-decoration: underline; }
-
     </style>
 </head>
 <body onclick="handleClickOutside(event)">
 
-<!-- 3D ALERT BOX -->
+<!-- 3D ALERT SYSTEM -->
 <div id="custom-alert-box">
     <i id="alert-icon" class="fa"></i>
     <span id="alert-msg">Notification</span>
@@ -467,6 +449,7 @@
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('live-chat')"><i class="fa fa-comments"></i> Admin Chat</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-slider')"><i class="fa fa-images"></i> Manage Slider</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-content')"><i class="fa fa-book"></i> Manage Content</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('pdf-management')"><i class="fa fa-file-pdf"></i> PDF Management</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-share-links')"><i class="fa fa-link"></i> Manage Share Links</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('settings')"><i class="fa fa-wrench"></i> Settings & Name</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('app-version')"><i class="fa fa-code-branch"></i> App Version</div>
@@ -479,7 +462,6 @@
 
         <!-- Sidebar Footer (Inside Scroll) -->
         <div class="sb-footer">
-            <div class="sb-f-logo-bg"><img src="https://via.placeholder.com/50" id="sb-f-logo-img" class="sb-f-logo-img" alt="Logo" onerror="this.src='https://via.placeholder.com/50?text=Logo'"></div>
             <p class="sb-f-desc" id="sb-f-desc-text">Your trusted platform for the best deals.</p>
             <div class="sb-f-social-title">Follow Us On Social Media</div>
             <div class="sb-socials">
@@ -498,11 +480,9 @@
 
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
-    <div style="text-align:center; margin-bottom:10px;">
-        <img id="login-logo-img" src="https://via.placeholder.com/150?text=Logo" alt="App Logo" onerror="this.src='https://via.placeholder.com/150?text=Logo'">
-    </div>
     <div class="auth-box" id="main-auth-box">
-        <h3>Login / Signup</h3>
+        <i class="fa fa-user-shield fa-2x" style="color:var(--accent); margin-bottom:10px;"></i>
+        <h3 style="color:var(--primary);">Student Portal</h3>
         <button class="btn-3d btn-danger" style="width:100%; padding:12px; margin-bottom:10px; background:#DB4437; color:white;" onclick="loginGoogle()">
             <i class="fab fa-google"></i> Google Login
         </button>
@@ -643,27 +623,6 @@
     <div id="review-container"></div>
 </div>
 
-<!-- ANSWER KEY PRINTABLE VIEW (NEW) -->
-<div id="view-answer-key" class="view-container" style="padding:0;">
-    <div class="marksheet-header">
-        <button class="btn-3d btn-danger" onclick="nav('view-pdf')" style="flex:1; margin-right:5px;"><i class="fa fa-arrow-left"></i> Back</button>
-        <button class="btn-3d btn-success" onclick="printMarksheet()" style="flex:1; margin-left:5px;"><i class="fa fa-download"></i> Print PDF</button>
-    </div>
-    <div class="marksheet-body">
-        <div class="report-paper">
-            <div class="print-border-overlay"></div> <!-- Border Trick -->
-            <div class="report-border"><div class="report-inner-border">
-                <div class="sheet-header">
-                     <img id="ak-logo-img" src="https://via.placeholder.com/100?text=Logo" style="height: 100px; object-fit: contain; margin-bottom: 10px;" onerror="this.style.display='none'">
-                    <h1 id="ak-app-name">ANSWER KEY</h1>
-                    <p id="ak-topic">Test Topic</p>
-                </div>
-                <div id="answer-key-content" style="text-align: left;"></div>
-            </div></div>
-        </div>
-    </div>
-</div>
-
 <!-- DYNAMIC PAGE VIEWER -->
 <div id="view-dynamic-page" class="view-container">
     <div id="dynamic-page-content" class="dynamic-content"></div>
@@ -693,41 +652,60 @@
         <button class="btn-3d btn-success" onclick="printMarksheet()" style="flex:1; margin-left:5px;"><i class="fa fa-download"></i> Print / PDF</button>
     </div>
     <div class="marksheet-body">
-        <div class="report-paper">
+        <div class="report-paper" style="min-height: auto; height: 290mm; overflow: hidden;">
             <div class="print-border-overlay"></div> <!-- Border Trick -->
-            <div class="report-border"><div class="report-inner-border">
+            <div class="report-border" style="height: 750px;"><div class="report-inner-border" style="height: 720px; padding: 15px;">
                 <div class="watermark" id="ms-watermark-name">FUTURE EDU</div>
                 <div class="sheet-header">
-                    <img id="ms-logo-img" src="https://via.placeholder.com/100?text=Logo" style="height: 130px; object-fit: contain; margin-bottom: 10px;" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
+                    <img id="ms-logo-img" src="https://via.placeholder.com/100?text=Logo" style="height: 100px; object-fit: contain; margin-bottom: 10px; display: block; margin: 0 auto;" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
                     <h1 id="ms-app-name">FUTURE EDU</h1>
                     <p>Official Achievement Record</p>
                 </div>
-                <div style="display:flex; justify-content: space-between; align-items:flex-end; border-bottom:2px solid #333; padding-bottom:15px; margin-bottom:20px; flex-wrap: wrap;">
-                    <div style="line-height:1.8; font-size:14px; color:#333; flex: 1;">
+                <div style="display:flex; justify-content: space-between; align-items:flex-end; border-bottom:2px solid #333; padding-bottom:10px; margin-bottom:10px; flex-wrap: wrap;">
+                    <div style="line-height:1.5; font-size:13px; color:#333; flex: 1;">
                         <p><b>Name:</b> <span id="ms-name" style="text-transform:uppercase;">--</span></p>
                         <p><b>Class:</b> <span id="ms-class">--</span> | <b>Roll:</b> <span id="ms-roll">--</span></p>
                         <p><b>Subject:</b> <span id="ms-subject">--</span></p>
                         <p><b>Date:</b> <span id="ms-date">--</span></p>
                     </div>
-                    <img src="" id="ms-photo" style="width:90px; height:110px; object-fit:cover; border:2px solid #333; padding:2px;">
+                    <img src="" id="ms-photo" style="width:80px; height:100px; object-fit:cover; border:2px solid #333; padding:2px;">
                 </div>
-                <h3 style="text-align:center; margin:20px 0; background:var(--primary); color:white; padding:8px; border-radius:5px; text-transform:uppercase; font-size:16px;">Test: <span id="ms-test-title">--</span></h3>
-                <table style="width:100%; border-collapse:collapse; margin-bottom:30px; font-family:'Courier New', monospace;">
-                    <tr style="background:#eee;"><th style="padding:12px; border:1px solid #999;">Category</th><th style="padding:12px; border:1px solid #999;">Value</th></tr>
-                    <tr style="text-align:center;"><td style="padding:10px; border:1px solid #999;">Total Questions</td><td style="padding:10px; border:1px solid #999;" id="ms-total-q">0</td></tr>
-                    <tr style="text-align:center; color:green;"><td style="padding:10px; border:1px solid #999;">Correct Answers</td><td style="padding:10px; border:1px solid #999; font-weight:bold;" id="ms-correct">0</td></tr>
-                    <tr style="text-align:center; color:red;"><td style="padding:10px; border:1px solid #999;">Wrong / Skipped</td><td style="padding:10px; border:1px solid #999;" id="ms-wrong">0</td></tr>
-                    <tr style="text-align:center; background:#f9f9f9;"><td style="padding:12px; border:1px solid #999; font-weight:bold;">FINAL SCORE</td><td style="padding:12px; border:1px solid #999; font-size:22px; font-weight:bold; color:var(--primary);" id="ms-score">0</td></tr>
+                <h3 style="text-align:center; margin:10px 0; background:var(--primary); color:white; padding:5px; border-radius:5px; text-transform:uppercase; font-size:14px;">Test: <span id="ms-test-title">--</span></h3>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-family:'Courier New', monospace; font-size: 13px;">
+                    <tr style="background:#eee;"><th style="padding:8px; border:1px solid #999;">Category</th><th style="padding:8px; border:1px solid #999;">Value</th></tr>
+                    <tr style="text-align:center;"><td style="padding:6px; border:1px solid #999;">Total Questions</td><td style="padding:6px; border:1px solid #999;" id="ms-total-q">0</td></tr>
+                    <tr style="text-align:center; color:green;"><td style="padding:6px; border:1px solid #999;">Correct Answers</td><td style="padding:6px; border:1px solid #999; font-weight:bold;" id="ms-correct">0</td></tr>
+                    <tr style="text-align:center; color:red;"><td style="padding:6px; border:1px solid #999;">Wrong / Skipped</td><td style="padding:6px; border:1px solid #999;" id="ms-wrong">0</td></tr>
+                    <tr style="text-align:center; background:#f9f9f9;"><td style="padding:8px; border:1px solid #999; font-weight:bold;">FINAL SCORE</td><td style="padding:8px; border:1px solid #999; font-size:18px; font-weight:bold; color:var(--primary);" id="ms-score">0</td></tr>
                 </table>
-                <div style="text-align:center; margin-bottom:40px;"><span style="font-size:18px; border:2px solid var(--accent); padding:10px 20px; border-radius:50px; font-weight:bold; color:var(--accent);">GRADE: <span id="ms-grade">--</span></span></div>
-                <div style="margin-top:60px; display:flex; justify-content:flex-end;">
+                
+                <!-- NEW: Grade and Signature Row (20px below table) -->
+                <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px;">
+                    <!-- Grade on Left -->
+                    <div>
+                        <span style="font-size:16px; border:2px solid var(--accent); padding:5px 15px; border-radius:50px; font-weight:bold; color:var(--accent);">GRADE: <span id="ms-grade">--</span></span>
+                    </div>
+                    
+                    <!-- Principal Signature on Right -->
                     <div style="text-align:center; width: 150px;">
-                        <img id="ms-sig-img" src="" style="height:50px; margin-bottom:5px; display:block; margin:0 auto;" alt="Signature">
-                        <div style="border-top:1px solid #000; padding-top:5px; font-weight:bold;">Principal Signature</div>
+                        <img id="ms-sig-img" src="" style="height:45px; margin-bottom:2px; display:block; margin:0 auto;" alt="Signature">
+                        <div style="border-top:1px solid #000; padding-top:2px; font-weight:bold; font-size: 12px;">Principal Signature</div>
                     </div>
                 </div>
+
             </div></div>
         </div>
+    </div>
+</div>
+
+<!-- ANSWER KEY PDF VIEW (PAGINATED) -->
+<div id="view-answer-key" class="view-container" style="padding:0;">
+    <div class="marksheet-header">
+        <button class="btn-3d btn-danger" onclick="marksheetBack()" style="flex:1; margin-right:5px;"><i class="fa fa-arrow-left"></i> Back</button>
+        <button class="btn-3d btn-success" onclick="printAnswerKey()" style="flex:1; margin-left:5px;"><i class="fa fa-download"></i> Print / PDF</button>
+    </div>
+    <div class="marksheet-body" id="ak-pdf-content">
+        <!-- Pages will be injected here dynamically -->
     </div>
 </div>
 
@@ -821,7 +799,7 @@
 <!-- ADMIN DASHBOARD -->
 <div id="view-admin" class="view-container">
     <div class="admin-scroll-menu">
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-test')">1. Create Test</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-questions')">2. Add Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('view-questions')">3. View Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('students')">4. Students</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('results')">5. Results</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-tests')">6. Manage Tests</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('live-chat')">7. Live Chat</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-slider')">8. Manage Slider</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-content')">9. Content (PDF/Live)</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-share-links')">10. Share Links</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('settings')">11. Settings</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('profile')">12. Profile</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('notifications')">13. Notifications</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('page-builder')">14. Page Builder</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('app-version')">15. App Version</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-test')">1. Create Test</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-questions')">2. Add Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('view-questions')">3. View Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('students')">4. Students</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('results')">5. Results</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-tests')">6. Manage Tests</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('live-chat')">7. Live Chat</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-slider')">8. Manage Slider</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-content')">9. Content (PDF/Live)</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('pdf-management')">10. PDF Management</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-share-links')">11. Share Links</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('settings')">12. Settings</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('profile')">13. Profile</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('notifications')">14. Notifications</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('page-builder')">15. Page Builder</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('app-version')">16. App Version</button>
     </div>
 
     <!-- TABS -->
@@ -896,6 +874,15 @@
             <button class="btn-3d btn-success" style="width:100%; margin-bottom:15px;" onclick="addContent()">Add Content</button>
             <hr>
             <div id="admin-content-list" style="max-height:300px; overflow-y:auto; margin-top:10px;"></div>
+        </div>
+    </div>
+
+    <!-- ADMIN PDF MANAGEMENT (NEW TAB FOR DELETING PDFS) -->
+    <div id="adm-pdf-management" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;">
+            <h4>PDF Management</h4>
+            <p style="font-size:12px; color:gray; margin-bottom:10px;">View and Delete uploaded PDF Notes.</p>
+            <div id="admin-pdf-list-only" style="max-height:450px; overflow-y:auto;">Loading PDF List...</div>
         </div>
     </div>
     
@@ -1130,7 +1117,7 @@
 
     let currentUser = null, focusedInput = null;
     let activeChatUser = null; 
-    let appSettings = {name: "Momentum Physics Classes", version: "5.5"}; // Ensure this matches meta tag
+    let appSettings = {name: "Momentum Physics Classes", version: "5.7"}; // Ensure this matches meta tag
     let dynamicPages = [];
     let isAdmin = false;
     let currentLiveKey = null;
@@ -1142,29 +1129,13 @@
             if(s.exists()){
                 appSettings = s.val();
                 document.getElementById('header-title').innerText = appSettings.name;
-                document.getElementById('login-app-title').innerText = appSettings.name;
                 document.getElementById('page-title').innerText = appSettings.name;
                 document.getElementById('ms-app-name').innerText = appSettings.name;
                 document.getElementById('ms-watermark-name').innerText = appSettings.name;
-                document.getElementById('ak-app-name').innerText = appSettings.name; // Answer Key Title
-                
-                // --- LOGO HANDLING ---
-                if(appSettings.logo) {
-                    document.getElementById('login-logo-img').src = appSettings.logo; // Default login logo
-                }
-                
-                // SIDEBAR FOOTER LOGO
-                if(appSettings.footerLogo) {
-                    document.getElementById('sb-f-logo-img').src = appSettings.footerLogo;
-                } else if(appSettings.logo) {
-                    document.getElementById('sb-f-logo-img').src = appSettings.logo; // Fallback
-                }
                 
                 // NEW LOGOS
                 if(appSettings.marksheetLogo) {
                     document.getElementById('ms-logo-img').src = appSettings.marksheetLogo;
-                    document.getElementById('ak-logo-img').src = appSettings.marksheetLogo;
-                    document.getElementById('ak-logo-img').style.display = 'block';
                 }
                 if(appSettings.copyright) document.getElementById('sb-copyright-text').innerText = appSettings.copyright;
                 if(appSettings.desc) document.getElementById('sb-f-desc-text').innerText = appSettings.desc;
@@ -1323,15 +1294,16 @@
         const dot = document.getElementById('notif-dot');
         if(snap.exists()){
             dot.style.display = "block";
-            list.innerHTML = "";
+            let html = "";
             const data = snap.val();
             const keys = Object.keys(data).reverse();
             keys.forEach(k => {
                 const n = data[k];
-                list.innerHTML += `<div class="notif-item" onclick="nav('${n.targetView}'); document.getElementById('notif-modal').style.display='none';">
+                html += `<div class="notif-item" onclick="nav('${n.targetView}'); document.getElementById('notif-modal').style.display='none';">
                     <b>${n.title}</b><br><span style="font-size:12px; color:#555;">${n.msg}</span>
                 </div>`;
             });
+            list.innerHTML = html;
         } else {
             dot.style.display = "none";
             list.innerHTML = "<div style='padding:20px; text-align:center;'>No Notifications</div>";
@@ -1672,7 +1644,7 @@
         db.ref('users').once('value', uSnap => {
             const users = uSnap.val() || {};
             db.ref('chats').on('value', cSnap => { // Realtime listener for list
-                listDiv.innerHTML = "";
+                let html = "";
                 const chats = cSnap.val() || {};
                 
                 // Sort chats by last message time
@@ -1689,7 +1661,7 @@
 
                 chatArray.forEach(item => {
                     const time = item.lastMsg.timestamp ? new Date(item.lastMsg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '';
-                    listDiv.innerHTML += `
+                    html += `
                     <div class="wa-list-item" onclick="openAdminChat('${item.uid}', '${item.user.name}', '${item.user.photo}')">
                         <img src="${item.user.photo}" class="wa-list-img">
                         <div class="wa-list-content">
@@ -1701,6 +1673,7 @@
                         </div>
                     </div>`;
                 });
+                listDiv.innerHTML = html;
             });
         });
     }
@@ -1761,11 +1734,6 @@
     function closeAdminChat() {
         document.getElementById('admin-chat-conversation-view').style.display = 'none';
         document.getElementById('admin-chat-list-view').style.display = 'flex';
-        // Restore Header (but only if not in "live-chat" list view mode, which hides it)
-        // Since we are going back to the list view, and list view hides header, keep it hidden or restore based on logic.
-        // Actually, the request says "Admin Panel ka header nahi dikhna chahiye" in Chat List Page.
-        // So we keep app-header hidden while in chat tab.
-        // document.getElementById('app-header').style.display = 'flex'; 
         activeChatUser = null;
     }
 
@@ -1866,20 +1834,24 @@
         db.ref('users/'+currentUser.uid).once('value', u=>{
             if(!u.val().canTest) { c.innerHTML='<div class="box-3d" style="padding:20px; color:red; text-align:center;">🚫 Test Access Pending. Contact Admin.</div>'; return; }
             db.ref('tests').once('value', t=>{
-                c.innerHTML=''; if(!t.exists()){c.innerHTML='No Tests Available';return;}
+                if(!t.exists()){c.innerHTML='No Tests Available';return;}
+                let html = "";
                 const now = new Date();
-                t.forEach(test=>{
-                    const td=test.val();
-                    const startT = new Date(td.startTime);
-                    const endT = new Date(td.endTime);
-                    let statusBadge = "";
-                    let actionBtn = "";
+                const tests = [];
+                t.forEach(test => { tests.push({key: test.key, ...test.val()}); });
 
-                    db.ref(`results/${test.key}/${currentUser.uid}`).once('value', r=>{
+                // Use promises for checking results to batch render
+                const checkPromises = tests.map(td => {
+                    return db.ref(`results/${td.key}/${currentUser.uid}`).once('value').then(r => {
+                        const startT = new Date(td.startTime);
+                        const endT = new Date(td.endTime);
+                        let statusBadge = "";
+                        let actionBtn = "";
                         const done = r.exists();
+
                         if(done) {
                             statusBadge = '<span class="tc-badge badge-done">Completed</span>';
-                            actionBtn = `<button class="tc-btn" style="background:#3498db;" onclick="openReview('${test.key}')">View Analysis</button>`;
+                            actionBtn = `<button class="tc-btn" style="background:#3498db;" onclick="openReview('${td.key}')">View Analysis</button>`;
                         } else if(now < startT) {
                             statusBadge = '<span class="tc-badge badge-upcoming">Upcoming</span>';
                             actionBtn = `<button class="tc-btn" style="background:#f39c12; cursor:default;">Starts ${startT.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</button>`;
@@ -1888,10 +1860,10 @@
                             actionBtn = '<button class="tc-btn" style="background:#e74c3c; cursor:default;">Missed</button>';
                         } else {
                             statusBadge = '<span class="tc-badge badge-live">Live Now</span>';
-                            actionBtn = `<button class="tc-btn" onclick="startExam('${test.key}',${td.timePerQ},${td.gapTime}, '${td.listTopic}')">Start Exam <i class="fa fa-arrow-right"></i></button>`;
+                            actionBtn = `<button class="tc-btn" onclick="startExam('${td.key}',${td.timePerQ},${td.gapTime}, '${td.listTopic}')">Start Exam <i class="fa fa-arrow-right"></i></button>`;
                         }
 
-                        c.innerHTML += `
+                        return `
                         <div class="test-card-pro">
                             <div class="tc-header">
                                 <div class="tc-title">${td.title}</div>
@@ -1906,6 +1878,10 @@
                             </div>
                         </div>`;
                     });
+                });
+
+                Promise.all(checkPromises).then(results => {
+                    c.innerHTML = results.join('');
                 });
             });
         });
@@ -1923,12 +1899,14 @@
                 let sortedRes = [];
                 Object.keys(results).forEach(uid => { if(users[uid]) sortedRes.push({ uid: uid, name: users[uid].name, photo: users[uid].photo, score: results[uid].score, totalTime: results[uid].totalTime }); });
                 sortedRes.sort((a,b) => b.score - a.score || a.totalTime - b.totalTime);
-                div.innerHTML = ""; let rank = 1;
+                
+                let html = ""; let rank = 1;
                 sortedRes.forEach(s => {
                     let badgeColor = rank===1?"gold":(rank===2?"silver":(rank===3?"#cd7f32":"#4e54c8"));
-                    div.innerHTML += `<div class="result-list-item"><div class="rank-badge" style="background:${badgeColor}">${rank}</div><img src="${s.photo}" class="res-thumb"><div style="flex:1;"><b>${s.name}</b><br>Score: ${s.score}</div></div>`;
+                    html += `<div class="result-list-item"><div class="rank-badge" style="background:${badgeColor}">${rank}</div><img src="${s.photo}" class="res-thumb"><div style="flex:1;"><b>${s.name}</b><br>Score: ${s.score}</div></div>`;
                     rank++;
                 });
+                div.innerHTML = html;
             });
         });
     }
@@ -2015,28 +1993,39 @@
     window.loadMyResults = () => {
         const c = document.getElementById('my-results-container'); c.innerHTML = "Loading...";
         db.ref('tests').once('value', testsSnap => {
-            const allTests = testsSnap.val() || {}; c.innerHTML = "";
-            Object.keys(allTests).forEach(tid => {
-                db.ref(`results/${tid}/${currentUser.uid}`).once('value', rSnap => {
+            const allTests = testsSnap.val() || {};
+            const keys = Object.keys(allTests);
+            
+            const resultsPromises = keys.map(tid => {
+                return db.ref(`results/${tid}/${currentUser.uid}`).once('value').then(rSnap => {
                     if(rSnap.exists()) {
                         const r = rSnap.val(); const t = allTests[tid];
-                        c.innerHTML += `<div class="result-list-item">
-                            <div style="flex:1"><b>${t.title}</b><br><span style="color:green">Score: ${r.score}</span></div>
-                            <button class="btn-3d" style="padding:5px 10px;" onclick="openMarksheet('${currentUser.uid}', '${tid}')"><i class="fa fa-download"></i> Marksheet</button>
+                        return `<div class="result-list-item" style="flex-wrap:wrap; gap:5px;">
+                            <div style="flex:1; min-width:150px;"><b>${t.title}</b><br><span style="color:green">Score: ${r.score}</span></div>
+                            <div style="display:flex; gap:5px;">
+                                <button class="btn-3d" style="padding:5px 10px; font-size:11px;" onclick="openMarksheet('${currentUser.uid}', '${tid}')"><i class="fa fa-file-invoice"></i> Sheet</button>
+                                <button class="btn-3d btn-warning" style="padding:5px 10px; font-size:11px;" onclick="openAnswerKey('${tid}')"><i class="fa fa-key"></i> Key</button>
+                            </div>
                         </div>`;
                     }
+                    return null;
                 });
+            });
+
+            Promise.all(resultsPromises).then(htmls => {
+                const finalHtml = htmls.filter(h => h !== null).join('');
+                c.innerHTML = finalHtml || "No tests taken yet.";
             });
         });
     }
 
-    // MODIFIED openReview to support Admin Access
     window.openReview = (tid, targetUid = null) => {
         const uid = targetUid || currentUser.uid;
         db.ref(`results/${tid}/${uid}/review`).once('value', s=>{
             if(!s.exists()) { show3DAlert("Review not available", 'error'); return; }
             const data = s.val();
-            const con = document.getElementById('review-container'); con.innerHTML = "";
+            const con = document.getElementById('review-container');
+            let html = "";
             data.forEach((item, idx) => {
                 const ops = [item.opt1, item.opt2, item.opt3, item.opt4];
                 const myAns = item.selected > 0 ? ops[item.selected-1] : "Not Attempted";
@@ -2045,26 +2034,24 @@
                 let statusClass = 'wrong';
                 if(item.selected == item.correct) statusClass = 'correct';
                 
-                con.innerHTML += `
+                html += `
                 <div class="review-card ${statusClass}">
                     <div class="review-q">Q${idx+1}: ${item.q}</div>
                     <div class="review-ans ans-user">Your Answer: ${myAns}</div>
                     <div class="review-ans ans-correct">Correct Answer: ${corAns}</div>
                 </div>`;
             });
+            con.innerHTML = html;
             
-            // Clean view logic for Admin
             if(isAdmin) {
                 document.getElementById('view-admin').style.display = 'none';
             }
-            
             nav('view-review-answers');
         });
     }
 
     function goBackFromReview() {
         if(isAdmin) {
-            // Return to Admin Dashboard
             document.getElementById('view-admin').style.display = 'block';
             nav('view-admin');
             switchAdminTab('results');
@@ -2074,15 +2061,12 @@
     }
 
     window.openMarksheet = (uid, tid) => {
-         // CLEAN VIEW LOGIC: Hide Admin Container totally
          if(isAdmin) {
              document.getElementById('view-admin').style.display = 'none';
          }
 
-         // Switch to clean marksheet view
          nav('view-marksheet');
 
-         // Force Update Marksheet Data from App Settings
          document.getElementById('ms-app-name').innerText = appSettings.name;
          document.getElementById('ms-watermark-name').innerText = appSettings.name;
          if(appSettings.marksheetLogo) document.getElementById('ms-logo-img').src = appSettings.marksheetLogo;
@@ -2124,20 +2108,89 @@
             });
         });
     }
-    
-    // Updated Print Function (Forces Browser Print)
-    window.printMarksheet = () => {
-        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-           show3DAlert("Select 'Save as PDF' from the printer options.", 'info');
-        }
-        window.print();
+
+    window.openAnswerKey = (tid) => {
+        db.ref('tests/' + tid).once('value', tSnap => {
+            const test = tSnap.val();
+            if(!isAdmin && test.isAnswerKeyPublic === false) {
+                show3DAlert("Answer Key is currently Private by Admin.", 'error');
+                return;
+            }
+
+            db.ref('question_pool/' + test.listTopic).once('value', qPoolSnap => {
+                const questions = [];
+                qPoolSnap.forEach(qs => {
+                    questions.push(qs.val());
+                });
+
+                if(questions.length === 0) {
+                    show3DAlert("No questions found for this test.", "error");
+                    return;
+                }
+                
+                if(isAdmin) document.getElementById('view-admin').style.display = 'none';
+                nav('view-answer-key');
+                
+                const akContainer = document.getElementById('ak-pdf-content');
+                let fullHtml = "";
+
+                let i = 0;
+                let isFirstPage = true;
+                while (i < questions.length) {
+                    let chunkSize = isFirstPage ? 10 : 12;
+                    const pageQs = questions.slice(i, i + chunkSize);
+                    fullHtml += generateAKPageHtml(test, pageQs, i + 1, (i + chunkSize) >= questions.length);
+                    i += chunkSize;
+                    isFirstPage = false;
+                }
+                akContainer.innerHTML = fullHtml;
+            });
+        });
     }
+
+    function generateAKPageHtml(test, qs, startNum, isLastPage) {
+        let qsRows = "";
+        qs.forEach((q, index) => {
+            const currentNum = startNum + index;
+            const correctOptionId = ["A", "B", "C", "D"][q.correct - 1];
+            
+            qsRows += `
+                <div style="margin-bottom:12px; border-bottom:1px dashed #eee; padding-bottom:8px; page-break-inside: avoid;">
+                    <p style="font-weight:bold; font-size:14px; margin-bottom:5px; line-height:1.4;">Q${currentNum}. ${q.text}</p>
+                    <div style="font-size:12px; display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-left:10px; color:#555;">
+                        <span>(A) ${q.opt1}</span><span>(B) ${q.opt2}</span>
+                        <span>(C) ${q.opt3}</span><span>(D) ${q.opt4}</span>
+                    </div>
+                    <p style="margin-top:5px; color:#27ae60; font-weight:bold; font-size:12px;">Correct Answer: (${correctOptionId})</p>
+                </div>
+            `;
+        });
+
+        return `
+        <div class="report-paper" style="height: auto !important; min-height: 296mm !important; padding: 15px !important; margin-bottom: 20px;">
+            <div class="report-border" style="height: auto !important; min-height: 280mm !important; margin: 0 !important;"><div class="report-inner-border" style="height: auto !important; min-height: 270mm !important; padding: 20px;">
+                <div class="watermark">${appSettings.name}</div>
+                <div class="sheet-header">
+                    <img src="${appSettings.marksheetLogo || ''}" style="height: 60px; margin-bottom: 5px; display: block; margin: 0 auto;">
+                    <h1 style="font-size:18px;">${appSettings.name}</h1>
+                    <p>Official Answer Key: ${test.title}</p>
+                </div>
+                <div style="flex:1;">
+                    ${qsRows}
+                </div>
+                ${isLastPage ? `<div style="text-align:center; font-size:10px; color:#888; margin-top:20px; border-top:1px solid #333; padding-top:10px;">--- End of Document ---</div>` : `<div style="text-align:right; font-size:10px; color:#888; margin-top:10px;">Page Continued...</div>`}
+            </div></div>
+        </div>
+        `;
+    }
+
+    window.printAnswerKey = () => { setTimeout(() => { window.print(); }, 300); }
+    window.printMarksheet = () => { setTimeout(() => { window.print(); }, 300); }
 
     function marksheetBack() {
         if(isAdmin) {
-            // Restore Admin View
             document.getElementById('admin-sidebar-menu').style.display = 'block';
-            document.getElementById('view-admin').style.display = 'block'; // Make sure container is visible
+            document.getElementById('view-admin').style.display = 'block'; 
             nav('view-admin');
             switchAdminTab('results');
         } else {
@@ -2150,11 +2203,9 @@
         document.querySelectorAll('.admin-tab').forEach(e=>e.style.display='none'); 
         document.getElementById('adm-'+t).style.display='block'; 
         
-        // Hide Main App Header when in Live Chat Tab (as requested)
         if(t === 'live-chat') {
             document.getElementById('app-header').style.display = 'none';
         } else {
-            // If we are logged in as admin, ensure header is visible for other tabs
              document.getElementById('app-header').style.display = 'flex';
         }
 
@@ -2165,6 +2216,7 @@
         if(t=='live-chat') loadChatUsers();
         if(t=='manage-slider') loadManageSliders();
         if(t=='manage-content') loadManageContent();
+        if(t=='pdf-management') loadPDFManagement();
         if(t=='notifications') loadManageNotifs();
         if(t=='page-builder') renderAdminPageList();
         if(t=='manage-share-links') loadShareLinksAdmin();
@@ -2173,7 +2225,6 @@
 
     function populateAdminSettingsInputs() {
         if(!document.getElementById('set-app-name')) return;
-        // Populate inputs from global appSettings
         document.getElementById('set-app-name').value = appSettings.name || '';
         document.getElementById('set-fcm-key').value = appSettings.fcmKey || '';
         document.getElementById('set-logo').value = appSettings.logo || '';
@@ -2193,14 +2244,11 @@
         document.getElementById('set-yt').value = appSettings.yt || '';
     }
 
-    // CONTENT MANAGEMENT (LIVE/PDF/VIDEO)
     function addContent() {
         const type = document.getElementById('content-type').value;
         const title = document.getElementById('content-title').value;
         const link = document.getElementById('content-link').value;
         const desc = document.getElementById('content-desc').value;
-        
-        // --- NEW LOGIC: Is Live Now Checkbox ---
         const isLive = document.getElementById('is-live-check') ? document.getElementById('is-live-check').checked : false;
 
         if(title && link) {
@@ -2209,7 +2257,6 @@
             }).then(() => {
                 show3DAlert("Content Added!", 'success');
                 loadManageContent();
-                // Clear inputs
                 document.getElementById('content-title').value = "";
                 document.getElementById('content-link').value = "";
                 document.getElementById('content-desc').value = "";
@@ -2223,11 +2270,9 @@
         div.innerHTML = "Loading...";
         
         db.ref('content').once('value', s => {
-            div.innerHTML = "";
             const data = s.val();
             if(!data) { div.innerHTML = "No Content Added."; return; }
-            
-            // Loop through types (live, pdf, video)
+            let html = "";
             Object.keys(data).forEach(type => {
                 const items = data[type];
                 Object.keys(items).forEach(key => {
@@ -2235,7 +2280,7 @@
                     const liveTag = item.isLive ? '<span style="color:red; font-weight:bold;">[LIVE NOW]</span>' : '';
                     const visibleText = (item.isVisible === false) ? '<span style="color:orange;">(Hidden)</span>' : '';
                     
-                    div.innerHTML += `
+                    html += `
                     <div class="result-list-item">
                         <div style="flex:1;">
                             <span class="tc-badge" style="background:#eee;">${type.toUpperCase()}</span>
@@ -2250,10 +2295,33 @@
                     </div>`;
                 });
             });
+            div.innerHTML = html;
         });
     }
 
-    // Toggle Content Visibility (Public/Private)
+    function loadPDFManagement() {
+        const div = document.getElementById('admin-pdf-list-only');
+        div.innerHTML = "Loading...";
+        db.ref('content/pdf').on('value', s => {
+            const data = s.val();
+            if(!data) { div.innerHTML = "<p style='padding:20px; text-align:center;'>No PDF Content found.</p>"; return; }
+            let html = "";
+            Object.keys(data).forEach(key => {
+                const item = data[key];
+                html += `
+                <div class="result-list-item">
+                    <div style="flex:1;">
+                        <i class="fa fa-file-pdf" style="color:red; margin-right:10px;"></i>
+                        <b>${item.title}</b><br>
+                        <small style="color:#888;">${item.desc || 'Study Material'}</small>
+                    </div>
+                    <button class="btn-3d btn-danger" style="padding:5px 10px; font-size:11px;" onclick="deleteContent('pdf', '${key}')"><i class="fa fa-trash"></i> Delete</button>
+                </div>`;
+            });
+            div.innerHTML = html;
+        });
+    }
+
     window.toggleContentVisibility = (type, key, currentStatus) => {
         db.ref(`content/${type}/${key}/isVisible`).set(!currentStatus).then(() => {
             show3DAlert(currentStatus ? "Content Hidden" : "Content Visible", 'info');
@@ -2266,11 +2334,11 @@
             db.ref('content/' + type + '/' + key).remove().then(() => {
                 show3DAlert("Content Deleted Successfully!", 'success');
                 loadManageContent();
+                if(type === 'pdf') loadPDFManagement();
             });
         }
     };
     
-    // APP VERSION MANAGEMENT - UPDATED
     function saveAppVersion() {
         const ver = document.getElementById('app-ver-num').value;
         const link = document.getElementById('app-ver-link').value;
@@ -2280,7 +2348,6 @@
         }
     }
 
-    // STUDENT CONTENT LOADERS
     function getEmbedUrl(url) {
         if(url.includes("zoom.us")) return "ZOOM";
         const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(live\/))\??v?=?([^#&?]*).*/;
@@ -2299,39 +2366,37 @@
         if (contextKey) { loadLiveChat(contextKey); }
     }
     
-    // LOAD LIVE LIST ONLY
     function loadLiveList() {
         const div = document.getElementById('student-live-only-list');
         div.innerHTML = "Loading...";
         db.ref('content/live').once('value', s => {
-            const data = s.val(); div.innerHTML = "";
+            const data = s.val(); 
+            let html = "";
             if(data) {
                 Object.keys(data).forEach(key => {
                     const item = data[key];
-                    if(item.isVisible === false) return; // Skip Hidden
+                    if(item.isVisible === false) return; 
                     if(item.isLive) {
                         let actionHtml = item.link.includes("zoom.us") ? `<button class="btn-3d btn-zoom" onclick="window.open('${item.link}', '_blank')">Join Zoom Meeting</button>` : `<button class="btn-3d btn-danger" onclick="playVideo('${item.title}', '${item.link}', '${key}')">Watch Stream</button>`;
-                        div.innerHTML += `<div class="test-card-pro" style="border-left:5px solid red;"><div class="tc-header"><div class="tc-title">${item.title}</div><span class="tc-badge badge-live">LIVE</span></div><div class="tc-body"><p style="font-size:12px; margin-bottom:10px;">${item.desc || 'Join now!'}</p>${actionHtml}</div></div>`;
+                        html += `<div class="test-card-pro" style="border-left:5px solid red;"><div class="tc-header"><div class="tc-title">${item.title}</div><span class="tc-badge badge-live">LIVE</span></div><div class="tc-body"><p style="font-size:12px; margin-bottom:10px;">${item.desc || 'Join now!'}</p>${actionHtml}</div></div>`;
                     }
                 });
             }
-            if(!div.innerHTML) div.innerHTML = "<div style='padding:20px; color:#888;'>No Live Classes right now.</div>";
+            div.innerHTML = html || "<div style='padding:20px; color:#888;'>No Live Classes right now.</div>";
         });
     }
 
-    // LOAD RECORDED LIST
     function loadRecordedList() {
         const div = document.getElementById('student-video-list');
         div.innerHTML = "Loading...";
         Promise.all([db.ref('content/live').once('value'), db.ref('content/video').once('value')]).then(snaps => {
-            div.innerHTML = ""; const liveData = snaps[0].val(); const videoData = snaps[1].val();
-            if(liveData) Object.keys(liveData).forEach(key => { if(!liveData[key].isLive && liveData[key].isVisible !== false) div.innerHTML += `<div class="content-item" onclick="playVideo('${liveData[key].title}', '${liveData[key].link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;"><i class="fa fa-history" style="color:gray; margin-right:15px; font-size:20px;"></i><div><b>${liveData[key].title}</b><br><small>Past Stream</small></div></div>`; });
-            if(videoData) Object.keys(videoData).forEach(key => { if(videoData[key].isVisible !== false) div.innerHTML += `<div class="content-item" onclick="playVideo('${videoData[key].title}', '${videoData[key].link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;"><i class="fa fa-play-circle" style="color:#4e54c8; margin-right:15px; font-size:20px;"></i><div><b>${videoData[key].title}</b><br><small>${videoData[key].desc || 'Video'}</small></div></div>`; });
-            if(!div.innerHTML) div.innerHTML = "<div style='padding:20px; color:#888;'>No recorded videos found.</div>";
+            let html = ""; const liveData = snaps[0].val(); const videoData = snaps[1].val();
+            if(liveData) Object.keys(liveData).forEach(key => { if(!liveData[key].isLive && liveData[key].isVisible !== false) html += `<div class="content-item" onclick="playVideo('${liveData[key].title}', '${liveData[key].link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;"><i class="fa fa-history" style="color:gray; margin-right:15px; font-size:20px;"></i><div><b>${liveData[key].title}</b><br><small>Past Stream</small></div></div>`; });
+            if(videoData) Object.keys(videoData).forEach(key => { if(videoData[key].isVisible !== false) html += `<div class="content-item" onclick="playVideo('${videoData[key].title}', '${videoData[key].link}', '${key}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;"><i class="fa fa-play-circle" style="color:#4e54c8; margin-right:15px; font-size:20px;"></i><div><b>${videoData[key].title}</b><br><small>${videoData[key].desc || 'Video'}</small></div></div>`; });
+            div.innerHTML = html || "<div style='padding:20px; color:#888;'>No recorded videos found.</div>";
         });
     }
     
-    // JOIN LIVE CLASS SHORTCUT
     function joinLiveClass() { nav('view-live-list'); }
     function leaveLiveClass() { nav('view-home'); document.getElementById('live-player-container').innerHTML = ""; }
 
@@ -2351,103 +2416,71 @@
         }
     }
 
-    // --- PDF & ANSWER KEY LOGIC ---
     function loadPDFs() {
         const div = document.getElementById('student-pdf-list');
         div.innerHTML = "Loading...";
+        
         db.ref('content/pdf').once('value', s => {
-            const data = s.val(); div.innerHTML = "";
+            const data = s.val(); 
+            let html = "";
             if(data) {
                 Object.values(data).forEach(item => {
-                    if(item.isVisible === false) return; // Skip if hidden
-                    
-                    if(item.link.startsWith('key://')) {
-                        // Answer Key Special Handling
-                        const topic = item.link.replace('key://', '');
-                        div.innerHTML += `<div class="content-item" onclick="openAnswerKeyView('${topic}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px; background:#e8f5e9; border:1px solid #c8e6c9;">
-                            <i class="fa fa-key" style="color:#2e7d32; margin-right:15px; font-size:20px;"></i>
-                            <div><b>${item.title}</b><br><small style="color:#2e7d32;">Click to View Answer Key</small></div>
-                        </div>`;
-                    } else {
-                        // Normal PDF Link
-                        div.innerHTML += `<div class="content-item" onclick="window.open('${item.link}', '_blank')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
-                            <i class="fa fa-file-pdf" style="color:#e74c3c; margin-right:15px; font-size:20px;"></i>
-                            <div><b>${item.title}</b><br><small>${item.desc}</small></div>
-                        </div>`;
+                    if(item.isVisible === false) return; 
+                    html += `<div class="content-item" onclick="window.open('${item.link}', '_blank')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
+                        <i class="fa fa-file-pdf" style="color:#e74c3c; margin-right:15px; font-size:20px;"></i>
+                        <div><b>${item.title}</b><br><small>${item.desc}</small></div>
+                    </div>`;
+                });
+            }
+
+            db.ref('tests').once('value', tSnap => {
+                tSnap.forEach(testSnap => {
+                    const tid = testSnap.key;
+                    const t = testSnap.val();
+                    if(t.isAnswerKeyPublic !== false) {
+                        db.ref(`results/${tid}/${currentUser.uid}`).once('value', rSnap => {
+                            if(rSnap.exists()) {
+                                html += `<div class="content-item" onclick="openAnswerKey('${tid}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px; border:1px solid #27ae60;">
+                                    <i class="fa fa-key" style="color:#27ae60; margin-right:15px; font-size:20px;"></i>
+                                    <div><b>Answer Key: ${t.title}</b><br><small>Test Analysis</small></div>
+                                </div>`;
+                                div.innerHTML = html;
+                            }
+                        });
                     }
                 });
-            } else { div.innerHTML = "<div style='padding:20px; color:#888;'>No PDF notes available.</div>"; }
+                div.innerHTML = html || "<div style='padding:20px; color:#888;'>No study material available.</div>";
+            });
         });
     }
 
-    // --- NEW: Publish Answer Key Button Logic (Admin) ---
     function loadManageTests(){
         const div=document.getElementById('manage-tests-area'); div.innerHTML="Loading...";
         db.ref('tests').once('value', s=>{
-            div.innerHTML=""; 
+            let html = ""; 
             s.forEach(t=>{ 
                 const test = t.val();
-                div.innerHTML += `
+                const btnColor = (test.isAnswerKeyPublic !== false) ? 'btn-success' : 'btn-danger';
+                const btnText = (test.isAnswerKeyPublic !== false) ? 'Key: Public' : 'Key: Private';
+                
+                html += `
                 <div class="result-list-item" style="flex-wrap: wrap; gap: 5px;">
                     <div style="flex:1; min-width: 150px;"><b>${test.title}</b><br><small>${test.listTopic}</small></div>
-                    <button class="btn-3d btn-success" style="padding:5px 10px; font-size:10px;" onclick="publishAnswerKey('${t.key}', '${test.title}', '${test.listTopic}')">Publish Key</button>
+                    <button class="btn-3d ${btnColor}" style="padding:5px 10px; font-size:10px;" onclick="toggleAnswerKeyStatus('${t.key}', ${test.isAnswerKeyPublic !== false})">${btnText}</button>
                     <button class="btn-3d btn-danger" style="padding:5px 10px; font-size:10px;" onclick="deleteTest('${t.key}')">Del</button>
                 </div>`; 
             });
+            div.innerHTML = html;
         });
     }
 
-    window.publishAnswerKey = (testKey, testTitle, listTopic) => {
-        if(confirm(`Publish Answer Key for "${testTitle}" to Study Materials?`)) {
-            const keyTitle = `Answer Key: ${testTitle}`;
-            // Use special protocol key:// to identify internal answer key views
-            const internalLink = `key://${listTopic}`;
-            
-            db.ref('content/pdf').push({
-                title: keyTitle,
-                link: internalLink,
-                desc: `Official Solution for ${testTitle}`,
-                timestamp: Date.now(),
-                isVisible: true // Default public
-            }).then(() => {
-                show3DAlert("Answer Key Published to PDF Section!", "success");
-            });
-        }
-    };
-
-    // --- NEW: Render Answer Key View (Student) ---
-    window.openAnswerKeyView = (topic) => {
-        nav('view-answer-key');
-        const container = document.getElementById('answer-key-content');
-        container.innerHTML = "Loading Questions...";
-        document.getElementById('ak-topic').innerText = topic;
-        document.getElementById('ak-app-name').innerText = appSettings.name || "Answer Key";
-
-        db.ref(`question_pool/${topic}`).once('value', s => {
-            if(!s.exists()) { container.innerHTML = "No questions found for this topic."; return; }
-            container.innerHTML = "";
-            let i = 1;
-            s.forEach(qSnap => {
-                const q = qSnap.val();
-                const correctIdx = q.correct;
-                const options = [q.opt1, q.opt2, q.opt3, q.opt4];
-                const correctText = options[correctIdx-1];
-                
-                container.innerHTML += `
-                <div class="ak-question">
-                    <div class="ak-q-text">Q${i}: ${q.text}</div>
-                    <div class="ak-opt">(A) ${q.opt1}</div>
-                    <div class="ak-opt">(B) ${q.opt2}</div>
-                    <div class="ak-opt">(C) ${q.opt3}</div>
-                    <div class="ak-opt">(D) ${q.opt4}</div>
-                    <div class="ak-opt ak-correct">Correct Answer: (${['A','B','C','D'][correctIdx-1]}) ${correctText}</div>
-                </div>`;
-                i++;
-            });
+    window.toggleAnswerKeyStatus = (tid, currentStatus) => {
+        db.ref(`tests/${tid}/isAnswerKeyPublic`).set(!currentStatus).then(() => {
+            show3DAlert("Key Privacy Updated", 'success');
+            loadManageTests();
         });
-    };
+    }
 
-    // Other Admin Helpers
     function loadTopicsForDropdown(elemId) {
         const s = document.getElementById(elemId); s.innerHTML = '<option value="">Select Topic List</option>';
         db.ref('question_pool').once('value', sn => {
@@ -2463,7 +2496,8 @@
             endTime: document.getElementById('at-end').value, timePerQ:document.getElementById('at-time').value, 
             gapTime:document.getElementById('at-gap').value, marksPerQ: parseInt(document.getElementById('at-marks').value) || 1, 
             gradeFirst: parseInt(document.getElementById('grade-first').value) || 0, gradeSec: parseInt(document.getElementById('grade-sec').value) || 0,
-            gradeFail: parseInt(document.getElementById('grade-fail').value) || 0
+            gradeFail: parseInt(document.getElementById('grade-fail').value) || 0,
+            isAnswerKeyPublic: false // Default private
         }; 
         if(t.title && t.listTopic && t.startTime) {
             db.ref('tests').push(t).then(()=>{
@@ -2482,17 +2516,18 @@
         const listName = document.getElementById('vq-test-select').value;
         const area = document.getElementById('questions-list-area'); area.innerHTML="Loading...";
         db.ref('question_pool/'+listName).once('value', s=>{
-            area.innerHTML=""; if(!s.exists()){ area.innerHTML="Empty List"; return; }
+            if(!s.exists()){ area.innerHTML="Empty List"; return; }
+            let html = "";
             let i=1; 
             s.forEach(qS=>{ 
                 const q=qS.val(); 
-                // ADDED DELETE BUTTON
-                area.innerHTML+=`<div class="result-list-item" style="display:block; position:relative;">
+                html+=`<div class="result-list-item" style="display:block; position:relative;">
                     <strong>Q${i}:</strong> ${q.text}<br><small>Ans: ${q.correct}</small>
                     <button class="btn-3d btn-danger" style="position:absolute; right:10px; top:10px; padding:5px 10px; font-size:10px;" onclick="deleteQuestion('${listName}', '${qS.key}')">Del</button>
                 </div>`; 
                 i++; 
             });
+            area.innerHTML = html;
         });
     }
     window.deleteQuestion = (list, key) => {
@@ -2509,32 +2544,26 @@
         loadManageTests();
     }); }
 
-    // NEW FUNCTION: Exit Admin Chat Mode Correctly
     function exitAdminChatMode() {
-        // Hide the chat tab
         document.getElementById('adm-live-chat').style.display = 'none';
-        // Ensure Main Header is visible
         document.getElementById('app-header').style.display = 'flex';
-        // Go back to first tab or re-render
         switchAdminTab('add-test');
     }
 
-    // Init Logic
     loadHomeSlider();
 
-    // Results & List Logic
     window.loadResults = () => {
         const tid=document.getElementById('res-test-select').value; 
         const div=document.getElementById('results-area'); div.innerHTML='Loading...'; 
         db.ref('users').once('value', us=>{ 
             const users=us.val(); 
             db.ref(`results/${tid}`).once('value', rs=>{ 
-                div.innerHTML=''; const res=rs.val(); 
+                const res=rs.val(); 
                 if(!res) { div.innerHTML='No results found'; return; } 
+                let html = "";
                 Object.keys(res).forEach(uid => { 
                     const r=res[uid]; const u=users[uid]||{name:'Unknown', fatherName:'--'}; 
-                    // UPDATED TO SHOW CORRECT/WRONG & ADDED REVIEW BUTTON
-                    div.innerHTML += `<div class="result-list-item">
+                    html += `<div class="result-list-item">
                         <div style="flex:1" onclick="openMarksheet('${uid}','${tid}')">
                             <b>${u.name}</b><br>Score: ${r.score} | C: ${r.score} | W: ${r.wrong}
                         </div>
@@ -2542,15 +2571,18 @@
                         <button class="btn-3d" style="padding:5px; margin-left:5px;" onclick="openMarksheet('${uid}','${tid}')">Sheet</button>
                     </div>`; 
                 }); 
+                div.innerHTML = html;
             }); 
         }); 
     }
 
     function loadAdminData(){
-        db.ref('users').once('value', s=>{ const l=document.getElementById('admin-student-list'); l.innerHTML='';
+        db.ref('users').once('value', s=>{ const l=document.getElementById('admin-student-list'); 
+            let html = "";
             s.forEach(u=>{ const d=u.val(); const color = d.canTest ? '#27ae60' : '#e74c3c';
-                l.innerHTML+=`<div class="result-list-item"><img src="${d.photo||'https://via.placeholder.com/50'}" class="res-thumb"><div style="flex:1"><b>${d.name}</b></div><button class="btn-3d" style="padding:5px;" onclick="updPhoto('${u.key}')">Img</button><button class="btn-3d" style="padding:5px; background:${color}; color:white;" onclick="updAcc('${u.key}',${!d.canTest})">${d.canTest?'Block':'Allow'}</button></div>`; 
+                html+=`<div class="result-list-item"><img src="${d.photo||'https://via.placeholder.com/50'}" class="res-thumb"><div style="flex:1"><b>${d.name}</b></div><button class="btn-3d" style="padding:5px;" onclick="updPhoto('${u.key}')">Img</button><button class="btn-3d" style="padding:5px; background:${color}; color:white;" onclick="updAcc('${u.key}',${!d.canTest})">${d.canTest?'Block':'Allow'}</button></div>`; 
             });
+            l.innerHTML = html;
         });
     }
     window.updAcc = (k,v) => db.ref('users/'+k+'/canTest').set(v).then(()=>loadAdminData());
@@ -2563,36 +2595,35 @@
             db.ref('settings/sliders').push({imgMob: mob, imgTab: tab, imgPc: pc}).then(()=>{show3DAlert("Slider Added!", 'success'); loadManageSliders();});
         }
     }
-    function loadManageSliders() { const div = document.getElementById('slider-list-adm'); div.innerHTML="Loading..."; db.ref('settings/sliders').once('value', s=>{ div.innerHTML=""; const data=s.val(); if(data) Object.keys(data).forEach(k=>{ div.innerHTML+=`<div style="margin:5px; border-bottom:1px solid #ccc; display:flex; justify-content:space-between;"><img src="${data[k].imgMob}" style="height:30px;"><button class="btn-3d btn-danger" onclick="deleteSlider('${k}')">Del</button></div>` }); }); }
+    function loadManageSliders() { const div = document.getElementById('slider-list-adm'); div.innerHTML="Loading..."; db.ref('settings/sliders').once('value', s=>{ 
+        let html = ""; 
+        const data=s.val(); 
+        if(data) Object.keys(data).forEach(k=>{ html+=`<div style="margin:5px; border-bottom:1px solid #ccc; display:flex; justify-content:space-between;"><img src="${data[k].imgMob}" style="height:30px;"><button class="btn-3d btn-danger" onclick="deleteSlider('${k}')">Del</button></div>` }); 
+        div.innerHTML = html;
+    }); }
     window.deleteSlider = (k) => db.ref(`settings/sliders/${k}`).remove().then(()=>loadManageSliders());
     
-    // --- UPDATED SLIDER LOGIC ---
     function loadHomeSlider() { 
         const con = document.getElementById('home-slider'); 
-        const dotsCon = document.getElementById('slider-dots');
-        
         db.ref('settings/sliders').once('value', s => { 
             const data = s.val(); 
-            con.innerHTML = '<div class="slider-dots" id="slider-dots"></div>'; // Reset, keeping dots container
+            con.innerHTML = '<div class="slider-dots" id="slider-dots"></div>'; 
             const dotsContainer = document.getElementById('slider-dots');
 
             if(data) { 
                 let screenWidth = window.innerWidth;
                 const slides = Object.values(data);
                 
-                // Generate Images and Dots
                 slides.forEach((slide, i) => { 
                     let img = slide.imgMob;
                     if(screenWidth > 1024) img = slide.imgPc || slide.imgMob;
                     else if(screenWidth > 768) img = slide.imgTab || slide.imgMob;
                     
-                    // Add Slide
                     const imgEl = document.createElement('img');
                     imgEl.src = img;
                     imgEl.className = `slide ${i===0?'active':''}`;
                     con.appendChild(imgEl);
                     
-                    // Add Dot
                     const dot = document.createElement('div');
                     dot.className = `dot ${i===0?'active':''}`;
                     dotsContainer.appendChild(dot);
@@ -2624,13 +2655,11 @@
         setTimeout(showSlides, 3000); 
     }
 
-    // KB
     function toggleMathKeyboard(show){ const kb = document.getElementById('math-keyboard'); kb.style.display = show ? 'block' : 'none'; document.body.style.paddingBottom = show ? '180px' : '70px'; }
     function setLastFocus(e){ focusedInput=e; }
     function insSym(c){ if(focusedInput) { const start = focusedInput.selectionStart; const end = focusedInput.selectionEnd; const text = focusedInput.value; focusedInput.value = text.substring(0, start) + c + text.substring(end); focusedInput.selectionStart = focusedInput.selectionEnd = start + 1; focusedInput.focus(); } }
     function addCustomSym() { const v=document.getElementById('custom-sym').value; if(v){insSym(v); document.getElementById('custom-sym').value='';} }
 
-    // Init App Settings
     function saveAppSettings() {
         const n = document.getElementById('set-app-name').value;
         const fcm = document.getElementById('set-fcm-key').value;
