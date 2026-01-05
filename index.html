@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Version Control Metadata -->
-    <meta name="version" content="5.7"> 
+    <meta name="version" content="6.0"> 
     <meta http-equiv="Cache-Control" content="public, max-age=3600">
     
     <title id="page-title">Momentum Physics Classes</title>
@@ -300,11 +300,60 @@
         .editor-btn { background: white; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
         #editor-content { width: 100%; min-height: 250px; background: white; border-radius: 8px; padding: 15px; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05); outline: none; margin-bottom: 15px; }
 
+        /* --- ADS STYLING --- */
+        .ad-container {
+            margin: 15px auto;
+            text-align: center;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .banner-ad {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+        }
+        .native-ad {
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            background: white;
+            padding: 15px;
+            border: 1px solid #eee;
+        }
+        .adsense-ad {
+            width: 100%;
+            max-width: 320px;
+            height: 100px;
+        }
+        .ad-container::before {
+            content: "ADVERTISEMENT";
+            display: block;
+            font-size: 10px;
+            color: #888;
+            text-align: center;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .interstitial-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
         /* --- RESPONSIVE MARKSHEET & ANSWER KEY FIX --- */
         @media screen and (max-width: 768px) {
             .report-paper { width: 100%; max-width: 100%; min-height: auto; height: auto; padding: 10px; zoom: 0.65; }
             .report-border { min-height: auto; }
             .report-inner-border { min-height: auto; }
+            .banner-ad { height: 60px; max-width: 320px; }
+            .native-ad { max-width: 250px; }
         }
 
         /* --- PRINT A4 (FIXED FOR FULL SCREEN & BORDERS) --- */
@@ -379,20 +428,190 @@
             }
 
             /* Hide Headers/Footers */
-            .marksheet-header, .sidebar, .app-header, .bottom-nav, .btn-3d { display: none !important; }
+            .marksheet-header, .sidebar, .app-header, .bottom-nav, .btn-3d, .ad-container { display: none !important; }
             
             /* Make Content Visible */
             #view-marksheet, #view-marksheet *, #view-answer-key, #view-answer-key * { visibility: visible !important; }
         }
 
-        /* --- LIVE CLASS ROOM --- */
-        .video-container { width: 100%; position: relative; background: black; flex: 1; min-height: 250px; display: flex; align-items: center; justify-content: center; }
-        .video-container iframe { width: 100%; height: 100%; border:none; }
+        /* --- NEW VIDEO PLAYER ENHANCEMENTS --- */
+        .video-container { 
+            width: 100%; 
+            position: relative; 
+            background: #000; 
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-container iframe { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            border:none; 
+            pointer-events: auto;
+        }
+        /* Hiding specific YouTube/UI markers via overlay */
+        .video-overlay-mask {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 60px;
+            background: rgba(0,0,0,0.01);
+            z-index: 5;
+            pointer-events: none;
+        }
+
         .live-chat-box { flex: 1; display: flex; flex-direction: column; background: #fff; border-top: 1px solid #ccc; }
         .live-msgs { flex: 1; overflow-y: auto; padding: 10px; background: #f9f9f9; }
         .live-chat-input-area { padding: 10px; display: flex; gap: 10px; border-top: 1px solid #eee; }
         .live-chat-bubble { background: white; padding: 5px 10px; border-radius: 10px; margin-bottom: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); font-size: 13px; }
 
+        /* --- PDF VIEWER --- */
+        #view-pdf-fullscreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; z-index: 5000; display: none; flex-direction: column;
+        }
+        .pdf-header {
+            height: 60px; background: var(--primary); color: white;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
+        }
+        .pdf-body { flex: 1; width: 100%; height: calc(100% - 60px); }
+        .pdf-body iframe { width: 100%; height: 100%; border: none; }
+
+        /* --- LANDSCAPE MODE FIXES FOR VIDEO --- */
+        @media screen and (orientation: landscape) {
+            /* Full screen video in landscape */
+            #view-live-class-room {
+                padding-top: 0 !important;
+                height: 100vh !important;
+            }
+            #view-live-class-room .live-chat-box, 
+            #view-live-class-room div[style*="background: #111"] {
+                display: none !important;
+            }
+            .video-container {
+                padding-top: 0 !important;
+                height: 100vh !important;
+            }
+            /* Hide general app UI in landscape video mode */
+            .app-header, .bottom-nav {
+                display: none !important;
+            }
+        }
+
+        /* --- ADS STATS STYLING --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-card h3 {
+            margin: 10px 0;
+            font-size: 24px;
+        }
+        .stat-card p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* --- SUBSCRIPTION & PAYMENT STYLES --- */
+        .payment-option {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+        .payment-option:hover {
+            background: #f9f9f9;
+        }
+        .payment-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        .phonepay { background: #5F259F; }
+        .googlepay { background: #4285F4; }
+        .paytm { background: #00B9F1; }
+        .upi { background: #00A8B5; }
+        
+        .subscription-status {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .subscription-expired {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .utr-timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .payment-success {
+            background: #e8f5e9;
+            border: 2px solid #2ecc71;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .payment-processing {
+            background: #fff3cd;
+            border: 2px solid #f39c12;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* --- ANSWER KEY FIXED PAGINATION --- */
+        .ak-page {
+            page-break-after: always;
+            padding: 20px;
+            background: white !important;
+        }
+        .ak-page:last-child {
+            page-break-after: auto;
+        }
+        .ak-question {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+            page-break-inside: avoid;
+        }
+        .ak-page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+        }
     </style>
 </head>
 <body onclick="handleClickOutside(event)">
@@ -433,6 +652,8 @@
             <div class="sb-item" onclick="handleNav('view-tests')"><i class="fa fa-clipboard-list"></i> My Tests</div>
             <div class="sb-item" onclick="handleNav('view-rank-board')"><i class="fa fa-chart-line"></i> Rank Board</div>
             <div class="sb-item" onclick="handleNav('view-results-history')"><i class="fa fa-file-download"></i> Marksheet Download</div>
+            <!-- NEW SUBSCRIPTION MENU ITEM -->
+            <div class="sb-item" onclick="handleNav('view-subscription')"><i class="fa fa-crown" style="color:gold;"></i> Subscription</div>
             <div class="sb-item" onclick="handleNav('view-change-password')"><i class="fa fa-key"></i> Change Password</div>
             <div class="sb-item" onclick="handleNav('view-share')"><i class="fa fa-share-alt"></i> Share App</div>
             <hr style="margin: 10px 0; border: 1px solid #eee;">
@@ -446,16 +667,24 @@
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('students')"><i class="fa fa-users"></i> Students</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('results')"><i class="fa fa-poll"></i> Results</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-tests')"><i class="fa fa-cog"></i> Manage Tests</div>
+            <!-- NEW SUBSCRIPTION MANAGEMENT -->
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('subscription-settings')"><i class="fa fa-crown"></i> Subscription Settings</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('payment-approvals')"><i class="fa fa-money-check-alt"></i> Payment Approvals</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('live-chat')"><i class="fa fa-comments"></i> Admin Chat</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-slider')"><i class="fa fa-images"></i> Manage Slider</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-content')"><i class="fa fa-book"></i> Manage Content</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('pdf-management')"><i class="fa fa-file-pdf"></i> PDF Management</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-share-links')"><i class="fa fa-link"></i> Manage Share Links</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('settings')"><i class="fa fa-wrench"></i> Settings & Name</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('login-settings')"><i class="fa fa-user-lock"></i> Login Settings</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('firebase-settings')"><i class="fa fa-fire"></i> Firebase Settings</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('app-version')"><i class="fa fa-code-branch"></i> App Version</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('profile')"><i class="fa fa-user-shield"></i> Admin Profile</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('page-builder')"><i class="fa fa-file-alt"></i> Page Builder</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('notifications')"><i class="fa fa-bell"></i> Manage Notif.</div>
+            <!-- NEW ADS MANAGEMENT MENU -->
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('ads-management')"><i class="fa fa-ad"></i> Ads Management</div>
+            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('ads-dashboard')"><i class="fa fa-chart-line"></i> Ads Dashboard</div>
             <hr style="margin: 10px 0; border: 1px solid #eee;">
             <div class="sb-item" style="color:red;" onclick="logoutUser()"><i class="fa fa-sign-out-alt"></i> Logout</div>
         </div>
@@ -799,19 +1028,128 @@
 <!-- ADMIN DASHBOARD -->
 <div id="view-admin" class="view-container">
     <div class="admin-scroll-menu">
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-test')">1. Create Test</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-questions')">2. Add Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('view-questions')">3. View Qs</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('students')">4. Students</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('results')">5. Results</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-tests')">6. Manage Tests</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('live-chat')">7. Live Chat</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-slider')">8. Manage Slider</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-content')">9. Content (PDF/Live)</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('pdf-management')">10. PDF Management</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-share-links')">11. Share Links</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('settings')">12. Settings</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('profile')">13. Profile</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('notifications')">14. Notifications</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('page-builder')">15. Page Builder</button><button class="btn-3d admin-tab-btn" onclick="switchAdminTab('app-version')">16. App Version</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-test')">1. Create Test</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('add-questions')">2. Add Qs</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('view-questions')">3. View Qs</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('students')">4. Students</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('results')">5. Results</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-tests')">6. Manage Tests</button>
+        <!-- NEW SUBSCRIPTION TABS -->
+        <button class="btn-3d admin-tab-btn" style="background:#9b59b6;" onclick="switchAdminTab('subscription-settings')">7. Sub Settings</button>
+        <button class="btn-3d admin-tab-btn" style="background:#2ecc71;" onclick="switchAdminTab('payment-approvals')">8. Payment Approvals</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('live-chat')">9. Live Chat</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-slider')">10. Manage Slider</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-content')">11. Content</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('pdf-management')">12. PDF</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-share-links')">13. Share Links</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('settings')">14. Settings</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('login-settings')">15. Login</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('firebase-settings')">16. Firebase</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('profile')">17. Profile</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('notifications')">18. Notifications</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('page-builder')">19. Page Builder</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('app-version')">20. Version</button>
+        <!-- NEW ADS TABS -->
+        <button class="btn-3d admin-tab-btn" style="background:#ff6b6b;" onclick="switchAdminTab('ads-management')">21. Ads Setup</button>
+        <button class="btn-3d admin-tab-btn" style="background:#2ecc71;" onclick="switchAdminTab('ads-dashboard')">22. Ads Dashboard</button>
     </div>
 
     <!-- TABS -->
     <div id="adm-add-test" class="admin-tab" style="display:none;">
-        <div class="box-3d" style="padding:15px;"><h4>Create New Test</h4><input type="text" id="at-title" class="input-3d" placeholder="Test Name"><input type="text" id="at-subject" class="input-3d" placeholder="Subject (e.g. Science)"><label style="font-size:12px; color:var(--primary); font-weight:bold;">Select Question List (Topic)</label><select id="at-list-select" class="input-3d"><option value="">Loading Topics...</option></select><select id="at-class" class="input-3d"><option value="">Class</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select><label style="font-size:12px; color:var(--primary); font-weight:bold;">Schedule & Timing</label><div class="grid-box"><div>Start: <input type="datetime-local" id="at-start" class="input-3d" style="padding:5px;"></div><div>End: <input type="datetime-local" id="at-end" class="input-3d" style="padding:5px;"></div></div><div class="grid-box"><input type="number" id="at-time" class="input-3d" placeholder="Time/Question (Sec)"><input type="number" id="at-gap" class="input-3d" placeholder="Gap Time (Sec)"></div><label style="font-size:12px; color:var(--accent); font-weight:bold;">Scoring & Grading</label><input type="number" id="at-marks" class="input-3d" placeholder="Marks Per Question (e.g. 1, 2)"><div class="grid-box"><input type="number" id="grade-fail" class="input-3d" placeholder="Min Pass Score"><input type="number" id="grade-sec" class="input-3d" placeholder="Good Rank Score"></div><input type="number" id="grade-first" class="input-3d" placeholder="Excellent Rank Score"><button class="btn-3d btn-success" style="width:100%;" onclick="createTest()">Publish Test</button></div>
+        <div class="box-3d" style="padding:15px;"><h4>Create New Test</h4><input type="text" id="at-title" class="input-3d" placeholder="Test Name"><input type="text" id="at-subject" class="input-3d" placeholder="Subject (e.g. Science)"><label style="font-size:12px; color:var(--primary); font-weight:bold;">Select Question List (Topic)</label><select id="at-list-select" class="input-3d"><option value="">Loading Topics...</option></select><select id="at-class" class="input-3d"><option value="">Class</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select><label style="font-size:12px; color:var(--primary); font-weight:bold;">Schedule & Timing</label><div class="grid-box"><div>Start: <input type="datetime-local" id="at-start" class="input-3d" style="padding:5px;"></div><div>End: <input type="datetime-local" id="at-end" class="input-3d" style="padding:5px;"></div></div><div class="grid-box"><input type="number" id="at-time" class="input-3d" placeholder="Time/Question (Sec)"><input type="number" id="at-gap" class="input-3d" placeholder="Gap Time (Sec)"></div><label style="font-size:12px; color:var(--accent); font-weight:bold;">Scoring & Grading</label><input type="number" id="at-marks" class="input-3d" placeholder="Marks Per Question (e.g. 1, 2)"><div class="grid-box"><input type="number" id="grade-fail" class="input-3d" placeholder="Min Pass Score"><input type="number" id="grade-sec" class="input-3d" placeholder="Good Rank Score"></div><input type="number" id="grade-first" class="input-3d" placeholder="Excellent Rank Score">
+        <!-- NEW: Subscription Required Checkbox -->
+        <div style="margin:10px 0;">
+            <label style="display:flex; align-items:center; gap:10px;">
+                <input type="checkbox" id="requires-subscription" style="width:20px; height:20px;">
+                <span style="font-weight:bold; color:#9b59b6;">Requires Active Subscription</span>
+            </label>
+        </div>
+        <button class="btn-3d btn-success" style="width:100%;" onclick="createTest()">Publish Test</button></div>
     </div>
+    
     <div id="adm-add-questions" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Add Questions</h4><input type="text" id="aq-list-name" class="input-3d" placeholder="Topic Name (e.g. Physics Ch1)"><div style="position:relative;"><textarea id="aq-text" class="input-3d" rows="3" placeholder="Question Text" onfocus="setLastFocus(this)"></textarea><button class="admin-kb-toggle" onclick="toggleMathKeyboard(true)" style="position:absolute; right:10px; bottom:20px;"><i class="fa fa-keyboard"></i></button></div><div class="grid-box"><input type="text" id="aq-op1" class="input-3d" placeholder="A" onfocus="setLastFocus(this)"><input type="text" id="aq-op2" class="input-3d" placeholder="B" onfocus="setLastFocus(this)"><input type="text" id="aq-op3" class="input-3d" placeholder="C" onfocus="setLastFocus(this)"><input type="text" id="aq-op4" class="input-3d" placeholder="D" onfocus="setLastFocus(this)"></div><select id="aq-correct" class="input-3d"><option value="1">A</option><option value="2">B</option><option value="3">C</option><option value="4">D</option></select><button class="btn-3d btn-success" style="width:100%;" onclick="saveQuestion()">Save to List</button></div></div>
+    
     <div id="adm-view-questions" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>View Added Questions</h4><select id="vq-test-select" class="input-3d" onchange="loadQuestionsList()"><option>Select Topic List</option></select><div id="questions-list-area" style="max-height:400px; overflow-y:auto;"></div></div></div>
+    
     <div id="adm-students" class="admin-tab" style="display:none;"><h4>Student Management</h4><div id="admin-student-list"></div></div>
+    
     <div id="adm-results" class="admin-tab" style="display:none;"><h4>View Student Results</h4><select id="res-test-select" class="input-3d" onchange="loadResults()"><option>Select Test</option></select><div id="results-area"></div></div>
+    
     <div id="adm-manage-tests" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Manage Tests</h4><div id="manage-tests-area" style="margin-top:10px;"></div></div></div>
     
+    <!-- NEW SUBSCRIPTION SETTINGS TAB -->
+    <div id="adm-subscription-settings" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;">
+            <h4><i class="fa fa-crown" style="color:gold;"></i> Subscription Settings</h4>
+            
+            <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:20px;">
+                <h5>UPI Payment Details</h5>
+                <input type="text" id="sub-upi-id" class="input-3d" placeholder="UPI ID (e.g. atomic@upi)">
+                <input type="text" id="sub-qr-code" class="input-3d" placeholder="QR Code Image URL">
+            </div>
+            
+            <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:20px;">
+                <h5>Subscription Plans</h5>
+                <input type="number" id="sub-amount" class="input-3d" placeholder="Amount (₹)">
+                <select id="sub-duration" class="input-3d">
+                    <option value="30">1 Month (30 days)</option>
+                    <option value="90">3 Months (90 days)</option>
+                    <option value="180">6 Months (180 days)</option>
+                    <option value="365">1 Year (365 days)</option>
+                </select>
+                <input type="text" id="sub-description" class="input-3d" placeholder="Description (e.g. Full Access)">
+            </div>
+            
+            <button class="btn-3d btn-success" style="width:100%;" onclick="saveSubscriptionSettings()">Save Settings</button>
+        </div>
+    </div>
+    
+    <!-- NEW PAYMENT APPROVALS TAB -->
+    <div id="adm-payment-approvals" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;">
+            <h4><i class="fa fa-money-check-alt"></i> Payment Approvals</h4>
+            <div id="payment-approval-list">
+                Loading payment requests...
+            </div>
+        </div>
+    </div>
+    
+    <!-- ADMIN LOGIN SETTINGS -->
+    <div id="adm-login-settings" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;">
+            <h4>Login Settings</h4>
+            <p style="font-size:12px; color:gray;">Admin Panel ka ID/Password change karein.</p>
+            <br>
+            <label><b>Main Admin ID</b></label>
+            <input type="text" id="set-admin-id" class="input-3d" placeholder="Admin ID">
+            <label><b>Main Admin Password</b></label>
+            <input type="password" id="set-admin-pass" class="input-3d" placeholder="Admin Password">
+            <hr style="margin:15px 0;">
+            <label><b>Backup Admin ID</b></label>
+            <input type="text" id="set-backup-id" class="input-3d" placeholder="Backup ID">
+            <label><b>Backup Admin Password</b></label>
+            <input type="password" id="set-backup-pass" class="input-3d" placeholder="Backup Password">
+            <button class="btn-3d btn-success" style="width:100%; margin-top:10px;" onclick="saveLoginSettings()">Save Login Settings</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE SETTINGS -->
+    <div id="adm-firebase-settings" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;">
+            <h4>Firebase Configuration</h4>
+            <p style="font-size:12px; color:red; font-weight:bold;">Ched-chad na karein, galat code se app band ho sakta hai.</p>
+            <br>
+            <input type="text" id="fb-apiKey" class="input-3d" placeholder="apiKey">
+            <input type="text" id="fb-authDomain" class="input-3d" placeholder="authDomain">
+            <input type="text" id="fb-databaseURL" class="input-3d" placeholder="databaseURL">
+            <input type="text" id="fb-projectId" class="input-3d" placeholder="projectId">
+            <input type="text" id="fb-storageBucket" class="input-3d" placeholder="storageBucket">
+            <input type="text" id="fb-messagingSenderId" class="input-3d" placeholder="messagingSenderId">
+            <input type="text" id="fb-appId" class="input-3d" placeholder="appId">
+            <button class="btn-3d btn-danger" style="width:100%; margin-top:10px;" onclick="saveFirebaseSettings()">Update Firebase Config</button>
+        </div>
+    </div>
+
     <!-- ADMIN CHAT (WHATSAPP LIST STYLE) FIXED SCROLL -->
     <div id="adm-live-chat" class="admin-tab" style="display:none; padding:0; position:fixed; top:0; bottom:0; left:0; width:100%; background:#f0f2f5; z-index:50;">
         <div id="admin-chat-list-view" style="height:100%; display:flex; flex-direction:column;">
@@ -928,6 +1266,12 @@
             <br>
             <h4>FCM Settings</h4>
             <p>FCM Server Key (Notifications):</p><input type="text" id="set-fcm-key" class="input-3d" placeholder="Paste FCM Server Key Here">
+            
+            <!-- NEW: App Icon & Splash Screen -->
+            <br><h4>App Icon & Splash Screen</h4>
+            <p>App Icon URL (512x512 PNG):</p><input type="text" id="set-app-icon" class="input-3d" placeholder="App Icon URL">
+            <p>Splash Screen Image URL:</p><input type="text" id="set-splash-image" class="input-3d" placeholder="Splash Screen Image URL">
+            
             <button class="btn-3d btn-success" style="width:100%; margin-top:10px;" onclick="saveAppSettings()">Save Settings</button>
         </div>
     </div>
@@ -935,6 +1279,145 @@
     <div id="adm-profile" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Admin & Sidebar Profile</h4><p style="font-size:12px; color:gray;">Update details shown in sidebar & marksheet.</p><input type="text" id="adm-p-name" class="input-3d" placeholder="Admin Name (Sidebar)"><input type="text" id="adm-p-photo" class="input-3d" placeholder="Sidebar Profile Photo URL"><input type="text" id="adm-p-sig" class="input-3d" placeholder="Principal Signature Image URL (PNG)"><input type="tel" id="adm-p-phone" class="input-3d" placeholder="Support Phone"><button class="btn-3d btn-success" style="width:100%;" onclick="saveAdminProfile()">Update Profile Details</button></div></div>
     <div id="adm-notifications" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>All Notifications & Messages</h4><p style="font-size:12px;">Delete alerts here.</p><div id="adm-notif-list" style="height:400px; overflow-y:auto; margin-top:10px;"></div></div></div>
     <div id="adm-page-builder" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Page Builder (Footer Links)</h4><input type="text" id="pb-title" class="input-3d" placeholder="Page Title (e.g. Privacy Policy)"><input type="text" id="pb-icon" class="input-3d" placeholder="Icon (e.g. fa fa-info)"><div class="editor-toolbar"><button class="editor-btn" onclick="execCmd('bold')">B</button><button class="editor-btn" onclick="execCmd('underline')">U</button></div><div id="editor-content" contenteditable="true" style="border:1px solid #ccc; min-height:150px; padding:10px; margin-bottom:10px;">Type content...</div><button class="btn-3d btn-success" onclick="savePage()">Save Page</button><div id="pb-list" style="margin-top:15px;"></div></div></div>
+
+    <!-- ADS MANAGEMENT TAB -->
+    <div id="adm-ads-management" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:20px; max-width:800px; margin:0 auto;">
+            <h3 style="color:#ff6b6b; margin-bottom:20px;">
+                <i class="fa fa-ad"></i> Adsterra Ads Setup
+            </h3>
+            
+            <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:20px;">
+                <h4>How to Get Adsterra Codes:</h4>
+                <ol>
+                    <li>Visit <a href="https://adsterra.com" target="_blank" style="color:#3498db;">Adsterra.com</a></li>
+                    <li>Click "Sign Up" as Publisher</li>
+                    <li>Verify your email</li>
+                    <li>Go to <b>Inventory → Add Website</b></li>
+                    <li>Add your website URL</li>
+                    <li>Select ad formats:
+                        <ul>
+                            <li><b>Banner:</b> 728x90 or 320x50</li>
+                            <li><b>Interstitial:</b> Full-page ads</li>
+                            <li><b>Native:</b> In-content ads</li>
+                        </ul>
+                    </li>
+                    <li>Copy the JavaScript code</li>
+                    <li>Paste below and Save</li>
+                </ol>
+            </div>
+            
+            <!-- Ad Codes Input -->
+            <div class="input-group">
+                <label><b>Banner Ad Code (728x90)</b></label>
+                <textarea id="adsterra-banner" class="input-3d" rows="4" 
+                    placeholder="Paste Adsterra Banner Code Here"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label><b>Interstitial Ad Code</b></label>
+                <textarea id="adsterra-interstitial" class="input-3d" rows="4"
+                    placeholder="Paste Adsterra Interstitial Code"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label><b>Native Ad Code</b></label>
+                <textarea id="adsterra-native" class="input-3d" rows="4"
+                    placeholder="Paste Adsterra Native Code"></textarea>
+            </div>
+            
+            <!-- Ad Placement -->
+            <div style="margin:20px 0;">
+                <label><b>Ad Placement:</b></label>
+                <div style="display:flex; flex-wrap:wrap; gap:15px; margin-top:10px;">
+                    <label style="display:flex; align-items:center; gap:5px;">
+                        <input type="checkbox" id="ad-home" checked> Home Page
+                    </label>
+                    <label style="display:flex; align-items:center; gap:5px;">
+                        <input type="checkbox" id="ad-tests" checked> Tests Page
+                    </label>
+                    <label style="display:flex; align-items:center; gap:5px;">
+                        <input type="checkbox" id="ad-videos" checked> Videos Page
+                    </label>
+                    <label style="display:flex; align-items:center; gap:5px;">
+                        <input type="checkbox" id="ad-pdf" checked> PDF Page
+                    </label>
+                    <label style="display:flex; align-items:center; gap:5px;">
+                        <input type="checkbox" id="ad-results" checked> Results Page
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Ad Frequency -->
+            <div class="input-group">
+                <label><b>Ad Frequency (Minutes)</b></label>
+                <input type="number" id="ad-frequency" class="input-3d" 
+                    value="5" min="1" max="30" style="width:100px;">
+                <small style="color:#666;">How often to show interstitial ads</small>
+            </div>
+            
+            <!-- Save Button -->
+            <button class="btn-3d btn-success" onclick="saveAdSettings()" 
+                style="width:100%; padding:15px; margin-top:20px;">
+                <i class="fa fa-save"></i> Save Ad Settings
+            </button>
+            
+            <!-- Preview -->
+            <div style="margin-top:30px; padding:15px; background:#e8f4fd; border-radius:10px;">
+                <h4><i class="fa fa-eye"></i> Ad Preview</h4>
+                <p>Ads will appear like this:</p>
+                <div style="background:white; padding:10px; border-radius:5px;">
+                    <div class="ad-preview-banner"></div>
+                    <div class="ad-preview-native"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADS DASHBOARD TAB -->
+    <div id="adm-ads-dashboard" class="admin-tab" style="display:none;">
+        <div class="box-3d" style="padding:15px;">
+            <h4><i class="fa fa-chart-line"></i> Ads Dashboard</h4>
+            
+            <div class="stats-grid">
+                <div class="stat-card" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                    <i class="fa fa-eye fa-2x"></i>
+                    <h3 id="total-impressions">0</h3>
+                    <p>Total Impressions</p>
+                </div>
+                
+                <div class="stat-card" style="background: linear-gradient(135deg, #2ecc71, #27ae60);">
+                    <i class="fa fa-mouse-pointer fa-2x"></i>
+                    <h3 id="total-clicks">0</h3>
+                    <p>Total Clicks</p>
+                </div>
+                
+                <div class="stat-card" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                    <i class="fa fa-adversal fa-2x"></i>
+                    <h3 id="ctr-rate">0%</h3>
+                    <p>CTR Rate</p>
+                </div>
+                
+                <div class="stat-card" style="background: linear-gradient(135deg, #f39c12, #e67e22);">
+                    <i class="fa fa-dollar-sign fa-2x"></i>
+                    <h3 id="total-revenue">$0.00</h3>
+                    <p>Estimated Revenue</p>
+                </div>
+            </div>
+            
+            <!-- Daily Stats Chart -->
+            <div style="margin-top:20px; background:white; padding:15px; border-radius:10px;">
+                <h5>Daily Performance</h5>
+                <canvas id="adsChart" width="400" height="200"></canvas>
+            </div>
+            
+            <!-- Top Performing Pages -->
+            <div style="margin-top:20px;">
+                <h5>Top Pages for Ads</h5>
+                <div id="top-pages-list"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- STUDENT LIVE CLASS LIST -->
@@ -961,14 +1444,20 @@
     </div>
 </div>
 
-<!-- LIVE CLASS ROOM (FULLSCREEN) -->
+<!-- LIVE CLASS ROOM (FULLSCREEN VIDEO PLAYER) -->
 <div id="view-live-class-room" class="view-container" style="padding:0; background:black; display:none; height:100vh; flex-direction:column;">
     <div style="background: #111; color:white; padding:10px; display:flex; justify-content:space-between; align-items:center;">
         <i class="fa fa-arrow-left" onclick="leaveLiveClass()" style="cursor:pointer; font-size:20px;"></i>
-        <span style="color:red; font-weight:bold;">LIVE CLASS</span>
-        <div></div>
+        <span style="color:red; font-weight:bold;">VIDEO PLAYER</span>
+        <i class="fa fa-expand" onclick="toggleFullScreenVideo()" style="cursor:pointer; font-size:18px;"></i>
     </div>
-    <div id="live-player-container" class="video-container"></div>
+    
+    <!-- ENHANCED 16:9 CONTAINER -->
+    <div class="video-container" id="video-frame-parent">
+        <div class="video-overlay-mask"></div>
+        <div id="live-player-container" style="width:100%; height:100%;"></div>
+    </div>
+
     <div class="live-chat-box">
         <div style="padding:10px; border-bottom:1px solid #eee; font-weight:bold;">Live Chat</div>
         <div id="live-chat-msgs" class="live-msgs"></div>
@@ -976,6 +1465,114 @@
             <input type="text" id="live-msg-input" class="input-3d" style="margin:0;" placeholder="Say something...">
             <button class="btn-3d" onclick="sendLiveComment()"><i class="fa fa-paper-plane"></i></button>
         </div>
+    </div>
+</div>
+
+<!-- IN-APP PDF VIEWER FULLSCREEN -->
+<div id="view-pdf-fullscreen">
+    <div class="pdf-header">
+        <i class="fa fa-arrow-left" onclick="closePDFViewer()" style="cursor:pointer; font-size:20px;"></i>
+        <span id="pdf-viewer-title" style="font-weight:bold;">PDF Viewer</span>
+        <div style="width:20px;"></div>
+    </div>
+    <div class="pdf-body" id="pdf-iframe-container">
+        <!-- Iframe will be injected here -->
+    </div>
+</div>
+
+<!-- NEW SUBSCRIPTION VIEW FOR STUDENTS -->
+<div id="view-subscription" class="view-container">
+    <div class="box-3d" style="padding:20px;">
+        <h3 style="color:#9b59b6; margin-bottom:15px;"><i class="fa fa-crown"></i> Subscription Plans</h3>
+        
+        <!-- Subscription Status -->
+        <div id="subscription-status-display" class="subscription-status">
+            Loading subscription status...
+        </div>
+        
+        <!-- Payment Options -->
+        <div id="payment-options" style="margin-top:20px;">
+            <h4>Choose Payment Method</h4>
+            <div class="payment-option" onclick="initiatePayment('phonepay')">
+                <div class="payment-icon phonepay"><i class="fab fa-google-wallet"></i></div>
+                <div style="flex:1;">
+                    <b>PhonePe</b>
+                    <p style="font-size:12px; color:#666;">Pay via PhonePe UPI</p>
+                </div>
+            </div>
+            
+            <div class="payment-option" onclick="initiatePayment('googlepay')">
+                <div class="payment-icon googlepay"><i class="fab fa-google-pay"></i></div>
+                <div style="flex:1;">
+                    <b>Google Pay</b>
+                    <p style="font-size:12px; color:#666;">Pay via Google Pay</p>
+                </div>
+            </div>
+            
+            <div class="payment-option" onclick="initiatePayment('paytm')">
+                <div class="payment-icon paytm"><i class="fab fa-paypal"></i></div>
+                <div style="flex:1;">
+                    <b>Paytm</b>
+                    <p style="font-size:12px; color:#666;">Pay via Paytm</p>
+                </div>
+            </div>
+            
+            <div class="payment-option" onclick="initiatePayment('upi')">
+                <div class="payment-icon upi"><i class="fa fa-university"></i></div>
+                <div style="flex:1;">
+                    <b>UPI Transfer</b>
+                    <p style="font-size:12px; color:#666;">Direct UPI Payment</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UTR Entry Section (Hidden Initially) -->
+        <div id="utr-entry-section" style="display:none; margin-top:20px;">
+            <h4>Enter UTR Number</h4>
+            <p style="font-size:12px; color:#666;">Please enter the 10-digit UTR number from your payment.</p>
+            
+            <div class="utr-timer" id="utr-timer">10:00</div>
+            
+            <input type="text" id="utr-number" class="input-3d" placeholder="Enter 10-digit UTR" maxlength="10">
+            <button class="btn-3d btn-success" style="width:100%;" onclick="submitUTR()">Submit UTR</button>
+            
+            <p style="font-size:10px; color:#e74c3c; margin-top:10px;">
+                <i class="fa fa-exclamation-circle"></i> 
+                You cannot go back for 10 minutes. Please complete the process.
+            </p>
+        </div>
+        
+        <!-- Payment Processing Status -->
+        <div id="payment-processing-status" style="display:none;">
+            <div class="payment-processing">
+                <i class="fa fa-spinner fa-spin fa-2x"></i>
+                <h4>Payment Processing</h4>
+                <p>Your payment is being verified. This may take a few minutes.</p>
+                <p>You will receive a notification when your subscription is activated.</p>
+            </div>
+        </div>
+        
+        <!-- Payment Success -->
+        <div id="payment-success-status" style="display:none;">
+            <div class="payment-success">
+                <i class="fa fa-check-circle fa-2x" style="color:#2ecc71;"></i>
+                <h4>Payment Submitted Successfully!</h4>
+                <p>Your payment is under verification by admin.</p>
+                <p>You will receive access once approved.</p>
+                <button class="btn-3d" onclick="nav('view-home')" style="margin-top:10px;">Go to Home</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- UTR ENTRY BLOCKER VIEW (Prevents Going Back) -->
+<div id="view-utr-blocker" class="view-container" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#f0f2f5; z-index:10000;">
+    <div class="box-3d" style="margin:50px; padding:30px; text-align:center;">
+        <h2 style="color:#e74c3c;"><i class="fa fa-lock"></i> Complete Payment Process</h2>
+        <div class="utr-timer" style="font-size:36px;" id="blocker-timer">09:45</div>
+        <p style="margin:20px 0;">You must complete the UTR submission process.</p>
+        <p style="color:#666; font-size:12px;">You cannot go back until the timer expires or you submit UTR.</p>
+        <button class="btn-3d btn-success" onclick="returnToUTR()" style="margin-top:20px;">Return to UTR Entry</button>
     </div>
 </div>
 
@@ -1032,6 +1629,20 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
+    
+    // --- SUBSCRIPTION VARIABLES ---
+    let subscriptionSettings = {
+        upiId: "",
+        qrCode: "",
+        amount: 500,
+        duration: 30,
+        description: "Monthly Subscription"
+    };
+    
+    let currentSubscription = null;
+    let utrTimer = null;
+    let utrTimeLeft = 600; // 10 minutes in seconds
+    let isInUTRProcess = false;
     
     // --- 3D ALERT SYSTEM ---
     function show3DAlert(msg, type='info') {
@@ -1117,10 +1728,24 @@
 
     let currentUser = null, focusedInput = null;
     let activeChatUser = null; 
-    let appSettings = {name: "Momentum Physics Classes", version: "5.7"}; // Ensure this matches meta tag
+    let appSettings = {name: "Momentum Physics Classes", version: "6.0"}; // Updated version
     let dynamicPages = [];
     let isAdmin = false;
     let currentLiveKey = null;
+    
+    // ADS CONFIGURATION
+    let adsConfig = {
+        adsterra: {
+            banner: '',
+            interstitial: '',
+            native: '',
+            positions: ['home', 'tests', 'videos', 'pdf', 'results'],
+            frequency: 5 // minutes
+        },
+        adsense: '',
+        customAd: '',
+        enabled: true
+    };
 
     // INIT SETTINGS & PAGES
     function loadAppSettings(){
@@ -1184,13 +1809,14 @@
             }
         });
 
+        // Admin Profile
         db.ref('settings/adminProfile').on('value', s=>{
             if(s.exists()){
                 const d = s.val();
                 if(d.name) {
-                    document.getElementById('sb-name').innerText = d.name; // In sidebar when logged as Admin
+                    document.getElementById('sb-name').innerText = d.name;
                     document.getElementById('adm-p-name').value = d.name;
-                    document.getElementById('wa-admin-name').innerText = d.name; // Update Chat Header
+                    document.getElementById('wa-admin-name').innerText = d.name;
                     document.getElementById('wa-admin-avatar').src = d.photo || "https://via.placeholder.com/40";
                 }
                 if(d.photo) {
@@ -1199,6 +1825,22 @@
                 }
                 if(d.signature) document.getElementById('adm-p-sig').value = d.signature;
                 if(d.phone) document.getElementById('adm-p-phone').value = d.phone;
+            }
+        });
+
+        // Load Ads Settings
+        db.ref('settings/ads').on('value', snapshot => {
+            if(snapshot.exists()) {
+                adsConfig = snapshot.val();
+                updateAdsUI();
+                if(adsConfig.enabled) startAds();
+            }
+        });
+
+        // Load Subscription Settings
+        db.ref('settings/subscription').on('value', snapshot => {
+            if(snapshot.exists()) {
+                subscriptionSettings = snapshot.val();
             }
         });
 
@@ -1216,17 +1858,14 @@
     
     // --- UPDATED VERSION LOGIC ---
     window.updateAppNow = () => {
-        // Clear caches to force reload WITHOUT changing the base URL structure
         if(navigator.serviceWorker) {
             navigator.serviceWorker.getRegistrations().then(function(registrations) {
                 for(let registration of registrations) {
                     registration.unregister();
                 }
-                // Reload page with a fresh timestamp query param to bust cache
                 window.location.replace(window.location.pathname + '?v=' + new Date().getTime());
             });
         } else {
-            // Force reload from server
             window.location.replace(window.location.pathname + '?v=' + new Date().getTime());
         }
     };
@@ -1280,7 +1919,13 @@
         }
     }
     window.execCmd = (c) => document.execCommand(c, false, null);
-    window.goBack = () => nav('view-home');
+    window.goBack = () => {
+        if (isInUTRProcess) {
+            nav('view-utr-blocker');
+            return;
+        }
+        nav('view-home');
+    };
 
     // --- NOTIFICATIONS ---
     function listenNotifications(uid) {
@@ -1329,6 +1974,7 @@
                      loadStudentChat(user.uid); 
                      listenNotifications(user.uid);
                      updateOnlineStatus(user.uid);
+                     loadUserSubscription(user.uid);
                      show3DAlert("Welcome Back!", 'success');
                  } else {
                      // New Google User needs setup
@@ -1462,17 +2108,39 @@
         .catch(e=>show3DAlert('Invalid OTP entered', 'error')); 
     }
 
-    function showMainAuth() { document.getElementById('main-auth-box').style.display='block'; document.getElementById('phone-auth-box').style.display='none'; document.getElementById('admin-login-box').style.display='none'; document.getElementById('forgot-password-box').style.display='none'; }
-    function showAdminLogin() { document.getElementById('main-auth-box').style.display='none'; document.getElementById('admin-login-box').style.display='block'; }
+    function showMainAuth() { 
+        document.getElementById('main-auth-box').style.display='block'; 
+        document.getElementById('phone-auth-box').style.display='none'; 
+        document.getElementById('admin-login-box').style.display='none'; 
+        document.getElementById('forgot-password-box').style.display='none'; 
+    }
+    
+    function showAdminLogin() { 
+        document.getElementById('main-auth-box').style.display='none'; 
+        document.getElementById('admin-login-box').style.display='block'; 
+    }
 
-    // --- ADMIN ACCESS ---
+    // --- ADMIN ACCESS UPDATED ---
     function adminLogin() {
         const id=document.getElementById('admin-id-input').value, p=document.getElementById('admin-pass-input').value;
-        if(id === "admin" && p === "12345") { grantAdminAccess(); return; }
-        db.ref('/').once('value', s=>{ 
-            const d=s.val(); 
-            if(d && id===d.admin_id && p==d.admin_pass) grantAdminAccess();
-            else show3DAlert("Invalid Admin Credentials", 'error'); 
+        
+        // Fetch Admin Credentials from DB
+        db.ref('settings/adminLogin').once('value', s => {
+            if(s.exists()) {
+                const creds = s.val();
+                if((id === creds.mainId && p === creds.mainPass) || (id === creds.backupId && p === creds.backupPass)) {
+                    grantAdminAccess();
+                } else {
+                    show3DAlert("Invalid Admin Credentials", 'error');
+                }
+            } else {
+                // Default Fallback
+                if(id === "admin" && p === "12345") { 
+                    grantAdminAccess(); 
+                } else {
+                    show3DAlert("Invalid Admin Credentials", 'error');
+                }
+            }
         });
     }
 
@@ -1511,11 +2179,14 @@
         // Hides all views first
         document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
         
-        if(viewId === 'view-test-runner') { document.getElementById(viewId).style.display = 'block'; }
-        else { 
+        if(viewId === 'view-test-runner' || viewId === 'view-live-class-room' || viewId === 'view-utr-blocker') { 
+            document.getElementById(viewId).style.display = 'flex'; 
+        } else { 
             // Shows targeted view
             document.getElementById(viewId).classList.add('active'); 
             document.getElementById('view-test-runner').style.display = 'none';
+            document.getElementById('view-live-class-room').style.display = 'none';
+            document.getElementById('view-utr-blocker').style.display = 'none';
         }
 
         // Special check: If moving AWAY from marksheet or admin, reset/hide things
@@ -1541,23 +2212,511 @@
              // Hide main header for immersive experience
              document.getElementById('app-header').style.display = 'none';
              document.getElementById('dynamic-header').style.display = 'none';
+             document.getElementById('bottom-nav').style.display = 'none';
         } else {
             document.getElementById('app-header').style.display = 'flex';
             document.getElementById('dynamic-header').style.display = 'none';
+            document.getElementById('bottom-nav').style.display = 'flex';
         }
 
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        if(viewId === 'view-home') { document.getElementById('btn-home').classList.add('active'); loadHomeSlider(); }
-        if(viewId === 'view-tests') { document.getElementById('btn-tests').classList.add('active'); loadStudentTests(); }
-        if(viewId === 'view-results-history') { loadMyResults(); }
-        if(viewId === 'view-classes') { document.getElementById('btn-classes')?.classList.add('active'); loadRecordedList(); }
+        if(viewId === 'view-home') { 
+            document.getElementById('btn-home').classList.add('active'); 
+            loadHomeSlider(); 
+            // Show ads if enabled
+            if(adsConfig.enabled && adsConfig.adsterra.positions.includes('home')) {
+                setTimeout(renderAds, 1000);
+            }
+        }
+        if(viewId === 'view-tests') { 
+            document.getElementById('btn-tests').classList.add('active'); 
+            loadStudentTests();
+            if(adsConfig.enabled && adsConfig.adsterra.positions.includes('tests')) {
+                setTimeout(renderAds, 1000);
+            }
+        }
+        if(viewId === 'view-results-history') { 
+            loadMyResults(); 
+            if(adsConfig.enabled && adsConfig.adsterra.positions.includes('results')) {
+                setTimeout(renderAds, 1000);
+            }
+        }
+        if(viewId === 'view-classes') { 
+            document.getElementById('btn-classes')?.classList.add('active'); 
+            loadRecordedList(); 
+        }
         if(viewId === 'view-live-list') { loadLiveList(); }
-        if(viewId === 'view-recorded-videos') { loadRecordedList(); }
-        if(viewId === 'view-pdf') { loadPDFs(); }
+        if(viewId === 'view-recorded-videos') { 
+            loadRecordedList(); 
+            if(adsConfig.enabled && adsConfig.adsterra.positions.includes('videos')) {
+                setTimeout(renderAds, 1000);
+            }
+        }
+        if(viewId === 'view-pdf') { 
+            loadPDFs(); 
+            if(adsConfig.enabled && adsConfig.adsterra.positions.includes('pdf')) {
+                setTimeout(renderAds, 1000);
+            }
+        }
         if(viewId === 'view-profile') document.getElementById('btn-profile').classList.add('active');
-        if(viewId === 'view-rank-board') { loadAdminTestsForDropdown('rb-test-select'); } 
-        if(viewId === 'view-help') { document.getElementById('btn-chat').classList.add('active'); }
+        if(viewId === 'view-rank-board') { 
+            loadAdminTestsForDropdown('rb-test-select'); 
+        } 
+        if(viewId === 'view-help') { 
+            document.getElementById('btn-chat').classList.add('active'); 
+        }
         if(viewId === 'view-share') { renderShareLinksUser(); }
+        if(viewId === 'view-subscription') { loadSubscriptionPage(); }
+    }
+
+    // --- ADS MANAGEMENT FUNCTIONS ---
+    function updateAdsUI() {
+        if(!document.getElementById('adsterra-banner')) return;
+        
+        document.getElementById('adsterra-banner').value = adsConfig.adsterra.banner || '';
+        document.getElementById('adsterra-interstitial').value = adsConfig.adsterra.interstitial || '';
+        document.getElementById('adsterra-native').value = adsConfig.adsterra.native || '';
+        document.getElementById('ad-frequency').value = adsConfig.adsterra.frequency || 5;
+        
+        // Set checkboxes
+        const positions = adsConfig.adsterra.positions || [];
+        ['home','tests','videos','pdf','results'].forEach(pos => {
+            const checkbox = document.getElementById(`ad-${pos}`);
+            if(checkbox) {
+                checkbox.checked = positions.includes(pos);
+            }
+        });
+    }
+
+    function saveAdSettings() {
+        // Get selected positions
+        const positions = [];
+        ['home','tests','videos','pdf','results'].forEach(pos => {
+            if(document.getElementById(`ad-${pos}`).checked) {
+                positions.push(pos);
+            }
+        });
+        
+        // Update settings
+        adsConfig.adsterra = {
+            banner: document.getElementById('adsterra-banner').value,
+            interstitial: document.getElementById('adsterra-interstitial').value,
+            native: document.getElementById('adsterra-native').value,
+            positions: positions,
+            frequency: parseInt(document.getElementById('ad-frequency').value) || 5
+        };
+        
+        adsConfig.lastUpdated = Date.now();
+        
+        // Save to Firebase
+        db.ref('settings/ads').set(adsConfig).then(() => {
+            show3DAlert("Ad settings saved successfully!", 'success');
+            startAds();
+        });
+    }
+
+    function startAds() {
+        if(!adsConfig.enabled) return;
+        
+        // Clear existing ads
+        document.querySelectorAll('.ad-container').forEach(ad => ad.remove());
+        
+        // Show ads based on current page
+        renderAds();
+        
+        // Schedule interstitial ads
+        if(adsConfig.adsterra.interstitial) {
+            scheduleInterstitialAds();
+        }
+    }
+
+    function renderAds() {
+        const currentView = document.querySelector('.view-container.active');
+        if(!currentView) return;
+        
+        const viewId = currentView.id;
+        const positions = adsConfig.adsterra.positions || [];
+        
+        // Check if ads should show on this page
+        let shouldShowAds = false;
+        positions.forEach(pos => {
+            if(viewId.includes(pos)) shouldShowAds = true;
+        });
+        
+        if(!shouldShowAds) return;
+        
+        // Show Banner Ad (Top)
+        if(adsConfig.adsterra.banner) {
+            const topAd = document.createElement('div');
+            topAd.className = 'ad-container banner-ad';
+            topAd.innerHTML = adsConfig.adsterra.banner;
+            currentView.prepend(topAd);
+            
+            // Track impression
+            trackAdImpression('banner');
+        }
+        
+        // Show Native Ad (Middle)
+        if(adsConfig.adsterra.native) {
+            setTimeout(() => {
+                const nativeAd = document.createElement('div');
+                nativeAd.className = 'ad-container native-ad';
+                nativeAd.innerHTML = adsConfig.adsterra.native;
+                
+                const container = currentView;
+                if(container.children.length > 3) {
+                    const middlePoint = Math.floor(container.children.length / 2);
+                    container.insertBefore(nativeAd, container.children[middlePoint]);
+                    trackAdImpression('native');
+                }
+            }, 2000);
+        }
+    }
+
+    function scheduleInterstitialAds() {
+        const frequency = adsConfig.adsterra.frequency * 60 * 1000;
+        
+        setInterval(() => {
+            if(Math.random() > 0.3) {
+                showInterstitialAd();
+            }
+        }, frequency);
+    }
+
+    function showInterstitialAd() {
+        const overlay = document.createElement('div');
+        overlay.className = 'interstitial-overlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        `;
+        
+        overlay.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 15px; max-width: 90%; max-height: 90%; overflow: auto;">
+                <div style="text-align: right;">
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                            style="background: #e74c3c; color: white; border: none; 
+                                   border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 18px;">
+                        ✕
+                    </button>
+                </div>
+                <div id="interstitial-content">
+                    ${adsConfig.adsterra.interstitial}
+                </div>
+                <p style="text-align: center; margin-top: 15px; color: #666; font-size: 12px;">
+                    Ad will close automatically in <span id="ad-countdown">10</span> seconds
+                </p>
+            </div>
+        `;
+        
+        document.body.appendChild(overlay);
+        trackAdImpression('interstitial');
+        
+        // Auto-close timer
+        let countdown = 10;
+        const timer = setInterval(() => {
+            countdown--;
+            document.getElementById('ad-countdown').textContent = countdown;
+            
+            if(countdown <= 0) {
+                clearInterval(timer);
+                overlay.remove();
+            }
+        }, 1000);
+    }
+
+    function trackAdImpression(adType) {
+        const today = new Date().toISOString().split('T')[0];
+        
+        db.ref(`ad_stats/${today}/${adType}/impressions`).transaction(current => {
+            return (current || 0) + 1;
+        });
+        
+        updateAdStats();
+    }
+
+    function updateAdStats() {
+        const today = new Date().toISOString().split('T')[0];
+        
+        db.ref(`ad_stats/${today}`).once('value').then(snapshot => {
+            if(snapshot.exists()) {
+                let totalImpressions = 0;
+                let totalClicks = 0;
+                
+                snapshot.forEach(adTypeSnap => {
+                    const data = adTypeSnap.val();
+                    totalImpressions += data.impressions || 0;
+                    totalClicks += data.clicks || 0;
+                });
+                
+                // Calculate estimated revenue ($1 per 1000 impressions)
+                const estimatedRevenue = (totalImpressions / 1000).toFixed(2);
+                
+                // Update display if on ads page
+                if(document.getElementById('total-impressions')) {
+                    document.getElementById('total-impressions').textContent = totalImpressions;
+                    document.getElementById('total-clicks').textContent = totalClicks;
+                    document.getElementById('total-revenue').textContent = estimatedRevenue;
+                    
+                    // Calculate CTR
+                    const ctr = totalImpressions > 0 ? 
+                        ((totalClicks / totalImpressions) * 100).toFixed(2) : 0;
+                    document.getElementById('ctr-rate').textContent = ctr + '%';
+                }
+            }
+        });
+    }
+
+    // --- SUBSCRIPTION FUNCTIONS ---
+    function loadUserSubscription(uid) {
+        db.ref(`subscriptions/${uid}`).orderByChild('timestamp').limitToLast(1).once('value', snapshot => {
+            if(snapshot.exists()) {
+                snapshot.forEach(child => {
+                    currentSubscription = child.val();
+                    currentSubscription.id = child.key;
+                    currentSubscription.isActive = checkSubscriptionActive(currentSubscription);
+                });
+            } else {
+                currentSubscription = null;
+            }
+        });
+    }
+
+    function checkSubscriptionActive(sub) {
+        if (!sub) return false;
+        const now = Date.now();
+        const expiryDate = sub.timestamp + (sub.duration * 24 * 60 * 60 * 1000);
+        return now < expiryDate && sub.status === 'approved';
+    }
+
+    function loadSubscriptionPage() {
+        const statusDiv = document.getElementById('subscription-status-display');
+        
+        if (currentSubscription && checkSubscriptionActive(currentSubscription)) {
+            const expiryDate = new Date(currentSubscription.timestamp + (currentSubscription.duration * 24 * 60 * 60 * 1000));
+            const daysLeft = Math.ceil((expiryDate - Date.now()) / (1000 * 60 * 60 * 24));
+            
+            statusDiv.innerHTML = `
+                <h4><i class="fa fa-crown"></i> Active Subscription</h4>
+                <p>Expires: ${expiryDate.toLocaleDateString()}</p>
+                <p>Days Left: ${daysLeft}</p>
+                <p>Plan: ${currentSubscription.description || 'Premium Access'}</p>
+            `;
+        } else {
+            statusDiv.className = 'subscription-status subscription-expired';
+            statusDiv.innerHTML = `
+                <h4><i class="fa fa-exclamation-triangle"></i> No Active Subscription</h4>
+                <p>Subscribe to access premium tests and features</p>
+                <p>Amount: ₹${subscriptionSettings.amount} | Duration: ${subscriptionSettings.duration} days</p>
+            `;
+        }
+    }
+
+    function initiatePayment(method) {
+        // Hide payment options, show UTR entry
+        document.getElementById('payment-options').style.display = 'none';
+        document.getElementById('utr-entry-section').style.display = 'block';
+        
+        // Start UTR timer
+        startUTRTimer();
+        
+        // Set flag to prevent going back
+        isInUTRProcess = true;
+        
+        // Open payment app based on method
+        let upiLink = '';
+        switch(method) {
+            case 'phonepay':
+                upiLink = `phonepe://pay?pa=${subscriptionSettings.upiId}&pn=Momentum%20Physics&am=${subscriptionSettings.amount}&cu=INR`;
+                break;
+            case 'googlepay':
+                upiLink = `tez://upi/pay?pa=${subscriptionSettings.upiId}&pn=Momentum%20Physics&am=${subscriptionSettings.amount}&cu=INR`;
+                break;
+            case 'paytm':
+                upiLink = `paytmmp://pay?pa=${subscriptionSettings.upiId}&pn=Momentum%20Physics&am=${subscriptionSettings.amount}&cu=INR`;
+                break;
+            default:
+                upiLink = `upi://pay?pa=${subscriptionSettings.upiId}&pn=Momentum%20Physics&am=${subscriptionSettings.amount}&cu=INR`;
+        }
+        
+        // Try to open the app
+        window.location.href = upiLink;
+        
+        // Fallback: Show UPI details if app doesn't open
+        setTimeout(() => {
+            show3DAlert(`Pay ₹${subscriptionSettings.amount} to ${subscriptionSettings.upiId}`, 'info');
+        }, 1000);
+    }
+
+    function startUTRTimer() {
+        utrTimeLeft = 600; // 10 minutes
+        
+        utrTimer = setInterval(() => {
+            utrTimeLeft--;
+            
+            const minutes = Math.floor(utrTimeLeft / 60);
+            const seconds = utrTimeLeft % 60;
+            
+            document.getElementById('utr-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('blocker-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (utrTimeLeft <= 0) {
+                clearInterval(utrTimer);
+                isInUTRProcess = false;
+                show3DAlert("Time expired! Please start payment again.", 'error');
+                nav('view-subscription');
+            }
+        }, 1000);
+    }
+
+    function submitUTR() {
+        const utr = document.getElementById('utr-number').value;
+        
+        if (!utr || utr.length !== 10) {
+            show3DAlert("Please enter a valid 10-digit UTR number", 'error');
+            return;
+        }
+        
+        // Hide UTR entry, show processing
+        document.getElementById('utr-entry-section').style.display = 'none';
+        document.getElementById('payment-processing-status').style.display = 'block';
+        
+        // Clear timer
+        clearInterval(utrTimer);
+        
+        // Save payment request to database
+        const paymentData = {
+            uid: currentUser.uid,
+            name: currentUser.displayName || currentUser.email,
+            utr: utr,
+            amount: subscriptionSettings.amount,
+            duration: subscriptionSettings.duration,
+            description: subscriptionSettings.description,
+            timestamp: Date.now(),
+            status: 'pending'
+        };
+        
+        db.ref('payment_requests').push(paymentData).then(() => {
+            // Show success message after 2 seconds
+            setTimeout(() => {
+                document.getElementById('payment-processing-status').style.display = 'none';
+                document.getElementById('payment-success-status').style.display = 'block';
+                isInUTRProcess = false;
+                
+                // Reset form
+                document.getElementById('utr-number').value = '';
+            }, 2000);
+        });
+    }
+
+    function returnToUTR() {
+        nav('view-subscription');
+    }
+
+    // --- ADMIN SUBSCRIPTION FUNCTIONS ---
+    function saveSubscriptionSettings() {
+        subscriptionSettings = {
+            upiId: document.getElementById('sub-upi-id').value,
+            qrCode: document.getElementById('sub-qr-code').value,
+            amount: parseInt(document.getElementById('sub-amount').value) || 500,
+            duration: parseInt(document.getElementById('sub-duration').value) || 30,
+            description: document.getElementById('sub-description').value || "Monthly Subscription"
+        };
+        
+        db.ref('settings/subscription').set(subscriptionSettings).then(() => {
+            show3DAlert("Subscription settings saved!", 'success');
+        });
+    }
+
+    function loadPaymentApprovals() {
+        const listDiv = document.getElementById('payment-approval-list');
+        
+        db.ref('payment_requests').orderByChild('timestamp').on('value', snapshot => {
+            let html = '';
+            
+            if (!snapshot.exists()) {
+                html = '<p>No payment requests pending.</p>';
+            } else {
+                snapshot.forEach(child => {
+                    const payment = child.val();
+                    const date = new Date(payment.timestamp).toLocaleString();
+                    
+                    html += `
+                    <div class="result-list-item">
+                        <div style="flex:1;">
+                            <b>${payment.name}</b><br>
+                            <small>UTR: ${payment.utr} | Amount: ₹${payment.amount}</small><br>
+                            <small>Date: ${date} | Status: <span style="color:${payment.status === 'approved' ? 'green' : payment.status === 'rejected' ? 'red' : 'orange'}">${payment.status}</span></small>
+                        </div>
+                        <div>
+                            ${payment.status === 'pending' ? `
+                            <button class="btn-3d btn-success" onclick="approvePayment('${child.key}', '${payment.uid}')">Approve</button>
+                            <button class="btn-3d btn-danger" onclick="rejectPayment('${child.key}')">Reject</button>
+                            ` : ''}
+                        </div>
+                    </div>`;
+                });
+            }
+            
+            listDiv.innerHTML = html;
+        });
+    }
+
+    function approvePayment(paymentId, userId) {
+        db.ref(`payment_requests/${paymentId}`).update({ status: 'approved' }).then(() => {
+            // Get payment details
+            db.ref(`payment_requests/${paymentId}`).once('value').then(snapshot => {
+                const payment = snapshot.val();
+                
+                // Create subscription for user
+                const subscriptionData = {
+                    uid: userId,
+                    amount: payment.amount,
+                    duration: payment.duration,
+                    description: payment.description,
+                    timestamp: Date.now(),
+                    status: 'approved',
+                    paymentId: paymentId
+                };
+                
+                db.ref(`subscriptions/${userId}`).push(subscriptionData).then(() => {
+                    // Send notification to user
+                    db.ref('notifications').push({
+                        title: "Subscription Approved!",
+                        msg: "Your payment has been approved. You now have access to premium tests.",
+                        targetView: "view-tests",
+                        timestamp: Date.now()
+                    });
+                    
+                    show3DAlert("Payment approved and subscription activated!", 'success');
+                });
+            });
+        });
+    }
+
+    function rejectPayment(paymentId) {
+        db.ref(`payment_requests/${paymentId}`).update({ status: 'rejected' }).then(() => {
+            // Send notification to user
+            db.ref('payment_requests/' + paymentId).once('value').then(snapshot => {
+                const payment = snapshot.val();
+                db.ref('notifications').push({
+                    title: "Payment Rejected",
+                    msg: "Your payment was rejected. Please contact admin for details.",
+                    targetView: "view-subscription",
+                    timestamp: Date.now()
+                });
+            });
+            
+            show3DAlert("Payment rejected!", 'info');
+        });
     }
 
     // --- CHAT SYSTEM (WHATSAPP STYLE) ---
@@ -1832,7 +2991,9 @@
     function loadStudentTests() {
         const c=document.getElementById('test-list-container'); c.innerHTML='Loading...';
         db.ref('users/'+currentUser.uid).once('value', u=>{
-            if(!u.val().canTest) { c.innerHTML='<div class="box-3d" style="padding:20px; color:red; text-align:center;">🚫 Test Access Pending. Contact Admin.</div>'; return; }
+            const userData = u.val();
+            const hasActiveSubscription = currentSubscription && checkSubscriptionActive(currentSubscription);
+            
             db.ref('tests').once('value', t=>{
                 if(!t.exists()){c.innerHTML='No Tests Available';return;}
                 let html = "";
@@ -1859,8 +3020,14 @@
                             statusBadge = '<span class="tc-badge badge-live" style="background:#ffebee; color:red;">Expired</span>';
                             actionBtn = '<button class="tc-btn" style="background:#e74c3c; cursor:default;">Missed</button>';
                         } else {
-                            statusBadge = '<span class="tc-badge badge-live">Live Now</span>';
-                            actionBtn = `<button class="tc-btn" onclick="startExam('${td.key}',${td.timePerQ},${td.gapTime}, '${td.listTopic}')">Start Exam <i class="fa fa-arrow-right"></i></button>`;
+                            // Check if test requires subscription
+                            if(td.requiresSubscription && !hasActiveSubscription) {
+                                statusBadge = '<span class="tc-badge" style="background:#9b59b6; color:white;">Premium</span>';
+                                actionBtn = `<button class="tc-btn" style="background:#9b59b6;" onclick="nav('view-subscription')">Subscribe to Access</button>`;
+                            } else {
+                                statusBadge = '<span class="tc-badge badge-live">Live Now</span>';
+                                actionBtn = `<button class="tc-btn" onclick="startExam('${td.key}',${td.timePerQ},${td.gapTime}, '${td.listTopic}')">Start Exam <i class="fa fa-arrow-right"></i></button>`;
+                            }
                         }
 
                         return `
@@ -1873,6 +3040,7 @@
                                 <div class="tc-info">
                                     <span><i class="fa fa-clock"></i> ${td.timePerQ}s / Q</span>
                                     <span><i class="fa fa-calendar"></i> ${startT.toLocaleDateString()}</span>
+                                    ${td.requiresSubscription ? '<span><i class="fa fa-crown" style="color:gold;"></i> Premium</span>' : ''}
                                 </div>
                                 ${actionBtn}
                             </div>
@@ -2133,59 +3301,83 @@
                 
                 const akContainer = document.getElementById('ak-pdf-content');
                 let fullHtml = "";
-
+                
+                // NEW PAGINATION: First page 9 questions, rest 11 questions per page
                 let i = 0;
-                let isFirstPage = true;
-                while (i < questions.length) {
-                    let chunkSize = isFirstPage ? 10 : 12;
-                    const pageQs = questions.slice(i, i + chunkSize);
-                    fullHtml += generateAKPageHtml(test, pageQs, i + 1, (i + chunkSize) >= questions.length);
-                    i += chunkSize;
-                    isFirstPage = false;
+                let pageNumber = 1;
+                const totalQuestions = questions.length;
+                
+                while (i < totalQuestions) {
+                    const itemsPerPage = (pageNumber === 1) ? 9 : 11;
+                    const pageQs = questions.slice(i, i + itemsPerPage);
+                    const isLastPage = (i + itemsPerPage) >= totalQuestions;
+                    
+                    fullHtml += generateAKPageHtml(test, pageQs, i + 1, pageNumber, totalQuestions, isLastPage);
+                    
+                    i += itemsPerPage;
+                    pageNumber++;
                 }
                 akContainer.innerHTML = fullHtml;
             });
         });
     }
 
-    function generateAKPageHtml(test, qs, startNum, isLastPage) {
+    function generateAKPageHtml(test, qs, startNum, pageNumber, totalQuestions, isLastPage) {
         let qsRows = "";
+        
         qs.forEach((q, index) => {
             const currentNum = startNum + index;
             const correctOptionId = ["A", "B", "C", "D"][q.correct - 1];
             
             qsRows += `
-                <div style="margin-bottom:12px; border-bottom:1px dashed #eee; padding-bottom:8px; page-break-inside: avoid;">
-                    <p style="font-weight:bold; font-size:14px; margin-bottom:5px; line-height:1.4;">Q${currentNum}. ${q.text}</p>
-                    <div style="font-size:12px; display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-left:10px; color:#555;">
-                        <span>(A) ${q.opt1}</span><span>(B) ${q.opt2}</span>
-                        <span>(C) ${q.opt3}</span><span>(D) ${q.opt4}</span>
+                <div class="ak-question">
+                    <p style="font-weight:bold; font-size:14px; margin-bottom:8px;">
+                        Q${currentNum}. ${q.text}
+                    </p>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-left:15px;">
+                        <div>(A) ${q.opt1}</div>
+                        <div>(B) ${q.opt2}</div>
+                        <div>(C) ${q.opt3}</div>
+                        <div>(D) ${q.opt4}</div>
                     </div>
-                    <p style="margin-top:5px; color:#27ae60; font-weight:bold; font-size:12px;">Correct Answer: (${correctOptionId})</p>
+                    <p style="color:#27ae60; font-weight:bold; margin-top:8px;">
+                        ✅ Correct Answer: (${correctOptionId})
+                    </p>
                 </div>
             `;
         });
-
+        
         return `
-        <div class="report-paper" style="height: auto !important; min-height: 296mm !important; padding: 15px !important; margin-bottom: 20px;">
-            <div class="report-border" style="height: auto !important; min-height: 280mm !important; margin: 0 !important;"><div class="report-inner-border" style="height: auto !important; min-height: 270mm !important; padding: 20px;">
-                <div class="watermark">${appSettings.name}</div>
-                <div class="sheet-header">
-                    <img src="${appSettings.marksheetLogo || ''}" style="height: 60px; margin-bottom: 5px; display: block; margin: 0 auto;">
-                    <h1 style="font-size:18px;">${appSettings.name}</h1>
-                    <p>Official Answer Key: ${test.title}</p>
-                </div>
-                <div style="flex:1;">
-                    ${qsRows}
-                </div>
-                ${isLastPage ? `<div style="text-align:center; font-size:10px; color:#888; margin-top:20px; border-top:1px solid #333; padding-top:10px;">--- End of Document ---</div>` : `<div style="text-align:right; font-size:10px; color:#888; margin-top:10px;">Page Continued...</div>`}
-            </div></div>
-        </div>
-        `;
+        <div class="ak-page" style="background:white !important;">
+            <div class="ak-page-title">
+                <h1>${appSettings.name}</h1>
+                <h3>Official Answer Key</h3>
+                <h4>${test.title}</h4>
+                <p>Subject: ${test.subject || 'General'} | Class: ${test.class || 'All'}</p>
+                <p>Total Questions: ${totalQuestions} | Page: ${pageNumber}</p>
+            </div>
+            
+            ${qsRows}
+            
+            ${!isLastPage ? `
+            <div style="text-align:center; margin-top:30px; color:#666; font-size:12px; page-break-after: always;">
+                Page ${pageNumber} - Continued...
+            </div>
+            ` : `
+            <div style="text-align:center; margin-top:30px; color:#666; font-size:12px;">
+                Page ${pageNumber} - End of Answer Key
+            </div>
+            `}
+        </div>`;
     }
 
-    window.printAnswerKey = () => { setTimeout(() => { window.print(); }, 300); }
-    window.printMarksheet = () => { setTimeout(() => { window.print(); }, 300); }
+    window.printAnswerKey = () => { 
+        setTimeout(() => { window.print(); }, 300); 
+    }
+    
+    window.printMarksheet = () => { 
+        setTimeout(() => { window.print(); }, 300); 
+    }
 
     function marksheetBack() {
         if(isAdmin) {
@@ -2221,6 +3413,20 @@
         if(t=='page-builder') renderAdminPageList();
         if(t=='manage-share-links') loadShareLinksAdmin();
         if(t=='settings') populateAdminSettingsInputs(); 
+        if(t=='login-settings') populateLoginSettings();
+        if(t=='firebase-settings') populateFirebaseSettings();
+        if(t=='ads-management') updateAdsUI();
+        if(t=='ads-dashboard') updateAdStats();
+        if(t=='subscription-settings') loadSubscriptionSettings();
+        if(t=='payment-approvals') loadPaymentApprovals();
+    }
+
+    function loadSubscriptionSettings() {
+        document.getElementById('sub-upi-id').value = subscriptionSettings.upiId || '';
+        document.getElementById('sub-qr-code').value = subscriptionSettings.qrCode || '';
+        document.getElementById('sub-amount').value = subscriptionSettings.amount || 500;
+        document.getElementById('sub-duration').value = subscriptionSettings.duration || 30;
+        document.getElementById('sub-description').value = subscriptionSettings.description || 'Monthly Subscription';
     }
 
     function populateAdminSettingsInputs() {
@@ -2348,22 +3554,64 @@
         }
     }
 
+    // --- ENHANCED VIDEO & PDF PLAYER LOGIC ---
     function getEmbedUrl(url) {
-        if(url.includes("zoom.us")) return "ZOOM";
-        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(live\/))\??v?=?([^#&?]*).*/;
-        const match = url.match(regExp);
-        if (match && match[8].length == 11) return 'https://www.youtube.com/embed/' + match[8];
+        // YouTube Handling
+        if (url.includes("youtube.com") || url.includes("youtu.be") || url.includes("live")) {
+            const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(live\/))\??v?=?([^#&?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[8].length == 11) {
+                // ADDING PARAMS FOR CLEAN PLAYER
+                return `https://www.youtube.com/embed/${match[8]}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&disablekb=1`;
+            }
+        }
+        // Google Drive Handling
+        if (url.includes("drive.google.com")) {
+            return url.replace("/view", "/preview").replace("/edit", "/preview");
+        }
         return url;
     }
 
     function playVideo(title, url, contextKey) {
         if(url.includes("zoom.us")) { window.open(url, '_blank'); return; }
+        
+        // Setup the Player Page
+        document.getElementById('view-live-class-room').style.display = 'flex';
         nav('view-live-class-room');
+        
         const embedUrl = getEmbedUrl(url);
-        document.getElementById('live-player-container').innerHTML = `<iframe src="${embedUrl}?rel=0&modestbranding=1&autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+        const playerContainer = document.getElementById('live-player-container');
+        
+        playerContainer.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        
         currentLiveKey = contextKey || 'general_chat';
         document.getElementById('live-chat-msgs').innerHTML = "";
         if (contextKey) { loadLiveChat(contextKey); }
+    }
+
+    function toggleFullScreenVideo() {
+        const elem = document.getElementById("video-frame-parent");
+        if (elem.requestFullscreen) { elem.requestFullscreen(); }
+        else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); }
+        else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
+    }
+
+    // --- PDF IN-APP VIEWER ---
+    function openPDFInApp(title, url) {
+        const viewer = document.getElementById('view-pdf-fullscreen');
+        const container = document.getElementById('pdf-iframe-container');
+        document.getElementById('pdf-viewer-title').innerText = title;
+        
+        // Use Google Docs viewer to bypass most browser's direct download or external open behavior
+        const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+        container.innerHTML = `<iframe src="${googleViewerUrl}"></iframe>`;
+        
+        viewer.style.display = 'flex';
+    }
+
+    function closePDFViewer() {
+        document.getElementById('view-pdf-fullscreen').style.display = 'none';
+        document.getElementById('pdf-iframe-container').innerHTML = "";
     }
     
     function loadLiveList() {
@@ -2426,7 +3674,8 @@
             if(data) {
                 Object.values(data).forEach(item => {
                     if(item.isVisible === false) return; 
-                    html += `<div class="content-item" onclick="window.open('${item.link}', '_blank')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
+                    // Updated to open in In-App Viewer
+                    html += `<div class="content-item" onclick="openPDFInApp('${item.title}', '${item.link}')" style="text-align:left; display:flex; align-items:center; margin-bottom:10px;">
                         <i class="fa fa-file-pdf" style="color:#e74c3c; margin-right:15px; font-size:20px;"></i>
                         <div><b>${item.title}</b><br><small>${item.desc}</small></div>
                     </div>`;
@@ -2462,11 +3711,14 @@
                 const test = t.val();
                 const btnColor = (test.isAnswerKeyPublic !== false) ? 'btn-success' : 'btn-danger';
                 const btnText = (test.isAnswerKeyPublic !== false) ? 'Key: Public' : 'Key: Private';
+                const subBtnColor = test.requiresSubscription ? 'btn-warning' : 'btn-info';
+                const subBtnText = test.requiresSubscription ? 'Premium: Yes' : 'Premium: No';
                 
                 html += `
                 <div class="result-list-item" style="flex-wrap: wrap; gap: 5px;">
                     <div style="flex:1; min-width: 150px;"><b>${test.title}</b><br><small>${test.listTopic}</small></div>
                     <button class="btn-3d ${btnColor}" style="padding:5px 10px; font-size:10px;" onclick="toggleAnswerKeyStatus('${t.key}', ${test.isAnswerKeyPublic !== false})">${btnText}</button>
+                    <button class="btn-3d ${subBtnColor}" style="padding:5px 10px; font-size:10px;" onclick="toggleSubscriptionRequired('${t.key}', ${test.requiresSubscription || false})">${subBtnText}</button>
                     <button class="btn-3d btn-danger" style="padding:5px 10px; font-size:10px;" onclick="deleteTest('${t.key}')">Del</button>
                 </div>`; 
             });
@@ -2480,6 +3732,13 @@
             loadManageTests();
         });
     }
+    
+    window.toggleSubscriptionRequired = (tid, currentStatus) => {
+        db.ref(`tests/${tid}/requiresSubscription`).set(!currentStatus).then(() => {
+            show3DAlert("Subscription requirement updated", 'success');
+            loadManageTests();
+        });
+    }
 
     function loadTopicsForDropdown(elemId) {
         const s = document.getElementById(elemId); s.innerHTML = '<option value="">Select Topic List</option>';
@@ -2487,6 +3746,7 @@
             sn.forEach(list => { s.innerHTML += `<option value="${list.key}">${list.key} (${list.numChildren()} Qs)</option>`; });
         });
     }
+    
     function createTest(){ 
         const t={
             title:document.getElementById('at-title').value,
@@ -2497,7 +3757,8 @@
             gapTime:document.getElementById('at-gap').value, marksPerQ: parseInt(document.getElementById('at-marks').value) || 1, 
             gradeFirst: parseInt(document.getElementById('grade-first').value) || 0, gradeSec: parseInt(document.getElementById('grade-sec').value) || 0,
             gradeFail: parseInt(document.getElementById('grade-fail').value) || 0,
-            isAnswerKeyPublic: false // Default private
+            isAnswerKeyPublic: false, // Default private
+            requiresSubscription: document.getElementById('requires-subscription').checked // Subscription requirement
         }; 
         if(t.title && t.listTopic && t.startTime) {
             db.ref('tests').push(t).then(()=>{
@@ -2506,12 +3767,14 @@
             }); 
         }
     }
+    
     function saveQuestion(){ 
         const listName = document.getElementById('aq-list-name').value.trim();
         if(!listName) return show3DAlert("Enter List Name", 'error');
         const q={ text:document.getElementById('aq-text').value, opt1:document.getElementById('aq-op1').value, opt2:document.getElementById('aq-op2').value, opt3:document.getElementById('aq-op3').value, opt4:document.getElementById('aq-op4').value, correct:document.getElementById('aq-correct').value }; 
         if(q.text) db.ref('question_pool/'+listName).push(q).then(()=>{ document.getElementById('aq-text').value=''; show3DAlert("Question Saved!", 'success'); }); 
     }
+    
     function loadQuestionsList() {
         const listName = document.getElementById('vq-test-select').value;
         const area = document.getElementById('questions-list-area'); area.innerHTML="Loading...";
@@ -2530,6 +3793,7 @@
             area.innerHTML = html;
         });
     }
+    
     window.deleteQuestion = (list, key) => {
         if(confirm("Delete this question?")) db.ref('question_pool/'+list+'/'+key).remove().then(()=>loadQuestionsList());
     }
@@ -2585,8 +3849,10 @@
             l.innerHTML = html;
         });
     }
+    
     window.updAcc = (k,v) => db.ref('users/'+k+'/canTest').set(v).then(()=>loadAdminData());
     window.updPhoto = (k) => { const u=prompt("Img URL"); if(u) db.ref('users/'+k+'/photo').set(u).then(()=>loadAdminData()); }
+    
     function addSlider() { 
         const mob = document.getElementById('slider-img-mob').value;
         const tab = document.getElementById('slider-img-tab').value;
@@ -2595,12 +3861,22 @@
             db.ref('settings/sliders').push({imgMob: mob, imgTab: tab, imgPc: pc}).then(()=>{show3DAlert("Slider Added!", 'success'); loadManageSliders();});
         }
     }
-    function loadManageSliders() { const div = document.getElementById('slider-list-adm'); div.innerHTML="Loading..."; db.ref('settings/sliders').once('value', s=>{ 
-        let html = ""; 
-        const data=s.val(); 
-        if(data) Object.keys(data).forEach(k=>{ html+=`<div style="margin:5px; border-bottom:1px solid #ccc; display:flex; justify-content:space-between;"><img src="${data[k].imgMob}" style="height:30px;"><button class="btn-3d btn-danger" onclick="deleteSlider('${k}')">Del</button></div>` }); 
-        div.innerHTML = html;
-    }); }
+    
+    function loadManageSliders() { 
+        const div = document.getElementById('slider-list-adm'); div.innerHTML="Loading..."; 
+        db.ref('settings/sliders').once('value', s=>{ 
+            let html = ""; 
+            const data=s.val(); 
+            if(data) Object.keys(data).forEach(k=>{ 
+                html+=`<div style="margin:5px; border-bottom:1px solid #ccc; display:flex; justify-content:space-between;">
+                    <img src="${data[k].imgMob}" style="height:30px;">
+                    <button class="btn-3d btn-danger" onclick="deleteSlider('${k}')">Del</button>
+                </div>`; 
+            }); 
+            div.innerHTML = html;
+        }); 
+    }
+    
     window.deleteSlider = (k) => db.ref(`settings/sliders/${k}`).remove().then(()=>loadManageSliders());
     
     function loadHomeSlider() { 
@@ -2655,10 +3931,32 @@
         setTimeout(showSlides, 3000); 
     }
 
-    function toggleMathKeyboard(show){ const kb = document.getElementById('math-keyboard'); kb.style.display = show ? 'block' : 'none'; document.body.style.paddingBottom = show ? '180px' : '70px'; }
+    function toggleMathKeyboard(show){ 
+        const kb = document.getElementById('math-keyboard'); 
+        kb.style.display = show ? 'block' : 'none'; 
+        document.body.style.paddingBottom = show ? '180px' : '70px'; 
+    }
+    
     function setLastFocus(e){ focusedInput=e; }
-    function insSym(c){ if(focusedInput) { const start = focusedInput.selectionStart; const end = focusedInput.selectionEnd; const text = focusedInput.value; focusedInput.value = text.substring(0, start) + c + text.substring(end); focusedInput.selectionStart = focusedInput.selectionEnd = start + 1; focusedInput.focus(); } }
-    function addCustomSym() { const v=document.getElementById('custom-sym').value; if(v){insSym(v); document.getElementById('custom-sym').value='';} }
+    
+    function insSym(c){ 
+        if(focusedInput) { 
+            const start = focusedInput.selectionStart;
+            const end = focusedInput.selectionEnd;
+            const text = focusedInput.value;
+            focusedInput.value = text.substring(0, start) + c + text.substring(end);
+            focusedInput.selectionStart = focusedInput.selectionEnd = start + 1;
+            focusedInput.focus(); 
+        } 
+    }
+    
+    function addCustomSym() { 
+        const v=document.getElementById('custom-sym').value;
+        if(v){
+            insSym(v); 
+            document.getElementById('custom-sym').value='';
+        }
+    }
 
     function saveAppSettings() {
         const n = document.getElementById('set-app-name').value;
@@ -2681,6 +3979,80 @@
         };
         if(n) db.ref('settings/appInfo').update(settingsData).then(()=>show3DAlert("Settings Saved! Reload app.", 'success'));
     }
+
+    // --- NEW: LOGIN SETTINGS FUNCS ---
+    function populateLoginSettings() {
+        db.ref('settings/adminLogin').once('value', s => {
+            if(s.exists()){
+                const d = s.val();
+                document.getElementById('set-admin-id').value = d.mainId || '';
+                document.getElementById('set-admin-pass').value = d.mainPass || '';
+                document.getElementById('set-backup-id').value = d.backupId || '';
+                document.getElementById('set-backup-pass').value = d.backupPass || '';
+            }
+        });
+    }
+
+    function saveLoginSettings() {
+        const d = {
+            mainId: document.getElementById('set-admin-id').value,
+            mainPass: document.getElementById('set-admin-pass').value,
+            backupId: document.getElementById('set-backup-id').value,
+            backupPass: document.getElementById('set-backup-pass').value
+        };
+        if(d.mainId && d.mainPass) {
+            db.ref('settings/adminLogin').set(d).then(() => show3DAlert("Login Settings Saved!", 'success'));
+        } else {
+            show3DAlert("Main ID & Pass are required!", 'error');
+        }
+    }
+
+    // --- NEW: FIREBASE SETTINGS FUNCS ---
+    function populateFirebaseSettings() {
+        db.ref('settings/firebaseConfig').once('value', s => {
+            const d = s.exists() ? s.val() : firebaseConfig;
+            document.getElementById('fb-apiKey').value = d.apiKey || '';
+            document.getElementById('fb-authDomain').value = d.authDomain || '';
+            document.getElementById('fb-databaseURL').value = d.databaseURL || '';
+            document.getElementById('fb-projectId').value = d.projectId || '';
+            document.getElementById('fb-storageBucket').value = d.storageBucket || '';
+            document.getElementById('fb-messagingSenderId').value = d.messagingSenderId || '';
+            document.getElementById('fb-appId').value = d.appId || '';
+        });
+    }
+
+    function saveFirebaseSettings() {
+        const d = {
+            apiKey: document.getElementById('fb-apiKey').value,
+            authDomain: document.getElementById('fb-authDomain').value,
+            databaseURL: document.getElementById('fb-databaseURL').value,
+            projectId: document.getElementById('fb-projectId').value,
+            storageBucket: document.getElementById('fb-storageBucket').value,
+            messagingSenderId: document.getElementById('fb-messagingSenderId').value,
+            appId: document.getElementById('fb-appId').value
+        };
+        db.ref('settings/firebaseConfig').set(d).then(() => {
+            show3DAlert("Firebase Config Saved! Page will reload.", 'success');
+            setTimeout(() => location.reload(), 2000);
+        });
+    }
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is already logged in
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                checkUserProfile(user.uid);
+            }
+        });
+        
+        // Load ads on startup
+        if(adsConfig.enabled) {
+            setTimeout(startAds, 2000);
+        }
+    });
+
 </script>
 
 </body>
