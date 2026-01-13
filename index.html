@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Version Control Metadata -->
-    <meta name="version" content="6.0"> 
+    <meta name="version" content="9.0"> 
     <meta http-equiv="Cache-Control" content="public, max-age=3600">
     
     <title id="page-title">Momentum Physics Classes</title>
@@ -52,7 +51,7 @@
         .btn-danger { background: linear-gradient(135deg, #cb2d3e, #ef473a); }
         .btn-success { background: linear-gradient(135deg, #11998e, #38ef7d); }
         .btn-warning { background: linear-gradient(135deg, #f1c40f, #f39c12); color:white;}
-        .btn-zoom { background: #2D8CFF; color: white; }
+        .btn-ai { background: linear-gradient(135deg, #8e44ad, #9b59b6); color: white; }
 
         .input-3d {
             background: var(--bg-color); border: none; border-radius: 8px; box-shadow: var(--shadow-inset);
@@ -523,95 +522,6 @@
             opacity: 0.9;
         }
 
-        /* --- SUBSCRIPTION & PAYMENT STYLES --- */
-        .payment-option {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-        }
-        .payment-option:hover {
-            background: #f9f9f9;
-        }
-        .payment-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-        }
-        .phonepay { background: #5F259F; }
-        .googlepay { background: #4285F4; }
-        .paytm { background: #00B9F1; }
-        .upi { background: #00A8B5; }
-        
-        .subscription-status {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            margin: 10px 0;
-            text-align: center;
-        }
-        .subscription-expired {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
-        
-        .utr-timer {
-            font-size: 24px;
-            font-weight: bold;
-            color: #e74c3c;
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        .payment-success {
-            background: #e8f5e9;
-            border: 2px solid #2ecc71;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        .payment-processing {
-            background: #fff3cd;
-            border: 2px solid #f39c12;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        /* --- ANSWER KEY FIXED PAGINATION --- */
-        .ak-page {
-            page-break-after: always;
-            padding: 20px;
-            background: white !important;
-        }
-        .ak-page:last-child {
-            page-break-after: auto;
-        }
-        .ak-question {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed #ddd;
-            page-break-inside: avoid;
-        }
-        .ak-page-title {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 15px;
-        }
     </style>
 </head>
 <body onclick="handleClickOutside(event)">
@@ -652,8 +562,6 @@
             <div class="sb-item" onclick="handleNav('view-tests')"><i class="fa fa-clipboard-list"></i> My Tests</div>
             <div class="sb-item" onclick="handleNav('view-rank-board')"><i class="fa fa-chart-line"></i> Rank Board</div>
             <div class="sb-item" onclick="handleNav('view-results-history')"><i class="fa fa-file-download"></i> Marksheet Download</div>
-            <!-- NEW SUBSCRIPTION MENU ITEM -->
-            <div class="sb-item" onclick="handleNav('view-subscription')"><i class="fa fa-crown" style="color:gold;"></i> Subscription</div>
             <div class="sb-item" onclick="handleNav('view-change-password')"><i class="fa fa-key"></i> Change Password</div>
             <div class="sb-item" onclick="handleNav('view-share')"><i class="fa fa-share-alt"></i> Share App</div>
             <hr style="margin: 10px 0; border: 1px solid #eee;">
@@ -667,9 +575,6 @@
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('students')"><i class="fa fa-users"></i> Students</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('results')"><i class="fa fa-poll"></i> Results</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-tests')"><i class="fa fa-cog"></i> Manage Tests</div>
-            <!-- NEW SUBSCRIPTION MANAGEMENT -->
-            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('subscription-settings')"><i class="fa fa-crown"></i> Subscription Settings</div>
-            <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('payment-approvals')"><i class="fa fa-money-check-alt"></i> Payment Approvals</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('live-chat')"><i class="fa fa-comments"></i> Admin Chat</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-slider')"><i class="fa fa-images"></i> Manage Slider</div>
             <div class="sb-item" onclick="toggleSidebar(); switchAdminTab('manage-content')"><i class="fa fa-book"></i> Manage Content</div>
@@ -801,10 +706,19 @@
         <input type="text" id="p-name" class="input-3d" placeholder="Student Name">
         <input type="text" id="p-father" class="input-3d" placeholder="Father's Name">
         <input type="text" id="p-mother" class="input-3d" placeholder="Mother's Name">
-        <select id="p-class" class="input-3d">
-            <option value="">Select Class</option><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option>
+        <select id="p-class" class="input-3d" onchange="updateSubjectDropdown('p-class', 'p-subject')">
+            <option value="">Select Class</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
         </select>
-        <input type="text" id="p-subject" class="input-3d" placeholder="Subject/Stream (e.g. Science)">
+        <select id="p-subject" class="input-3d">
+            <option value="">Select Subject</option>
+        </select>
+        <select id="p-session" class="input-3d">
+            <option value="">Select Session (Section)</option>
+        </select>
         <input type="number" id="p-roll" class="input-3d" placeholder="Roll Number">
         <input type="tel" id="p-mobile" class="input-3d" placeholder="Mobile Number">
         <button class="btn-3d btn-success" style="width:100%; padding:12px;" onclick="saveProfile()">Save Details</button>
@@ -894,7 +808,7 @@
                     <div style="line-height:1.5; font-size:13px; color:#333; flex: 1;">
                         <p><b>Name:</b> <span id="ms-name" style="text-transform:uppercase;">--</span></p>
                         <p><b>Class:</b> <span id="ms-class">--</span> | <b>Roll:</b> <span id="ms-roll">--</span></p>
-                        <p><b>Subject:</b> <span id="ms-subject">--</span></p>
+                        <p><b>Subject:</b> <span id="ms-subject">--</span> | <b>Session:</b> <span id="ms-session">--</span></p>
                         <p><b>Date:</b> <span id="ms-date">--</span></p>
                     </div>
                     <img src="" id="ms-photo" style="width:80px; height:100px; object-fit:cover; border:2px solid #333; padding:2px;">
@@ -976,6 +890,7 @@
             <p style="margin-bottom:8px;"><b>Mobile:</b> <span id="profile-view-mobile">--</span></p>
             <p style="margin-bottom:8px;"><b>Roll No:</b> <span id="profile-view-roll">--</span></p>
             <p style="margin-bottom:8px;"><b>Subject:</b> <span id="profile-view-subject">--</span></p>
+            <p style="margin-bottom:8px;"><b>Session:</b> <span id="profile-view-session">--</span></p>
         </div>
         <div style="margin-top:20px; display:flex; gap:10px;">
             <button class="btn-3d" style="flex:1; padding:10px; font-size:12px;" onclick="nav('view-edit-profile')"><i class="fa fa-edit"></i> Edit</button>
@@ -988,7 +903,24 @@
     <div class="box-3d" style="padding:20px;">
         <h3>Edit Details</h3>
         <input type="text" id="edit-name" class="input-3d" placeholder="Name"><input type="text" id="edit-father" class="input-3d" placeholder="Father">
-        <input type="text" id="edit-mother" class="input-3d" placeholder="Mother"><input type="text" id="edit-subject" class="input-3d" placeholder="Subject">
+        <input type="text" id="edit-mother" class="input-3d" placeholder="Mother">
+        
+        <label style="font-size:12px; color:gray;">Class, Subject & Session</label>
+        <select id="edit-class" class="input-3d" onchange="updateSubjectDropdown('edit-class', 'edit-subject')">
+            <option value="">Select Class</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
+        </select>
+        <select id="edit-subject" class="input-3d">
+            <option value="">Select Subject</option>
+        </select>
+        <select id="edit-session" class="input-3d">
+            <option value="">Select Session</option>
+        </select>
+
+        <input type="number" id="edit-roll" class="input-3d" placeholder="Roll Number">
         <input type="tel" id="edit-mobile" class="input-3d" placeholder="Mobile">
         <button class="btn-3d btn-success" style="width:100%; padding:12px;" onclick="saveEditedProfile()">Update Profile</button>
         <button class="btn-3d btn-danger" style="width:100%; padding:10px; margin-top:10px;" onclick="nav('view-profile')">Cancel</button>
@@ -1034,85 +966,133 @@
         <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('students')">4. Students</button>
         <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('results')">5. Results</button>
         <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-tests')">6. Manage Tests</button>
-        <!-- NEW SUBSCRIPTION TABS -->
-        <button class="btn-3d admin-tab-btn" style="background:#9b59b6;" onclick="switchAdminTab('subscription-settings')">7. Sub Settings</button>
-        <button class="btn-3d admin-tab-btn" style="background:#2ecc71;" onclick="switchAdminTab('payment-approvals')">8. Payment Approvals</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('live-chat')">9. Live Chat</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-slider')">10. Manage Slider</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-content')">11. Content</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('pdf-management')">12. PDF</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-share-links')">13. Share Links</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('settings')">14. Settings</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('login-settings')">15. Login</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('firebase-settings')">16. Firebase</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('profile')">17. Profile</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('notifications')">18. Notifications</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('page-builder')">19. Page Builder</button>
-        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('app-version')">20. Version</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('live-chat')">7. Live Chat</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-slider')">8. Manage Slider</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-content')">9. Content</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('pdf-management')">10. PDF</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('manage-share-links')">11. Share Links</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('settings')">12. Settings</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('login-settings')">13. Login</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('firebase-settings')">14. Firebase</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('profile')">15. Profile</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('notifications')">16. Notifications</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('page-builder')">17. Page Builder</button>
+        <button class="btn-3d admin-tab-btn" onclick="switchAdminTab('app-version')">18. Version</button>
         <!-- NEW ADS TABS -->
-        <button class="btn-3d admin-tab-btn" style="background:#ff6b6b;" onclick="switchAdminTab('ads-management')">21. Ads Setup</button>
-        <button class="btn-3d admin-tab-btn" style="background:#2ecc71;" onclick="switchAdminTab('ads-dashboard')">22. Ads Dashboard</button>
+        <button class="btn-3d admin-tab-btn" style="background:#ff6b6b;" onclick="switchAdminTab('ads-management')">19. Ads Setup</button>
+        <button class="btn-3d admin-tab-btn" style="background:#2ecc71;" onclick="switchAdminTab('ads-dashboard')">20. Ads Dashboard</button>
     </div>
 
     <!-- TABS -->
     <div id="adm-add-test" class="admin-tab" style="display:none;">
-        <div class="box-3d" style="padding:15px;"><h4>Create New Test</h4><input type="text" id="at-title" class="input-3d" placeholder="Test Name"><input type="text" id="at-subject" class="input-3d" placeholder="Subject (e.g. Science)"><label style="font-size:12px; color:var(--primary); font-weight:bold;">Select Question List (Topic)</label><select id="at-list-select" class="input-3d"><option value="">Loading Topics...</option></select><select id="at-class" class="input-3d"><option value="">Class</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select><label style="font-size:12px; color:var(--primary); font-weight:bold;">Schedule & Timing</label><div class="grid-box"><div>Start: <input type="datetime-local" id="at-start" class="input-3d" style="padding:5px;"></div><div>End: <input type="datetime-local" id="at-end" class="input-3d" style="padding:5px;"></div></div><div class="grid-box"><input type="number" id="at-time" class="input-3d" placeholder="Time/Question (Sec)"><input type="number" id="at-gap" class="input-3d" placeholder="Gap Time (Sec)"></div><label style="font-size:12px; color:var(--accent); font-weight:bold;">Scoring & Grading</label><input type="number" id="at-marks" class="input-3d" placeholder="Marks Per Question (e.g. 1, 2)"><div class="grid-box"><input type="number" id="grade-fail" class="input-3d" placeholder="Min Pass Score"><input type="number" id="grade-sec" class="input-3d" placeholder="Good Rank Score"></div><input type="number" id="grade-first" class="input-3d" placeholder="Excellent Rank Score">
-        <!-- NEW: Subscription Required Checkbox -->
-        <div style="margin:10px 0;">
-            <label style="display:flex; align-items:center; gap:10px;">
-                <input type="checkbox" id="requires-subscription" style="width:20px; height:20px;">
-                <span style="font-weight:bold; color:#9b59b6;">Requires Active Subscription</span>
-            </label>
-        </div>
-        <button class="btn-3d btn-success" style="width:100%;" onclick="createTest()">Publish Test</button></div>
+        <div class="box-3d" style="padding:15px;"><h4>Create New Test</h4><input type="text" id="at-title" class="input-3d" placeholder="Test Name">
+        
+        <!-- NEW CLASS / SUBJECT / SESSION SELECTION -->
+        <label style="font-size:12px; color:var(--primary); font-weight:bold;">Target Audience</label>
+        <select id="at-class" class="input-3d" onchange="updateSubjectDropdown('at-class', 'at-subject')">
+            <option value="">Select Class</option>
+            <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+        </select>
+        <select id="at-subject" class="input-3d">
+            <option value="">Select Subject</option>
+        </select>
+        <select id="at-session" class="input-3d">
+            <option value="">Select Session</option>
+        </select>
+
+        <label style="font-size:12px; color:var(--primary); font-weight:bold;">Select Question List</label>
+        <select id="at-list-select" class="input-3d"><option value="">Loading Topics...</option></select>
+        
+        <label style="font-size:12px; color:var(--primary); font-weight:bold;">Schedule & Timing</label>
+        <div class="grid-box"><div>Start: <input type="datetime-local" id="at-start" class="input-3d" style="padding:5px;"></div><div>End: <input type="datetime-local" id="at-end" class="input-3d" style="padding:5px;"></div></div>
+        <div class="grid-box"><input type="number" id="at-time" class="input-3d" placeholder="Time/Question (Sec)"><input type="number" id="at-gap" class="input-3d" placeholder="Gap Time (Sec)"></div>
+        <label style="font-size:12px; color:var(--accent); font-weight:bold;">Scoring & Grading</label>
+        <input type="number" id="at-marks" class="input-3d" placeholder="Marks Per Question (e.g. 1, 2)">
+        <div class="grid-box"><input type="number" id="grade-fail" class="input-3d" placeholder="Min Pass Score"><input type="number" id="grade-sec" class="input-3d" placeholder="Good Rank Score"></div><input type="number" id="grade-first" class="input-3d" placeholder="Excellent Rank Score"><button class="btn-3d btn-success" style="width:100%;" onclick="createTest()">Publish Test</button></div>
     </div>
     
-    <div id="adm-add-questions" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Add Questions</h4><input type="text" id="aq-list-name" class="input-3d" placeholder="Topic Name (e.g. Physics Ch1)"><div style="position:relative;"><textarea id="aq-text" class="input-3d" rows="3" placeholder="Question Text" onfocus="setLastFocus(this)"></textarea><button class="admin-kb-toggle" onclick="toggleMathKeyboard(true)" style="position:absolute; right:10px; bottom:20px;"><i class="fa fa-keyboard"></i></button></div><div class="grid-box"><input type="text" id="aq-op1" class="input-3d" placeholder="A" onfocus="setLastFocus(this)"><input type="text" id="aq-op2" class="input-3d" placeholder="B" onfocus="setLastFocus(this)"><input type="text" id="aq-op3" class="input-3d" placeholder="C" onfocus="setLastFocus(this)"><input type="text" id="aq-op4" class="input-3d" placeholder="D" onfocus="setLastFocus(this)"></div><select id="aq-correct" class="input-3d"><option value="1">A</option><option value="2">B</option><option value="3">C</option><option value="4">D</option></select><button class="btn-3d btn-success" style="width:100%;" onclick="saveQuestion()">Save to List</button></div></div>
+    <!-- ADD QUESTIONS TAB (Modified to Include AI) -->
+    <div id="adm-add-questions" class="admin-tab" style="display:none;">
+        <!-- NEW: AI Question Generator Section -->
+        <div class="box-3d" style="padding:15px; margin-bottom:20px; border: 2px solid #9b59b6;">
+            <h4 style="color:#9b59b6;"><i class="fa fa-robot"></i> Momentum AI Generator</h4>
+            <p style="font-size:12px; color:#666; margin-bottom:10px;">Enter details and AI will generate and add questions automatically.</p>
+            
+            <input type="text" id="ai-topic" class="input-3d" placeholder="Topic Name (e.g. Newton Laws)">
+            
+            <!-- AI Class/Subject Dropdowns -->
+            <div class="grid-box">
+                <select id="ai-class" class="input-3d" onchange="updateSubjectDropdown('ai-class', 'ai-subject')">
+                    <option value="">Select Class</option>
+                    <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                </select>
+                <select id="ai-subject" class="input-3d">
+                    <option value="">Select Subject</option>
+                </select>
+            </div>
+
+            <div class="grid-box">
+                <input type="number" id="ai-count" class="input-3d" placeholder="No. of Questions (Max 15)" value="5">
+                <select id="ai-level" class="input-3d">
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+            
+            <!-- Language Selection -->
+            <select id="ai-lang" class="input-3d" style="margin-bottom:10px;">
+                <option value="Hindi">Hindi Language</option>
+                <option value="English">English Language</option>
+                <option value="Hinglish">Hinglish (Mix)</option>
+            </select>
+            
+            <!-- API Key Input -->
+            <input type="password" id="ai-api-key" class="input-3d" placeholder="Paste Google Gemini API Key Here">
+
+            <button class="btn-3d btn-ai" style="width:100%;" onclick="generateQuestionsByAI()">
+                <i class="fa fa-magic"></i> Generate & Save to Database
+            </button>
+            <div id="ai-status" style="margin-top:10px; font-size:12px; font-weight:bold; color:var(--primary); text-align:center;"></div>
+        </div>
+
+        <!-- Manual Question Entry -->
+        <div class="box-3d" style="padding:15px;">
+            <h4>Add Questions Manually</h4>
+            
+            <div class="grid-box">
+                <select id="manual-class" class="input-3d">
+                    <option value="">Class (Optional)</option>
+                    <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                </select>
+                <select id="manual-subject" class="input-3d">
+                    <option value="">Subject (Optional)</option>
+                    <option value="Physics">Physics</option><option value="Math">Math</option><option value="Chemistry">Chemistry</option><option value="Biology">Biology</option>
+                </select>
+            </div>
+
+            <input type="text" id="aq-list-name" class="input-3d" placeholder="Topic Name (e.g. Physics Ch1)">
+            <div style="position:relative;">
+                <textarea id="aq-text" class="input-3d" rows="3" placeholder="Question Text" onfocus="setLastFocus(this)"></textarea>
+                <button class="admin-kb-toggle" onclick="toggleMathKeyboard(true)" style="position:absolute; right:10px; bottom:20px;"><i class="fa fa-keyboard"></i></button>
+            </div>
+            <div class="grid-box">
+                <input type="text" id="aq-op1" class="input-3d" placeholder="A" onfocus="setLastFocus(this)">
+                <input type="text" id="aq-op2" class="input-3d" placeholder="B" onfocus="setLastFocus(this)">
+                <input type="text" id="aq-op3" class="input-3d" placeholder="C" onfocus="setLastFocus(this)">
+                <input type="text" id="aq-op4" class="input-3d" placeholder="D" onfocus="setLastFocus(this)">
+            </div>
+            <select id="aq-correct" class="input-3d">
+                <option value="1">A</option><option value="2">B</option><option value="3">C</option><option value="4">D</option>
+            </select>
+            <button class="btn-3d btn-success" style="width:100%;" onclick="saveQuestion()">Save to List</button>
+        </div>
+    </div>
     
     <div id="adm-view-questions" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>View Added Questions</h4><select id="vq-test-select" class="input-3d" onchange="loadQuestionsList()"><option>Select Topic List</option></select><div id="questions-list-area" style="max-height:400px; overflow-y:auto;"></div></div></div>
-    
     <div id="adm-students" class="admin-tab" style="display:none;"><h4>Student Management</h4><div id="admin-student-list"></div></div>
-    
     <div id="adm-results" class="admin-tab" style="display:none;"><h4>View Student Results</h4><select id="res-test-select" class="input-3d" onchange="loadResults()"><option>Select Test</option></select><div id="results-area"></div></div>
-    
     <div id="adm-manage-tests" class="admin-tab" style="display:none;"><div class="box-3d" style="padding:15px;"><h4>Manage Tests</h4><div id="manage-tests-area" style="margin-top:10px;"></div></div></div>
-    
-    <!-- NEW SUBSCRIPTION SETTINGS TAB -->
-    <div id="adm-subscription-settings" class="admin-tab" style="display:none;">
-        <div class="box-3d" style="padding:15px;">
-            <h4><i class="fa fa-crown" style="color:gold;"></i> Subscription Settings</h4>
-            
-            <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:20px;">
-                <h5>UPI Payment Details</h5>
-                <input type="text" id="sub-upi-id" class="input-3d" placeholder="UPI ID (e.g. atomic@upi)">
-                <input type="text" id="sub-qr-code" class="input-3d" placeholder="QR Code Image URL">
-            </div>
-            
-            <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:20px;">
-                <h5>Subscription Plans</h5>
-                <input type="number" id="sub-amount" class="input-3d" placeholder="Amount (₹)">
-                <select id="sub-duration" class="input-3d">
-                    <option value="30">1 Month (30 days)</option>
-                    <option value="90">3 Months (90 days)</option>
-                    <option value="180">6 Months (180 days)</option>
-                    <option value="365">1 Year (365 days)</option>
-                </select>
-                <input type="text" id="sub-description" class="input-3d" placeholder="Description (e.g. Full Access)">
-            </div>
-            
-            <button class="btn-3d btn-success" style="width:100%;" onclick="saveSubscriptionSettings()">Save Settings</button>
-        </div>
-    </div>
-    
-    <!-- NEW PAYMENT APPROVALS TAB -->
-    <div id="adm-payment-approvals" class="admin-tab" style="display:none;">
-        <div class="box-3d" style="padding:15px;">
-            <h4><i class="fa fa-money-check-alt"></i> Payment Approvals</h4>
-            <div id="payment-approval-list">
-                Loading payment requests...
-            </div>
-        </div>
-    </div>
     
     <!-- ADMIN LOGIN SETTINGS -->
     <div id="adm-login-settings" class="admin-tab" style="display:none;">
@@ -1480,102 +1460,6 @@
     </div>
 </div>
 
-<!-- NEW SUBSCRIPTION VIEW FOR STUDENTS -->
-<div id="view-subscription" class="view-container">
-    <div class="box-3d" style="padding:20px;">
-        <h3 style="color:#9b59b6; margin-bottom:15px;"><i class="fa fa-crown"></i> Subscription Plans</h3>
-        
-        <!-- Subscription Status -->
-        <div id="subscription-status-display" class="subscription-status">
-            Loading subscription status...
-        </div>
-        
-        <!-- Payment Options -->
-        <div id="payment-options" style="margin-top:20px;">
-            <h4>Choose Payment Method</h4>
-            <div class="payment-option" onclick="initiatePayment('phonepay')">
-                <div class="payment-icon phonepay"><i class="fab fa-google-wallet"></i></div>
-                <div style="flex:1;">
-                    <b>PhonePe</b>
-                    <p style="font-size:12px; color:#666;">Pay via PhonePe UPI</p>
-                </div>
-            </div>
-            
-            <div class="payment-option" onclick="initiatePayment('googlepay')">
-                <div class="payment-icon googlepay"><i class="fab fa-google-pay"></i></div>
-                <div style="flex:1;">
-                    <b>Google Pay</b>
-                    <p style="font-size:12px; color:#666;">Pay via Google Pay</p>
-                </div>
-            </div>
-            
-            <div class="payment-option" onclick="initiatePayment('paytm')">
-                <div class="payment-icon paytm"><i class="fab fa-paypal"></i></div>
-                <div style="flex:1;">
-                    <b>Paytm</b>
-                    <p style="font-size:12px; color:#666;">Pay via Paytm</p>
-                </div>
-            </div>
-            
-            <div class="payment-option" onclick="initiatePayment('upi')">
-                <div class="payment-icon upi"><i class="fa fa-university"></i></div>
-                <div style="flex:1;">
-                    <b>UPI Transfer</b>
-                    <p style="font-size:12px; color:#666;">Direct UPI Payment</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- UTR Entry Section (Hidden Initially) -->
-        <div id="utr-entry-section" style="display:none; margin-top:20px;">
-            <h4>Enter UTR Number</h4>
-            <p style="font-size:12px; color:#666;">Please enter the 10-digit UTR number from your payment.</p>
-            
-            <div class="utr-timer" id="utr-timer">10:00</div>
-            
-            <input type="text" id="utr-number" class="input-3d" placeholder="Enter 10-digit UTR" maxlength="10">
-            <button class="btn-3d btn-success" style="width:100%;" onclick="submitUTR()">Submit UTR</button>
-            
-            <p style="font-size:10px; color:#e74c3c; margin-top:10px;">
-                <i class="fa fa-exclamation-circle"></i> 
-                You cannot go back for 10 minutes. Please complete the process.
-            </p>
-        </div>
-        
-        <!-- Payment Processing Status -->
-        <div id="payment-processing-status" style="display:none;">
-            <div class="payment-processing">
-                <i class="fa fa-spinner fa-spin fa-2x"></i>
-                <h4>Payment Processing</h4>
-                <p>Your payment is being verified. This may take a few minutes.</p>
-                <p>You will receive a notification when your subscription is activated.</p>
-            </div>
-        </div>
-        
-        <!-- Payment Success -->
-        <div id="payment-success-status" style="display:none;">
-            <div class="payment-success">
-                <i class="fa fa-check-circle fa-2x" style="color:#2ecc71;"></i>
-                <h4>Payment Submitted Successfully!</h4>
-                <p>Your payment is under verification by admin.</p>
-                <p>You will receive access once approved.</p>
-                <button class="btn-3d" onclick="nav('view-home')" style="margin-top:10px;">Go to Home</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- UTR ENTRY BLOCKER VIEW (Prevents Going Back) -->
-<div id="view-utr-blocker" class="view-container" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#f0f2f5; z-index:10000;">
-    <div class="box-3d" style="margin:50px; padding:30px; text-align:center;">
-        <h2 style="color:#e74c3c;"><i class="fa fa-lock"></i> Complete Payment Process</h2>
-        <div class="utr-timer" style="font-size:36px;" id="blocker-timer">09:45</div>
-        <p style="margin:20px 0;">You must complete the UTR submission process.</p>
-        <p style="color:#666; font-size:12px;">You cannot go back until the timer expires or you submit UTR.</p>
-        <button class="btn-3d btn-success" onclick="returnToUTR()" style="margin-top:20px;">Return to UTR Entry</button>
-    </div>
-</div>
-
 <!-- EXTENDED MATH KEYBOARD -->
 <div id="math-keyboard" class="math-keyboard" onclick="event.stopPropagation()">
     <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
@@ -1616,33 +1500,22 @@
 </div>
 
 <script>
+    // --- IMPORTANT: PASTE YOUR FIREBASE CONFIG HERE ---
     const firebaseConfig = {
-        apiKey: "AIzaSyBiPTfrN8HDtjQdShgN4Rf-VNEqAGxru7s",
-        authDomain: "education-app-a7555.firebaseapp.com",
-        databaseURL: "https://education-app-a7555-default-rtdb.firebaseio.com",
-        projectId: "education-app-a7555",
-        storageBucket: "education-app-a7555.firebasestorage.app",
-        messagingSenderId: "496541809916",
-        appId: "1:496541809916:web:ccf2061cd1cc5c04d5ab79"
+        apiKey: "AIzaSyDhzUXBCMHbRScrwJ23ZJ_fl7mrV5XY08U",
+        authDomain: "momentum-physics-classes-cca54.firebaseapp.com",
+        databaseURL: "https://momentum-physics-classes-cca54-default-rtdb.firebaseio.com",
+        projectId: "momentum-physics-classes-cca54",
+        storageBucket: "momentum-physics-classes-cca54.firebasestorage.app",
+        messagingSenderId: "961235305495",
+        appId: "1:961235305495:web:8272bed6a93793a8390852",
+        measurementId: "G-JQS59DSNEH"
     };
+    // --------------------------------------------------------
 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
-    
-    // --- SUBSCRIPTION VARIABLES ---
-    let subscriptionSettings = {
-        upiId: "",
-        qrCode: "",
-        amount: 500,
-        duration: 30,
-        description: "Monthly Subscription"
-    };
-    
-    let currentSubscription = null;
-    let utrTimer = null;
-    let utrTimeLeft = 600; // 10 minutes in seconds
-    let isInUTRProcess = false;
     
     // --- 3D ALERT SYSTEM ---
     function show3DAlert(msg, type='info') {
@@ -1837,13 +1710,6 @@
             }
         });
 
-        // Load Subscription Settings
-        db.ref('settings/subscription').on('value', snapshot => {
-            if(snapshot.exists()) {
-                subscriptionSettings = snapshot.val();
-            }
-        });
-
         // Load Dynamic Pages
         db.ref('dynamic_pages').on('value', s=>{
             dynamicPages = [];
@@ -1919,13 +1785,7 @@
         }
     }
     window.execCmd = (c) => document.execCommand(c, false, null);
-    window.goBack = () => {
-        if (isInUTRProcess) {
-            nav('view-utr-blocker');
-            return;
-        }
-        nav('view-home');
-    };
+    window.goBack = () => nav('view-home');
 
     // --- NOTIFICATIONS ---
     function listenNotifications(uid) {
@@ -1974,11 +1834,11 @@
                      loadStudentChat(user.uid); 
                      listenNotifications(user.uid);
                      updateOnlineStatus(user.uid);
-                     loadUserSubscription(user.uid);
                      show3DAlert("Welcome Back!", 'success');
                  } else {
                      // New Google User needs setup
                      nav('view-profile-setup');
+                     populateSessions('p-session'); // Populate sessions on load
                      document.getElementById('app-header').style.display='none';
                      document.getElementById('bottom-nav').style.display='none';
                  }
@@ -2179,14 +2039,13 @@
         // Hides all views first
         document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
         
-        if(viewId === 'view-test-runner' || viewId === 'view-live-class-room' || viewId === 'view-utr-blocker') { 
+        if(viewId === 'view-test-runner' || viewId === 'view-live-class-room') { 
             document.getElementById(viewId).style.display = 'flex'; 
         } else { 
             // Shows targeted view
             document.getElementById(viewId).classList.add('active'); 
             document.getElementById('view-test-runner').style.display = 'none';
             document.getElementById('view-live-class-room').style.display = 'none';
-            document.getElementById('view-utr-blocker').style.display = 'none';
         }
 
         // Special check: If moving AWAY from marksheet or admin, reset/hide things
@@ -2266,7 +2125,6 @@
             document.getElementById('btn-chat').classList.add('active'); 
         }
         if(viewId === 'view-share') { renderShareLinksUser(); }
-        if(viewId === 'view-subscription') { loadSubscriptionPage(); }
     }
 
     // --- ADS MANAGEMENT FUNCTIONS ---
@@ -2470,252 +2328,6 @@
                     document.getElementById('ctr-rate').textContent = ctr + '%';
                 }
             }
-        });
-    }
-
-    // --- SUBSCRIPTION FUNCTIONS ---
-    function loadUserSubscription(uid) {
-        db.ref(`subscriptions/${uid}`).orderByChild('timestamp').limitToLast(1).once('value', snapshot => {
-            if(snapshot.exists()) {
-                snapshot.forEach(child => {
-                    currentSubscription = child.val();
-                    currentSubscription.id = child.key;
-                    currentSubscription.isActive = checkSubscriptionActive(currentSubscription);
-                });
-            } else {
-                currentSubscription = null;
-            }
-        });
-    }
-
-    function checkSubscriptionActive(sub) {
-        if (!sub) return false;
-        const now = Date.now();
-        const expiryDate = sub.timestamp + (sub.duration * 24 * 60 * 60 * 1000);
-        return now < expiryDate && sub.status === 'approved';
-    }
-
-    function loadSubscriptionPage() {
-        const statusDiv = document.getElementById('subscription-status-display');
-        
-        if (currentSubscription && checkSubscriptionActive(currentSubscription)) {
-            const expiryDate = new Date(currentSubscription.timestamp + (currentSubscription.duration * 24 * 60 * 60 * 1000));
-            const daysLeft = Math.ceil((expiryDate - Date.now()) / (1000 * 60 * 60 * 24));
-            
-            statusDiv.innerHTML = `
-                <h4><i class="fa fa-crown"></i> Active Subscription</h4>
-                <p>Expires: ${expiryDate.toLocaleDateString()}</p>
-                <p>Days Left: ${daysLeft}</p>
-                <p>Plan: ${currentSubscription.description || 'Premium Access'}</p>
-            `;
-        } else {
-            statusDiv.className = 'subscription-status subscription-expired';
-            statusDiv.innerHTML = `
-                <h4><i class="fa fa-exclamation-triangle"></i> No Active Subscription</h4>
-                <p>Subscribe to access premium tests and features</p>
-                <p>Amount: ₹${subscriptionSettings.amount} | Duration: ${subscriptionSettings.duration} days</p>
-            `;
-        }
-    }
-
-    function initiatePayment(method) {
-        // Hide payment options, show UTR entry
-        document.getElementById('payment-options').style.display = 'none';
-        document.getElementById('utr-entry-section').style.display = 'block';
-        
-        // Start UTR timer
-        startUTRTimer();
-        
-        // Set flag to prevent going back
-        isInUTRProcess = true;
-        
-        // Open payment app based on method
-        let upiLink = '';
-        switch(method) {
-            case 'phonepay':
-                upiLink = `phonepe://pay?pa=${subscriptionSettings.upiId}&pn=Momentum%20Physics&am=${subscriptionSettings.amount}&cu=INR`;
-                break;
-            case 'googlepay':
-                upiLink = `tez://upi/pay?pa=${subscriptionSettings.upiId}&pn=Momentum%20Physics&am=${subscriptionSettings.amount}&cu=INR`;
-                break;
-            case 'paytm':
-                upiLink = `paytmmp://pay?pa=${subscriptionSettings.upiId}&pn=Momentum%20Physics&am=${subscriptionSettings.amount}&cu=INR`;
-                break;
-            default:
-                upiLink = `upi://pay?pa=${subscriptionSettings.upiId}&pn=Momentum%20Physics&am=${subscriptionSettings.amount}&cu=INR`;
-        }
-        
-        // Try to open the app
-        window.location.href = upiLink;
-        
-        // Fallback: Show UPI details if app doesn't open
-        setTimeout(() => {
-            show3DAlert(`Pay ₹${subscriptionSettings.amount} to ${subscriptionSettings.upiId}`, 'info');
-        }, 1000);
-    }
-
-    function startUTRTimer() {
-        utrTimeLeft = 600; // 10 minutes
-        
-        utrTimer = setInterval(() => {
-            utrTimeLeft--;
-            
-            const minutes = Math.floor(utrTimeLeft / 60);
-            const seconds = utrTimeLeft % 60;
-            
-            document.getElementById('utr-timer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            document.getElementById('blocker-timer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            if (utrTimeLeft <= 0) {
-                clearInterval(utrTimer);
-                isInUTRProcess = false;
-                show3DAlert("Time expired! Please start payment again.", 'error');
-                nav('view-subscription');
-            }
-        }, 1000);
-    }
-
-    function submitUTR() {
-        const utr = document.getElementById('utr-number').value;
-        
-        if (!utr || utr.length !== 10) {
-            show3DAlert("Please enter a valid 10-digit UTR number", 'error');
-            return;
-        }
-        
-        // Hide UTR entry, show processing
-        document.getElementById('utr-entry-section').style.display = 'none';
-        document.getElementById('payment-processing-status').style.display = 'block';
-        
-        // Clear timer
-        clearInterval(utrTimer);
-        
-        // Save payment request to database
-        const paymentData = {
-            uid: currentUser.uid,
-            name: currentUser.displayName || currentUser.email,
-            utr: utr,
-            amount: subscriptionSettings.amount,
-            duration: subscriptionSettings.duration,
-            description: subscriptionSettings.description,
-            timestamp: Date.now(),
-            status: 'pending'
-        };
-        
-        db.ref('payment_requests').push(paymentData).then(() => {
-            // Show success message after 2 seconds
-            setTimeout(() => {
-                document.getElementById('payment-processing-status').style.display = 'none';
-                document.getElementById('payment-success-status').style.display = 'block';
-                isInUTRProcess = false;
-                
-                // Reset form
-                document.getElementById('utr-number').value = '';
-            }, 2000);
-        });
-    }
-
-    function returnToUTR() {
-        nav('view-subscription');
-    }
-
-    // --- ADMIN SUBSCRIPTION FUNCTIONS ---
-    function saveSubscriptionSettings() {
-        subscriptionSettings = {
-            upiId: document.getElementById('sub-upi-id').value,
-            qrCode: document.getElementById('sub-qr-code').value,
-            amount: parseInt(document.getElementById('sub-amount').value) || 500,
-            duration: parseInt(document.getElementById('sub-duration').value) || 30,
-            description: document.getElementById('sub-description').value || "Monthly Subscription"
-        };
-        
-        db.ref('settings/subscription').set(subscriptionSettings).then(() => {
-            show3DAlert("Subscription settings saved!", 'success');
-        });
-    }
-
-    function loadPaymentApprovals() {
-        const listDiv = document.getElementById('payment-approval-list');
-        
-        db.ref('payment_requests').orderByChild('timestamp').on('value', snapshot => {
-            let html = '';
-            
-            if (!snapshot.exists()) {
-                html = '<p>No payment requests pending.</p>';
-            } else {
-                snapshot.forEach(child => {
-                    const payment = child.val();
-                    const date = new Date(payment.timestamp).toLocaleString();
-                    
-                    html += `
-                    <div class="result-list-item">
-                        <div style="flex:1;">
-                            <b>${payment.name}</b><br>
-                            <small>UTR: ${payment.utr} | Amount: ₹${payment.amount}</small><br>
-                            <small>Date: ${date} | Status: <span style="color:${payment.status === 'approved' ? 'green' : payment.status === 'rejected' ? 'red' : 'orange'}">${payment.status}</span></small>
-                        </div>
-                        <div>
-                            ${payment.status === 'pending' ? `
-                            <button class="btn-3d btn-success" onclick="approvePayment('${child.key}', '${payment.uid}')">Approve</button>
-                            <button class="btn-3d btn-danger" onclick="rejectPayment('${child.key}')">Reject</button>
-                            ` : ''}
-                        </div>
-                    </div>`;
-                });
-            }
-            
-            listDiv.innerHTML = html;
-        });
-    }
-
-    function approvePayment(paymentId, userId) {
-        db.ref(`payment_requests/${paymentId}`).update({ status: 'approved' }).then(() => {
-            // Get payment details
-            db.ref(`payment_requests/${paymentId}`).once('value').then(snapshot => {
-                const payment = snapshot.val();
-                
-                // Create subscription for user
-                const subscriptionData = {
-                    uid: userId,
-                    amount: payment.amount,
-                    duration: payment.duration,
-                    description: payment.description,
-                    timestamp: Date.now(),
-                    status: 'approved',
-                    paymentId: paymentId
-                };
-                
-                db.ref(`subscriptions/${userId}`).push(subscriptionData).then(() => {
-                    // Send notification to user
-                    db.ref('notifications').push({
-                        title: "Subscription Approved!",
-                        msg: "Your payment has been approved. You now have access to premium tests.",
-                        targetView: "view-tests",
-                        timestamp: Date.now()
-                    });
-                    
-                    show3DAlert("Payment approved and subscription activated!", 'success');
-                });
-            });
-        });
-    }
-
-    function rejectPayment(paymentId) {
-        db.ref(`payment_requests/${paymentId}`).update({ status: 'rejected' }).then(() => {
-            // Send notification to user
-            db.ref('payment_requests/' + paymentId).once('value').then(snapshot => {
-                const payment = snapshot.val();
-                db.ref('notifications').push({
-                    title: "Payment Rejected",
-                    msg: "Your payment was rejected. Please contact admin for details.",
-                    targetView: "view-subscription",
-                    timestamp: Date.now()
-                });
-            });
-            
-            show3DAlert("Payment rejected!", 'info');
         });
     }
 
@@ -2936,21 +2548,76 @@
                 document.getElementById('profile-view-mobile').innerText = d.mobile;
                 document.getElementById('profile-view-roll').innerText = d.roll;
                 document.getElementById('profile-view-subject').innerText = d.subject || '--';
+                document.getElementById('profile-view-session').innerText = d.session || '--';
 
                 document.getElementById('edit-name').value = d.name;
                 document.getElementById('edit-father').value = d.fatherName;
                 document.getElementById('edit-mother').value = d.motherName;
-                document.getElementById('edit-subject').value = d.subject || '';
                 document.getElementById('edit-mobile').value = d.mobile;
+                
+                // Populate dropdowns for editing
+                populateSessions('edit-session');
+                
+                // Pre-fill existing data if any
+                setTimeout(() => {
+                    if(d.class) {
+                        document.getElementById('edit-class').value = d.class;
+                        updateSubjectDropdown('edit-class', 'edit-subject');
+                    }
+                    if(d.subject) document.getElementById('edit-subject').value = d.subject;
+                    if(d.session) document.getElementById('edit-session').value = d.session;
+                }, 500);
 
                 document.getElementById('app-header').style.display='flex';
                 document.getElementById('bottom-nav').style.display='flex';
                 nav('view-home');
             } else {
                 nav('view-profile-setup');
+                populateSessions('p-session');
                 document.getElementById('bottom-nav').style.display='none';
             }
         });
+    }
+
+    // --- HELPER FUNCTIONS FOR DYNAMIC DROPDOWNS ---
+    const subjectMap = {
+        '9': ['All Subjects', 'Math', 'Hindi', 'English', 'Sanskrit', 'Science', 'Social Science'],
+        '10': ['All Subjects', 'Math', 'Hindi', 'English', 'Sanskrit', 'Science', 'Social Science'],
+        '11': ['All Subjects', 'Math', 'Physics', 'Biology', 'Chemistry', 'English', 'Hindi'],
+        '12': ['All Subjects', 'Math', 'Physics', 'Biology', 'Chemistry', 'English', 'Hindi']
+    };
+
+    function updateSubjectDropdown(classId, subjectId) {
+        const cls = document.getElementById(classId).value;
+        const subSelect = document.getElementById(subjectId);
+        subSelect.innerHTML = '<option value="">Select Subject</option>';
+        
+        if (cls && subjectMap[cls]) {
+            subjectMap[cls].forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub;
+                opt.innerText = sub;
+                subSelect.appendChild(opt);
+            });
+        }
+    }
+
+    function populateSessions(elementId) {
+        const select = document.getElementById(elementId);
+        if(!select) return;
+        select.innerHTML = '<option value="">Select Session (Section)</option>';
+        for (let i = 2026; i < 3000; i++) {
+            const session = `${i} - ${i+1}`;
+            const opt = document.createElement('option');
+            opt.value = session;
+            opt.innerText = session;
+            select.appendChild(opt);
+        }
+    }
+
+    // Initialize Sessions for Admin too
+    function initAdminDropdowns() {
+        populateSessions('at-session');
     }
 
     function saveProfile() {
@@ -2960,6 +2627,7 @@
             motherName: document.getElementById('p-mother').value, 
             class: document.getElementById('p-class').value, 
             subject: document.getElementById('p-subject').value,
+            session: document.getElementById('p-session').value,
             roll: document.getElementById('p-roll').value, 
             mobile: document.getElementById('p-mobile').value, 
             photo: currentUser.photoURL || "https://via.placeholder.com/150", 
@@ -2967,7 +2635,11 @@
             uid: currentUser.uid, 
             canTest: false 
         };
-        if(d.name) db.ref('users/'+currentUser.uid).set(d).then(()=>location.reload());
+        if(d.name && d.class && d.subject && d.session) {
+            db.ref('users/'+currentUser.uid).set(d).then(()=>location.reload());
+        } else {
+            show3DAlert("Please fill all details including Class, Subject & Session", 'error');
+        }
     }
     
     function saveEditedProfile() {
@@ -2975,10 +2647,20 @@
             name: document.getElementById('edit-name').value, 
             fatherName: document.getElementById('edit-father').value, 
             motherName: document.getElementById('edit-mother').value, 
-            subject: document.getElementById('edit-subject').value, 
+            class: document.getElementById('edit-class').value,
+            subject: document.getElementById('edit-subject').value,
+            session: document.getElementById('edit-session').value,
             mobile: document.getElementById('edit-mobile').value 
         };
-        db.ref('users/'+currentUser.uid).update(u).then(()=>{ show3DAlert("Updated", 'success'); nav('view-profile'); checkUserProfile(currentUser.uid); });
+        if(u.class && u.subject && u.session) {
+            db.ref('users/'+currentUser.uid).update(u).then(()=>{ 
+                show3DAlert("Updated Successfully", 'success'); 
+                nav('view-profile'); 
+                checkUserProfile(currentUser.uid); 
+            });
+        } else {
+            show3DAlert("Class, Subject and Session are required", 'error');
+        }
     }
     
     function changeUserPassword() {
@@ -2987,13 +2669,18 @@
         else show3DAlert("Match passwords", 'error');
     }
 
-    // --- STUDENT EXAM (PROFESSIONAL UI) ---
+    // --- STUDENT EXAM (PROFESSIONAL UI WITH FILTERING) ---
     function loadStudentTests() {
         const c=document.getElementById('test-list-container'); c.innerHTML='Loading...';
         db.ref('users/'+currentUser.uid).once('value', u=>{
-            const userData = u.val();
-            const hasActiveSubscription = currentSubscription && checkSubscriptionActive(currentSubscription);
+            const user = u.val();
             
+            // Check Block Status
+            if(!user.canTest) { 
+                c.innerHTML='<div class="box-3d" style="padding:20px; color:red; text-align:center;">🚫 Test Access Pending. Contact Admin.</div>'; 
+                return; 
+            }
+
             db.ref('tests').once('value', t=>{
                 if(!t.exists()){c.innerHTML='No Tests Available';return;}
                 let html = "";
@@ -3001,8 +2688,22 @@
                 const tests = [];
                 t.forEach(test => { tests.push({key: test.key, ...test.val()}); });
 
-                // Use promises for checking results to batch render
-                const checkPromises = tests.map(td => {
+                // Filter Tests based on User Profile
+                const visibleTests = tests.filter(test => {
+                    const matchClass = (test.class == user.class);
+                    const matchSession = (test.session == user.session);
+                    // Subject logic: if test is 'All Subjects' OR user chose 'All Subjects' OR specific match
+                    const matchSubject = (test.subject === 'All Subjects' || user.subject === 'All Subjects' || test.subject === user.subject);
+                    
+                    return matchClass && matchSession && matchSubject;
+                });
+
+                if(visibleTests.length === 0) {
+                    c.innerHTML = '<div style="padding:20px; text-align:center;">No tests found for your Class/Subject/Session.</div>';
+                    return;
+                }
+
+                const checkPromises = visibleTests.map(td => {
                     return db.ref(`results/${td.key}/${currentUser.uid}`).once('value').then(r => {
                         const startT = new Date(td.startTime);
                         const endT = new Date(td.endTime);
@@ -3020,14 +2721,8 @@
                             statusBadge = '<span class="tc-badge badge-live" style="background:#ffebee; color:red;">Expired</span>';
                             actionBtn = '<button class="tc-btn" style="background:#e74c3c; cursor:default;">Missed</button>';
                         } else {
-                            // Check if test requires subscription
-                            if(td.requiresSubscription && !hasActiveSubscription) {
-                                statusBadge = '<span class="tc-badge" style="background:#9b59b6; color:white;">Premium</span>';
-                                actionBtn = `<button class="tc-btn" style="background:#9b59b6;" onclick="nav('view-subscription')">Subscribe to Access</button>`;
-                            } else {
-                                statusBadge = '<span class="tc-badge badge-live">Live Now</span>';
-                                actionBtn = `<button class="tc-btn" onclick="startExam('${td.key}',${td.timePerQ},${td.gapTime}, '${td.listTopic}')">Start Exam <i class="fa fa-arrow-right"></i></button>`;
-                            }
+                            statusBadge = '<span class="tc-badge badge-live">Live Now</span>';
+                            actionBtn = `<button class="tc-btn" onclick="startExam('${td.key}',${td.timePerQ},${td.gapTime}, '${td.listTopic}')">Start Exam <i class="fa fa-arrow-right"></i></button>`;
                         }
 
                         return `
@@ -3040,7 +2735,7 @@
                                 <div class="tc-info">
                                     <span><i class="fa fa-clock"></i> ${td.timePerQ}s / Q</span>
                                     <span><i class="fa fa-calendar"></i> ${startT.toLocaleDateString()}</span>
-                                    ${td.requiresSubscription ? '<span><i class="fa fa-crown" style="color:gold;"></i> Premium</span>' : ''}
+                                    <span><i class="fa fa-book"></i> ${td.subject}</span>
                                 </div>
                                 ${actionBtn}
                             </div>
@@ -3301,18 +2996,16 @@
                 
                 const akContainer = document.getElementById('ak-pdf-content');
                 let fullHtml = "";
-                
-                // NEW PAGINATION: First page 9 questions, rest 11 questions per page
+
+                // IMPROVED PAGINATION: First page 9 questions, rest 12
                 let i = 0;
                 let pageNumber = 1;
-                const totalQuestions = questions.length;
-                
-                while (i < totalQuestions) {
-                    const itemsPerPage = (pageNumber === 1) ? 9 : 11;
+                while (i < questions.length) {
+                    const itemsPerPage = (pageNumber === 1) ? 9 : 12;
                     const pageQs = questions.slice(i, i + itemsPerPage);
-                    const isLastPage = (i + itemsPerPage) >= totalQuestions;
+                    const isLastPage = (i + itemsPerPage) >= questions.length;
                     
-                    fullHtml += generateAKPageHtml(test, pageQs, i + 1, pageNumber, totalQuestions, isLastPage);
+                    fullHtml += generateAKPageHtml(test, pageQs, i + 1, pageNumber, isLastPage);
                     
                     i += itemsPerPage;
                     pageNumber++;
@@ -3322,7 +3015,7 @@
         });
     }
 
-    function generateAKPageHtml(test, qs, startNum, pageNumber, totalQuestions, isLastPage) {
+    function generateAKPageHtml(test, qs, startNum, pageNumber, isLastPage) {
         let qsRows = "";
         
         qs.forEach((q, index) => {
@@ -3330,7 +3023,7 @@
             const correctOptionId = ["A", "B", "C", "D"][q.correct - 1];
             
             qsRows += `
-                <div class="ak-question">
+                <div style="margin-bottom:15px; padding-bottom:10px; border-bottom:1px dashed #ddd; page-break-inside: avoid;">
                     <p style="font-weight:bold; font-size:14px; margin-bottom:8px;">
                         Q${currentNum}. ${q.text}
                     </p>
@@ -3348,26 +3041,27 @@
         });
         
         return `
-        <div class="ak-page" style="background:white !important;">
-            <div class="ak-page-title">
-                <h1>${appSettings.name}</h1>
-                <h3>Official Answer Key</h3>
-                <h4>${test.title}</h4>
-                <p>Subject: ${test.subject || 'General'} | Class: ${test.class || 'All'}</p>
-                <p>Total Questions: ${totalQuestions} | Page: ${pageNumber}</p>
+        <div class="report-paper" style="page-break-after: ${isLastPage ? 'auto' : 'always'};">
+            <div class="report-border">
+                <div class="report-inner-border">
+                    <div class="watermark">${appSettings.name}</div>
+                    
+                    <div class="sheet-header">
+                        <img src="${appSettings.marksheetLogo || ''}" 
+                             style="height: 80px; margin-bottom: 10px;">
+                        <h1>${appSettings.name}</h1>
+                        <h3>Official Answer Key</h3>
+                        <h4>${test.title}</h4>
+                        <p>Subject: ${test.subject || 'General'} | Class: ${test.class || 'All'}</p>
+                    </div>
+                    
+                    ${qsRows}
+                    
+                    <div style="text-align:center; margin-top:30px; color:#666; font-size:12px;">
+                        Page ${pageNumber}
+                    </div>
+                </div>
             </div>
-            
-            ${qsRows}
-            
-            ${!isLastPage ? `
-            <div style="text-align:center; margin-top:30px; color:#666; font-size:12px; page-break-after: always;">
-                Page ${pageNumber} - Continued...
-            </div>
-            ` : `
-            <div style="text-align:center; margin-top:30px; color:#666; font-size:12px;">
-                Page ${pageNumber} - End of Answer Key
-            </div>
-            `}
         </div>`;
     }
 
@@ -3401,7 +3095,10 @@
              document.getElementById('app-header').style.display = 'flex';
         }
 
-        if(t=='add-test') loadTopicsForDropdown('at-list-select');
+        if(t=='add-test') {
+            loadTopicsForDropdown('at-list-select');
+            initAdminDropdowns();
+        }
         if(t=='view-questions') loadTopicsForDropdown('vq-test-select');
         if(t.includes('results') || t.includes('rank')) loadAdminTestsForDropdown('res-test-select');
         if(t=='manage-tests') loadManageTests();
@@ -3417,16 +3114,6 @@
         if(t=='firebase-settings') populateFirebaseSettings();
         if(t=='ads-management') updateAdsUI();
         if(t=='ads-dashboard') updateAdStats();
-        if(t=='subscription-settings') loadSubscriptionSettings();
-        if(t=='payment-approvals') loadPaymentApprovals();
-    }
-
-    function loadSubscriptionSettings() {
-        document.getElementById('sub-upi-id').value = subscriptionSettings.upiId || '';
-        document.getElementById('sub-qr-code').value = subscriptionSettings.qrCode || '';
-        document.getElementById('sub-amount').value = subscriptionSettings.amount || 500;
-        document.getElementById('sub-duration').value = subscriptionSettings.duration || 30;
-        document.getElementById('sub-description').value = subscriptionSettings.description || 'Monthly Subscription';
     }
 
     function populateAdminSettingsInputs() {
@@ -3711,14 +3398,11 @@
                 const test = t.val();
                 const btnColor = (test.isAnswerKeyPublic !== false) ? 'btn-success' : 'btn-danger';
                 const btnText = (test.isAnswerKeyPublic !== false) ? 'Key: Public' : 'Key: Private';
-                const subBtnColor = test.requiresSubscription ? 'btn-warning' : 'btn-info';
-                const subBtnText = test.requiresSubscription ? 'Premium: Yes' : 'Premium: No';
                 
                 html += `
                 <div class="result-list-item" style="flex-wrap: wrap; gap: 5px;">
                     <div style="flex:1; min-width: 150px;"><b>${test.title}</b><br><small>${test.listTopic}</small></div>
                     <button class="btn-3d ${btnColor}" style="padding:5px 10px; font-size:10px;" onclick="toggleAnswerKeyStatus('${t.key}', ${test.isAnswerKeyPublic !== false})">${btnText}</button>
-                    <button class="btn-3d ${subBtnColor}" style="padding:5px 10px; font-size:10px;" onclick="toggleSubscriptionRequired('${t.key}', ${test.requiresSubscription || false})">${subBtnText}</button>
                     <button class="btn-3d btn-danger" style="padding:5px 10px; font-size:10px;" onclick="deleteTest('${t.key}')">Del</button>
                 </div>`; 
             });
@@ -3729,13 +3413,6 @@
     window.toggleAnswerKeyStatus = (tid, currentStatus) => {
         db.ref(`tests/${tid}/isAnswerKeyPublic`).set(!currentStatus).then(() => {
             show3DAlert("Key Privacy Updated", 'success');
-            loadManageTests();
-        });
-    }
-    
-    window.toggleSubscriptionRequired = (tid, currentStatus) => {
-        db.ref(`tests/${tid}/requiresSubscription`).set(!currentStatus).then(() => {
-            show3DAlert("Subscription requirement updated", 'success');
             loadManageTests();
         });
     }
@@ -3757,8 +3434,7 @@
             gapTime:document.getElementById('at-gap').value, marksPerQ: parseInt(document.getElementById('at-marks').value) || 1, 
             gradeFirst: parseInt(document.getElementById('grade-first').value) || 0, gradeSec: parseInt(document.getElementById('grade-sec').value) || 0,
             gradeFail: parseInt(document.getElementById('grade-fail').value) || 0,
-            isAnswerKeyPublic: false, // Default private
-            requiresSubscription: document.getElementById('requires-subscription').checked // Subscription requirement
+            isAnswerKeyPublic: false // Default private
         }; 
         if(t.title && t.listTopic && t.startTime) {
             db.ref('tests').push(t).then(()=>{
@@ -3775,6 +3451,107 @@
         if(q.text) db.ref('question_pool/'+listName).push(q).then(()=>{ document.getElementById('aq-text').value=''; show3DAlert("Question Saved!", 'success'); }); 
     }
     
+    // --- FINAL AUTO-SWITCHING AI GENERATOR ---
+    async function generateQuestionsByAI() {
+        const topic = document.getElementById('ai-topic').value;
+        const cls = document.getElementById('ai-class').value;
+        const sub = document.getElementById('ai-subject').value;
+        const count = document.getElementById('ai-count').value;
+        const level = document.getElementById('ai-level').value;
+        const lang = document.getElementById('ai-lang').value;
+        const apiKey = document.getElementById('ai-api-key').value.trim();
+        const statusDiv = document.getElementById('ai-status');
+
+        if(!topic || !apiKey || !count) {
+            alert("Topic aur API Key bharna zaroori hai!");
+            return;
+        }
+
+        statusDiv.innerHTML = "<span style='color:blue; font-weight:bold;'><i class='fa fa-circle-notch fa-spin'></i> AI is thinking...</span>";
+
+        // 1. Prompt Taiyar Karo
+        const prompt = `Generate ${count} unique multiple choice questions (MCQ) for Class ${cls}, Subject: ${sub}, Topic: "${topic}".
+        Style: Bihar Board Exam. Language: ${lang}. Difficulty: ${level}.
+        
+        IMPORTANT: Return ONLY a valid JSON Array. Do NOT use Markdown (no \`\`\`json).
+        Format: [{"text":"Q","opt1":"A","opt2":"B","opt3":"C","opt4":"D","correct":"1"}]`;
+
+        // 2. Models ki List (Agar pehla fail hua to dusra chalega)
+        const models = [
+            'gemini-pro',           // Sabse Stable (Most likely to work)
+            'gemini-1.5-flash',     // New Fast Model
+            'gemini-1.0-pro'        // Old Backup
+        ];
+
+        let success = false;
+
+        // 3. Loop chalao (Ek ke baad ek model try karega)
+        for (const model of models) {
+            if (success) break; // Agar kaam ho gaya to ruk jao
+
+            console.log("Trying Model:", model);
+            
+            // Note: v1beta hi use karein, ye free tier ke liye standard hai
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await response.json();
+
+                // Agar Error aaya to agla model try karo
+                if (data.error) {
+                    console.warn(`Model ${model} failed:`, data.error.message);
+                    continue; 
+                }
+
+                // Agar data khali hai to agla try karo
+                if (!data.candidates || !data.candidates[0].content) {
+                    continue;
+                }
+
+                // --- DATA MIL GAYA (SUCCESS) ---
+                let rawText = data.candidates[0].content.parts[0].text;
+                
+                // Safai (Cleaning)
+                rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+                const start = rawText.indexOf('[');
+                const end = rawText.lastIndexOf(']');
+                if(start !== -1 && end !== -1) {
+                    rawText = rawText.substring(start, end+1);
+                }
+
+                const questions = JSON.parse(rawText);
+                const listName = `${topic} (${cls} ${sub})`; 
+
+                // Database me Save
+                let savedCount = 0;
+                questions.forEach(q => {
+                    db.ref('question_pool/' + listName).push(q);
+                    savedCount++;
+                });
+
+                statusDiv.innerHTML = `<span style="color:green; font-weight:bold;">✅ Success! (${model}) - ${savedCount} Qs Added.</span>`;
+                show3DAlert(`Generated using ${model}`, 'success');
+                document.getElementById('ai-topic').value = ""; // Clear input
+                success = true;
+
+            } catch (err) {
+                console.error("Attempt failed for", model, err);
+            }
+        }
+
+        // 4. Agar SARE models fail ho gaye
+        if (!success) {
+            statusDiv.innerHTML = `<span style='color:red; font-weight:bold;'>All Models Failed. Check API Key.</span>`;
+            alert("Error: Aapki API Key kisi bhi model par kaam nahi kar rahi. Kripya nayi Key banayein.");
+        }
+    }
+
     function loadQuestionsList() {
         const listName = document.getElementById('vq-test-select').value;
         const area = document.getElementById('questions-list-area'); area.innerHTML="Loading...";
