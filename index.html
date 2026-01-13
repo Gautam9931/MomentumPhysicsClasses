@@ -3451,106 +3451,133 @@
         if(q.text) db.ref('question_pool/'+listName).push(q).then(()=>{ document.getElementById('aq-text').value=''; show3DAlert("Question Saved!", 'success'); }); 
     }
     
-    // --- FINAL AUTO-SWITCHING AI GENERATOR ---
     async function generateQuestionsByAI() {
-        const topic = document.getElementById('ai-topic').value;
-        const cls = document.getElementById('ai-class').value;
-        const sub = document.getElementById('ai-subject').value;
-        const count = document.getElementById('ai-count').value;
-        const level = document.getElementById('ai-level').value;
-        const lang = document.getElementById('ai-lang').value;
-        const apiKey = document.getElementById('ai-api-key').value.trim();
-        const statusDiv = document.getElementById('ai-status');
+    const topic = document.getElementById('ai-topic').value;
+    const cls = document.getElementById('ai-class').value;
+    const sub = document.getElementById('ai-subject').value;
+    const count = document.getElementById('ai-count').value;
+    const level = document.getElementById('ai-level').value;
+    const lang = document.getElementById('ai-lang').value;
+    const apiKey = document.getElementById('ai-api-key').value.trim();
+    const statusDiv = document.getElementById('ai-status');
 
-        if(!topic || !apiKey || !count) {
-            alert("Topic aur API Key bharna zaroori hai!");
+    if(!topic || !apiKey || !count || !cls || !sub) {
+        alert("Sabhi details aur API Key bharein!");
+        return;
+    }
+
+    statusDiv.innerHTML = "<span style='color:#f39c12; font-weight:bold;'><i class='fa fa-bolt'></i> Generating via Groq AI...</span>";
+
+    // Prompt for Llama 3
+    const prompt = `Act as a strict API that outputs ONLY JSON.
+    Generate ${count} multiple choice questions for Class ${cls}, Subject: ${sub}, Topic: "${topic}".
+    Language: ${lang}. Difficulty: ${level}. Target: Bihar Board.
+    
+    The output must be a valid JSON Array like this:
+    [
+        {
+            "text": "Question?",
+            "opt1": "A",
+            "opt2": "B",
+            "opt3": "C",
+            "opt4": "D",
+            "correct": "1"
+        }
+    ]
+    
+    Do not add any markdown, no \`\`\`json, no introduction, no conclusion. Just the Array.`;
+
+    // Groq API Endpoint
+    const url = "https://api.groq.com/openai/v1/chat/completions";
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: "llama3.1-70b-versatile", // ✅ UPDATED: New working model
+                messages: [{ role: "user", content: prompt }],
+                temperature: 0.7,
+                max_tokens: 4096
+            })
+        });
+
+        const data = await response.json();
+
+        // Error Handling - Detailed
+        if (!response.ok) {
+            console.error("Groq API Error:", data);
+            
+            if (data.error && data.error.code === 'model_not_found') {
+                statusDiv.innerHTML = `<span style='color:red; font-weight:bold;'>
+                    <i class='fa fa-exclamation-triangle'></i> Model Error: Please use llama3.1-70b-versatile or llama3.1-70b-versatile
+                </span>`;
+            } else if (data.error) {
+                statusDiv.innerHTML = `<span style='color:red;'>Error: ${data.error.message || 'Unknown error'}</span>`;
+            } else {
+                statusDiv.innerHTML = `<span style='color:red;'>API Error: ${response.status} ${response.statusText}</span>`;
+            }
             return;
         }
 
-        statusDiv.innerHTML = "<span style='color:blue; font-weight:bold;'><i class='fa fa-circle-notch fa-spin'></i> AI is thinking...</span>";
+        if (data.error) {
+            console.error("Groq Error:", data.error);
+            statusDiv.innerHTML = `<span style='color:red;'>Error: ${data.error.message}</span>`;
+            alert("Groq Error: " + data.error.message);
+            return;
+        }
 
-        // 1. Prompt Taiyar Karo
-        const prompt = `Generate ${count} unique multiple choice questions (MCQ) for Class ${cls}, Subject: ${sub}, Topic: "${topic}".
-        Style: Bihar Board Exam. Language: ${lang}. Difficulty: ${level}.
+        // Data extraction
+        let rawText = data.choices[0].message.content;
         
-        IMPORTANT: Return ONLY a valid JSON Array. Do NOT use Markdown (no \`\`\`json).
-        Format: [{"text":"Q","opt1":"A","opt2":"B","opt3":"C","opt4":"D","correct":"1"}]`;
+        // Cleaning JSON
+        rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+        const start = rawText.indexOf('[');
+        const end = rawText.lastIndexOf(']');
+        
+        if(start !== -1 && end !== -1) {
+            rawText = rawText.substring(start, end+1);
+        } else {
+            throw new Error("Invalid JSON format received from AI");
+        }
 
-        // 2. Models ki List (Agar pehla fail hua to dusra chalega)
-        const models = [
-            'gemini-pro',           // Sabse Stable (Most likely to work)
-            'gemini-1.5-flash',     // New Fast Model
-            'gemini-1.0-pro'        // Old Backup
-        ];
+        const questions = JSON.parse(rawText);
+        const listName = `${topic} (${cls} ${sub})`; 
 
-        let success = false;
-
-        // 3. Loop chalao (Ek ke baad ek model try karega)
-        for (const model of models) {
-            if (success) break; // Agar kaam ho gaya to ruk jao
-
-            console.log("Trying Model:", model);
-            
-            // Note: v1beta hi use karein, ye free tier ke liye standard hai
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        // Save to Firebase
+        let savedCount = 0;
+        questions.forEach(q => {
+            // Validate question data
+            if (q.text && q.opt1 && q.opt2 && q.opt3 && q.opt4 && q.correct) {
+                db.ref('question_pool/' + listName).push({
+                    text: q.text, 
+                    opt1: q.opt1, 
+                    opt2: q.opt2, 
+                    opt3: q.opt3, 
+                    opt4: q.opt4, 
+                    correct: q.correct
                 });
-
-                const data = await response.json();
-
-                // Agar Error aaya to agla model try karo
-                if (data.error) {
-                    console.warn(`Model ${model} failed:`, data.error.message);
-                    continue; 
-                }
-
-                // Agar data khali hai to agla try karo
-                if (!data.candidates || !data.candidates[0].content) {
-                    continue;
-                }
-
-                // --- DATA MIL GAYA (SUCCESS) ---
-                let rawText = data.candidates[0].content.parts[0].text;
-                
-                // Safai (Cleaning)
-                rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
-                const start = rawText.indexOf('[');
-                const end = rawText.lastIndexOf(']');
-                if(start !== -1 && end !== -1) {
-                    rawText = rawText.substring(start, end+1);
-                }
-
-                const questions = JSON.parse(rawText);
-                const listName = `${topic} (${cls} ${sub})`; 
-
-                // Database me Save
-                let savedCount = 0;
-                questions.forEach(q => {
-                    db.ref('question_pool/' + listName).push(q);
-                    savedCount++;
-                });
-
-                statusDiv.innerHTML = `<span style="color:green; font-weight:bold;">✅ Success! (${model}) - ${savedCount} Qs Added.</span>`;
-                show3DAlert(`Generated using ${model}`, 'success');
-                document.getElementById('ai-topic').value = ""; // Clear input
-                success = true;
-
-            } catch (err) {
-                console.error("Attempt failed for", model, err);
+                savedCount++;
             }
-        }
+        });
 
-        // 4. Agar SARE models fail ho gaye
-        if (!success) {
-            statusDiv.innerHTML = `<span style='color:red; font-weight:bold;'>All Models Failed. Check API Key.</span>`;
-            alert("Error: Aapki API Key kisi bhi model par kaam nahi kar rahi. Kripya nayi Key banayein.");
-        }
+        statusDiv.innerHTML = `<span style="color:green; font-weight:bold;">
+            <i class="fa fa-check-circle"></i> Success! ${savedCount} Questions Added via Groq.
+        </span>`;
+        show3DAlert("Questions Generated Successfully!", 'success');
+        document.getElementById('ai-topic').value = "";
+
+    } catch (error) {
+        console.error("AI Generation Error:", error);
+        statusDiv.innerHTML = `<span style='color:red; font-weight:bold;'>
+            <i class='fa fa-exclamation-circle'></i> Failed: ${error.message || 'Check API Key and try again'}
+        </span>`;
+        alert("System Error: " + error.message);
     }
+}
 
     function loadQuestionsList() {
         const listName = document.getElementById('vq-test-select').value;
